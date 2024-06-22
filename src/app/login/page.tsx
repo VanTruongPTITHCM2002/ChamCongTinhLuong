@@ -11,7 +11,8 @@ export default function LoginPage(){
     const handleSubmit = (e: React.FormEvent)=>{
         e.preventDefault();
         if(email === 'truong@gmail.com' && password === '1'){
-            router.push('dashboard');
+            localStorage.setItem('isLoggedIn','true');
+            router.push('/dashboard');
         }else{
             alert('Tài khoản hoặc mật khẩu không đúng');
         }
@@ -72,7 +73,8 @@ const containerStyle: CSSProperties = {
 
   const inputStyle:CSSProperties={
     background:'unset',
-    marginLeft:'10px'
+    marginLeft:'10px',
+    color:'#000'
   }
   
   const buttonStyle: CSSProperties = {
