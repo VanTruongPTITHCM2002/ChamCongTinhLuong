@@ -11,7 +11,7 @@ export default function LoginPage(){
     const handleSubmit = (e: React.FormEvent)=>{
         e.preventDefault();
         if(email === 'truong@gmail.com' && password === '1'){
-            localStorage.setItem('isLoggedIn','true');
+            //localStorage.setItem('isLoggedIn','true');
             router.push('/dashboard');
         }else{
             alert('Tài khoản hoặc mật khẩu không đúng');
