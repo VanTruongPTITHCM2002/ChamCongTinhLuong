@@ -1,5 +1,65 @@
+.container{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    width: 500px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+
+    /* Add a transparency to shadow */
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+}
+
+.subject{
+    color:#f34100;
+    font-size:20px
+}
+
+
 .title{
-    color:aquamarine;
+    color:rgb(127, 202, 255);
     display: inline-flex;
     justify-content: center;
+    margin-bottom: 16px;
 }
+
+.inputStyle{
+    box-sizing: border-box;
+    width: 70%;
+    margin: 20px auto;
+    padding: 12px 20px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 13px 21px rgba(0, 0, 0, 0.05);
+    color:#333
+  }
+  
+
+
+.buttonStyle {
+    padding: 10px;
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    width: 100px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+.labelStyle {
+    margin-bottom: 5px;
+    color: #333;
+  }
