@@ -8,7 +8,7 @@ export default function LoginPage(){
     const loginMessage = localStorage.getItem('loginMessage');
     if(loginMessage){
       alert(loginMessage)
-      localStorage.removeItem('loginMessage');
+     const storage = localStorage.removeItem('loginMessage');
     }
     const [email,setEmail] = useState('');
     const [password,setPassword]= useState('');
