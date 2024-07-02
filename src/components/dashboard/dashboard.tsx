@@ -50,7 +50,7 @@ export default function DashboardPage(){
                 <ul>
                     <li><a href="/dashboard">Trang chủ</a></li>
                     <li><a href="#">Quản lý tài khoản</a></li>
-                    <li><a href="#">Quản lý nhân viên</a></li>
+                    <li><a href="/employees">Quản lý nhân viên</a></li>
                     <li><a href="#">Quản lý lịch làm việc</a></li>
                     <li><a href="#">Quản lý chấm công</a></li>
                     <li><a href="#">Quản lý tính lương</a></li>
@@ -62,7 +62,7 @@ export default function DashboardPage(){
                 </div>
 
                 <div className={classes.article}>
-                    <table>
+                    {/* <table>
                         <thead>
                             <th>Mã nhân viên</th>
                             <th>Họ nhân viên</th>
@@ -115,7 +115,7 @@ export default function DashboardPage(){
                             </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> */}
                 </div>
             </div>
         </div>
