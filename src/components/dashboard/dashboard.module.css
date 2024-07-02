@@ -2,17 +2,26 @@
     display: flex;
     flex-direction: column;
     height: 100vh; 
+    position: relative;
+}
+
+.maincontainer{
+    position:absolute;
+    top:0;
+    left:200px;
+    height: 100%;
+    width: calc(100% - 200px);
+    background-color: #318656;
 }
 
 .header{
-    position: relative;
-    background-color: crimson;
+    background-color: #343a40;
     color:#fff;
     padding:20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index:1;
+    width: 100%;
 }
 
 .header h1{
@@ -23,9 +32,9 @@
     position: absolute; /* Sử dụng position là absolute */
     top: 0; /* Đặt navbar ở đầu trang */
     left: 0; /* Đặt navbar từ bên trái */
-    width: 250px;
+    width: 200px;
     height: 100vh;
-    background-color: #ffffff;
+    background-color:#dee2e6;
     display: flex;
     flex-direction: column;
     z-index:2;
@@ -33,7 +42,7 @@
 
 .navbar ul{
     list-style: none;
-    width: 250px;
+    width: 200px;
 }
 
 .navbar li{
@@ -55,10 +64,9 @@
 
 .article {
     color:#000;
-    flex: 1;
     background-color: #f1f2f3;
     padding: 20px;
-    position: relative; /* Thêm position relative để xử lý vị trí của bảng */
+    height: 100%;
 }
 
 .article table {
@@ -71,4 +79,8 @@
 .article table td {
     border: 1px solid #000; /* Đường viền cho các ô */
     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+}
+
+.article button{
+    background-color: #EC407A;
 }
