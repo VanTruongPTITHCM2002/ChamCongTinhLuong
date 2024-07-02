@@ -56,7 +56,27 @@ export default function DashboardPage(){
             </div>
 
             <div className={classes.article}>
-                Main Content
+               <table>
+                    <thead>
+                        <th>Mã nhân viên</th>
+                        <th>Họ nhân viên</th>
+                        <th>Tên nhân viên</th>
+                        <th>Địa chỉ</th>
+                        <th>Số điện thoại</th>
+                        <th>CMND</th>
+                        <th>Email</th>
+                    </thead>
+
+                    <tbody>
+                        <td>NV001</td>
+                        <td>Nguyễn Văn</td>
+                        <td>Trường</td>
+                        <td>60/1/2</td>
+                        <td>08900809890</td>
+                        <td>012313123123</td>
+                        <td>trerq@gmail.com</td>
+                    </tbody>
+               </table>
             </div>
         </div>
     )

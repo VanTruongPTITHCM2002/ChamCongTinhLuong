@@ -53,8 +53,22 @@
     background-color: #318656;
 }
 
-.article{
+.article {
+    color:#000;
     flex: 1;
-    background-color: #315c86;
+    background-color: #f1f2f3;
     padding: 20px;
+    position: relative; /* Thêm position relative để xử lý vị trí của bảng */
+}
+
+.article table {
+    margin-left: auto; /* Đẩy bảng về phía bên phải */
+    border-collapse: collapse;
+    width: auto; /* Để bảng co giãn theo nội dung */
+}
+
+.article table th, 
+.article table td {
+    border: 1px solid #000; /* Đường viền cho các ô */
+    padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
 }
