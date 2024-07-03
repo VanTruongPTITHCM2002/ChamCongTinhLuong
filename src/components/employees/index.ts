@@ -1,1 +1,1 @@
-export {default} from './employees';
+export {default} from './employees'

@@ -67,20 +67,31 @@
     background-color: #f1f2f3;
     padding: 20px;
     height: 100%;
+    position:fixed;
 }
 
 .article table {
     margin-left: auto; /* Đẩy bảng về phía bên phải */
     border-collapse: collapse;
-    width: auto; /* Để bảng co giãn theo nội dung */
+    
+ /* Để bảng co giãn theo nội dung */
 }
 
 .article table th, 
 .article table td {
     border: 1px solid #000; /* Đường viền cho các ô */
     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+    width: 150px;
+
 }
 
-.article button{
-    background-color: #EC407A;
+.article table .btn{
+    display: flex;
+    justify-content: space-between;
 }
+
+.article table a{
+    cursor: pointer;
+}
+    
+
