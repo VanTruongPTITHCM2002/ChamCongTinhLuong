@@ -4,6 +4,7 @@ import { faPenToSquare,faTrash } from '@fortawesome/free-solid-svg-icons';
 import classes from './employees.module.css'
 import Modal from '../modal'
 import { useState,FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 interface Employee {
     maNV: string;
     hoNV: string;
@@ -18,6 +19,10 @@ interface Employee {
     trangThai: string;
 }
 export default function EmployeesPage(){
+    const router = useRouter();
+    
+  
+   
     const [employeesData, setEmployeesData] = useState<Employee[]>([
         {
             maNV: 'NV001',
@@ -47,6 +52,7 @@ export default function EmployeesPage(){
         },
         // Thêm các đối tượng nhân viên khác nếu cần
     ]);
+   
     const [showModal, setShowModal] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
     const handleDeleteEmployee = (maNV: string) => {
@@ -69,6 +75,11 @@ export default function EmployeesPage(){
         setShowModal(false);
       };
     
+
+    const handleClickAdd = ()=>{
+        setShowModal(true);
+        setSelectedEmployee(null);
+    }
       const handleFormSubmit = (event: FormEvent) => {
         event.preventDefault();
     
@@ -94,7 +105,12 @@ export default function EmployeesPage(){
         setSelectedEmployee(null); // Reset lại trạng thái sau khi cập nhật
         setShowModal(false);
       };
-
+      const handleLogout = ()=>{
+          localStorage.removeItem('token');
+          router.push('/login');
+      }
+     
+     
     return (
         <div className={classes.container}>
         <div className={classes.navbar}>
@@ -107,13 +123,17 @@ export default function EmployeesPage(){
                 <li><a href="#">Quản lý tính lương</a></li>
             </ul>
         </div>
+
         <div className={classes.maincontainer}>
             <div className={classes.header}>
-                <h1>My Application</h1>
+                <h1>Nguyễn Văn Trường</h1>
+
+                <button onClick={handleLogout}>Đăng xuất</button>
             </div>
 
+
             <div className={classes.article}>
-               
+               <button className={classes.btn_add_emp} onClick={handleClickAdd}>Thêm nhân viên</button>
                 <table>
                     <thead>
                         <tr>
@@ -161,8 +181,7 @@ export default function EmployeesPage(){
         <div id="modal-root"> {showModal && (
                 <Modal onClose={handleCloseModal}>
                     {/* Nội dung modal */}
-                    <h2>Chỉnh sửa thông tin nhân viên</h2>
-                    {selectedEmployee && (
+                    {selectedEmployee ? (
                         <form onSubmit={handleFormSubmit}>
                         <h2>Chỉnh sửa thông tin nhân viên</h2>
                         <div>
@@ -183,7 +202,26 @@ export default function EmployeesPage(){
                           <button type="button" onClick={handleCancelEdit}>Hủy</button>
                         </div>
                       </form>
-                    )}
+                    ):  <form onSubmit={handleFormSubmit}>
+                    <h2>Thêm mới nhân viên</h2>
+                    <div>
+                        <label>Mã nhân viên:</label>
+                        <input name="maNV" type="text" />
+                    </div>
+                    <div>
+                        <label>Họ nhân viên:</label>
+                        <input name="hoNV" type="text" />
+                    </div>
+                    <div>
+                        <label>Tên nhân viên:</label>
+                        <input name="tenNV" type="text" />
+                    </div>
+                    {/* Thêm các trường thông tin khác */}
+                    <div>
+                        <button type="submit">Thêm</button>
+                        <button type="button" onClick={handleCancelEdit}>Hủy</button>
+                    </div>
+                </form>}
                 </Modal>
             )}</div>
        

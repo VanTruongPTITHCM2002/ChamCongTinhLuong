@@ -70,6 +70,10 @@
     position:fixed;
 }
 
+.article .btn_add_emp{
+    margin-bottom: 10px;
+}
+
 .article table {
     margin-left: auto; /* Đẩy bảng về phía bên phải */
     border-collapse: collapse;

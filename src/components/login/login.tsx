@@ -1,10 +1,12 @@
 'use client'
 
-import React, { CSSProperties, FormEvent, useState } from "react"
+import React, { CSSProperties, FormEvent, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import jwt from 'jsonwebtoken'
 import classes from './login.module.css'
 export default function LoginPage(){
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
     const loginMessage = localStorage.getItem('loginMessage');
     if(loginMessage){
       alert(loginMessage)
