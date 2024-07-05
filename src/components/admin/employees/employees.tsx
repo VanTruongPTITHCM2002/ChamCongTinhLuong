@@ -1,25 +1,10 @@
 'use client'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare,faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FormEvent, useEffect, useState } from 'react';
 import classes from './employees.module.css'
-import Modal from '../modal'
-import { useState,FormEvent, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { format } from 'util';
-interface IEmployee {
-    maNV: string;
-    hoNV: string;
-    tenNV: string;
-    gioiTinh: string;
-    diaChi: string;
-    soDienThoai: string;
-    cmnd: string;
-    email: string;
-    ngayLamViec: string;
-    bangCap: string;
-    trangThai: string;
-}
+import { useRouter } from 'next/navigation';
+import Modal from '@/components/modal';
+
 
 interface Employee {
     idemployee: string;
@@ -34,14 +19,7 @@ interface Employee {
     degree: number | string;
     status: number | string;
 }
-
-enum DegreeType {
-    DaiHoc = 1,
-    CaoDang = 2,
-    ThacSi = 3,
-    TienSi = 4
-}
-export default function EmployeesPage(){
+export default function AdminEmployeesPage(){
     const router = useRouter();
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
     useEffect(()=>{
@@ -110,77 +88,51 @@ export default function EmployeesPage(){
         setSelectedEmployee(null); // Reset lại trạng thái sau khi cập nhật
         setShowModal(false);
       };
-      const handleLogout = ()=>{
-          localStorage.removeItem('token');
-          router.push('/login');
-      }
-     
-     
     return (
-        <div className={classes.container}>
-        <div className={classes.navbar}>
-            <ul>
-                <li><a href="/dashboard">Trang chủ</a></li>
-                <li><a href="#">Quản lý tài khoản</a></li>
-                <li><a href="/employees">Quản lý nhân viên</a></li>
-                <li><a href="#">Quản lý lịch làm việc</a></li>
-                <li><a href="#">Quản lý chấm công</a></li>
-                <li><a href="#">Quản lý tính lương</a></li>
-            </ul>
-        </div>
+        <div className={classes.article}>
+               <button className={classes.btn_add_emp} onClick={handleClickAdd}>Thêm nhân viên</button>
+        <table>
+            <thead>
+                <tr>
+                <th>Mã nhân viên</th>
+                <th>Họ nhân viên</th>
+                <th>Tên nhân viên</th>
+                <th>Giới tính</th>
+                <th>Địa chỉ</th>
+                <th>Số điện thoại</th>
+                <th>CMND</th>
+                <th>Email</th>
+                <th>Ngày làm việc</th>
+                <th>Bằng cấp</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+                </tr>
+            </thead>
 
-        <div className={classes.maincontainer}>
-            <div className={classes.header}>
-                <button className={classes.btn_logout} onClick={handleLogout}>Đăng xuất</button>
-            </div>
-                    <button className={classes.btn_add_emp} onClick={handleClickAdd}>Thêm nhân viên</button>
-            
-            <div className={classes.article}>
-              
-                <table>
-                    <thead>
-                        <tr>
-                        <th>Mã nhân viên</th>
-                        <th>Họ nhân viên</th>
-                        <th>Tên nhân viên</th>
-                        <th>Giới tính</th>
-                        <th>Địa chỉ</th>
-                        <th>Số điện thoại</th>
-                        <th>CMND</th>
-                        <th>Email</th>
-                        <th>Ngày làm việc</th>
-                        <th>Bằng cấp</th>
-                        <th>Trạng thái</th>
-                        <th>Hành động</th>
+            <tbody>
+                    {employeesData.map((employee, index) => (
+                        <tr key={index}>
+                            <td>{employee.idemployee}</td>
+                            <td>{employee.firstname}</td>
+                            <td>{employee.lastname}</td>
+                            <td>{employee.gender}</td>
+                            <td>{employee.address}</td>
+                            <td>{employee.phonenumber}</td>
+                            <td>{employee.cmnd}</td>
+                            <td>{employee.email}</td>
+                            <td>{employee.hiredate}</td>
+                            <td>{employee.degree}</td>
+                            <td>{employee.status}</td>
+                            <td>
+                                <div className={classes.btn}>
+                                    <a onClick={() => handleUpdateClick(employee)}>Cập nhật</a>
+                                    <a onClick={() => handleDeleteEmployee(employee.idemployee)}>Xóa</a>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-
-                    <tbody>
-                            {employeesData.map((employee, index) => (
-                                <tr key={index}>
-                                    <td>{employee.idemployee}</td>
-                                    <td>{employee.firstname}</td>
-                                    <td>{employee.lastname}</td>
-                                    <td>{employee.gender}</td>
-                                    <td>{employee.address}</td>
-                                    <td>{employee.phonenumber}</td>
-                                    <td>{employee.cmnd}</td>
-                                    <td>{employee.email}</td>
-                                    <td>{employee.hiredate}</td>
-                                    <td>{employee.degree}</td>
-                                    <td>{employee.status}</td>
-                                    <td>
-                                        <div className={classes.btn}>
-                                            <a onClick={() => handleUpdateClick(employee)}>Cập nhật</a>
-                                            <a onClick={() => handleDeleteEmployee(employee.idemployee)}>Xóa</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                 ))}
-                        </tbody>
-                </table>
-            </div>
-        </div>
+                         ))}
+                </tbody>
+        </table>
         <div id="modal-root"> {showModal && (
                 <Modal onClose={handleCloseModal}>
                     {/* Nội dung modal */}
@@ -272,7 +224,6 @@ export default function EmployeesPage(){
                 </form>}
                 </Modal>
             )}</div>
-       
     </div>
     )
 }

@@ -4,6 +4,7 @@ import React, { CSSProperties, FormEvent, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import jwt from 'jsonwebtoken'
 import classes from './login.module.css'
+import axios from "axios"
 export default function LoginPage(){
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -25,13 +26,40 @@ export default function LoginPage(){
     };
     const handleSubmit = (e: React.FormEvent)=>{
         e.preventDefault();
-        if(email === 'truong@gmail.com' && password === '1'){
-            const token = jwt.sign(payload, "asdadsadasdasdasddas")
-            localStorage.setItem('token', token);
-            router.push('/dashboard');
-        }else{
-            alert('Tài khoản hoặc mật khẩu không đúng');
-        }
+        const data = {
+      username:email,
+      password:password
+    }
+
+        axios.post('http://localhost:8082/api/v1/auth/login',data)
+            .then(response => {
+               console.log('Dữ liệu:',response.data)
+               if(response.status === 200){
+                if(response.data.data.role === 1){
+                   const token = jwt.sign(payload, "asdadsadasdasdasddas")
+                localStorage.setItem('token', token);
+                router.push('/admin/dashboard');
+                }
+                  else{
+                    alert('Bạn không có quyền đăng nhập');
+                  }
+               }
+               
+            })
+            .then(data => {
+                console.log("API Data:", data);
+             
+            })
+            .catch(error => {
+              
+                if (error.response.status === 404) {
+                  alert('Không tìm thấy tài khoản');
+                } else if (error.response.status === 400) {
+                  alert('Tài khoản hoặc mật khẩu không đúng');
+                }
+                
+            });
+      
     };
 
    
@@ -43,7 +71,7 @@ export default function LoginPage(){
           
             <input
             className={classes.inputStyle}
-              type="email"
+              type="text"
               id="email"
               value={email}
               placeholder="Nhập tài khoản"
