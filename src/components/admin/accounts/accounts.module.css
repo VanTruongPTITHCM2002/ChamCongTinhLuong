@@ -2,11 +2,12 @@
     color: #000;
     background-color: #fff;
     padding: 10px;
-   height: 50%;
+   height: 80vh;
    margin:10px 10px 0 10px;
     overflow-x: auto; 
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
 }
+
 .btn_add_emp{
     height: 30px;
     margin: 10px 0px 20px 10px;
@@ -16,11 +17,10 @@
 
 
 .article table {
-   white-space: nowrap;
     border-collapse: collapse;
-    height: 100px;
+    height: 50px;
+    width: 100%;
     text-align: center;
-    overflow-x: scroll;
     
  /* Để bảng co giãn theo nội dung */
 }
@@ -32,10 +32,12 @@
     
 }
 
+.article table td:nth-child(4){
+    width: 300px;
+}
+
 .article table .btn{
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    margin:10px;
 }
 
 .article table a{

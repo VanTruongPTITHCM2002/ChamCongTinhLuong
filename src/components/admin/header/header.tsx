@@ -9,6 +9,7 @@ export default function Header(){
     }
     return (
         <div className={classes.header}>
+            <img src="/images/download.jpg" alt="Avatar" className={classes.avatar}></img>
         <button className={classes.btn_logout} onClick={handleLogout}>Đăng xuất</button>
     </div>
     )

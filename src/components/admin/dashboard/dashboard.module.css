@@ -6,4 +6,13 @@
    margin:10px 10px 0 10px;
     overflow-x: auto; 
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chartA{
+    height: 100px;
+    background-color: #9FB6CD;
+    margin:10px;
+    flex: 1 0 calc(20% - 20px);
 }

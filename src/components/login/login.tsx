@@ -16,10 +16,7 @@ export default function LoginPage(){
     const [email,setEmail] = useState('');
     const [password,setPassword]= useState('');
     const router = useRouter();
-    const payload = {
-      email: email,
-      role: 'user'
-    };
+    
     
     const options = {
       expiresIn: '1h' // Token hết hạn sau 1 giờ
@@ -35,7 +32,11 @@ export default function LoginPage(){
             .then(response => {
                console.log('Dữ liệu:',response.data)
                if(response.status === 200){
-                if(response.data.data.role === 1){
+                if(response.data.data.role === 'ADMIN'){
+                  const payload = {
+                    email: email,
+                    role: response.data.data.role
+                  };
                    const token = jwt.sign(payload, "asdadsadasdasdasddas")
                 localStorage.setItem('token', token);
                 router.push('/admin/dashboard');

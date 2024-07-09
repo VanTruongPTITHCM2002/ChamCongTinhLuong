@@ -29,6 +29,13 @@
     box-sizing: border-box;
 }
 
+.navbar_image{
+    display: flex;
+    justify-content: center;
+    margin:10px 0 10px 0;
+}
+
 .navbar li:hover{
     background-color: gray;
 }
+
