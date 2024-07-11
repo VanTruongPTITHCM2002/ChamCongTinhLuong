@@ -1,0 +1,103 @@
+.article {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 80vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+}
+
+.article span{
+    padding:10px;
+}
+
+.article table {
+    white-space: nowrap;
+    border-collapse: collapse;
+    height: 100px;
+    text-align: center;
+    width: 100%;
+  /* Để bảng co giãn theo nội dung */
+ }
+
+ .btn_prev, .btn_next{
+    height: 30px;
+    margin: 10px 0px 20px 10px;
+    width: 50px;
+    background:linear-gradient(-45deg,blue,red);
+ }
+ 
+ .article table th, 
+ .article table td {
+     border: 1px solid #000; /* Đường viền cho các ô */
+     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+     
+ }
+
+ .article .table_show_emp{
+    margin-top: 50px;
+ }
+
+ .article .btn_add_work_schedule{
+    float:right;
+    width: 120px;
+    background:linear-gradient(-45deg,blue,red);
+    height: 30px;
+ }
+
+ .btnFormAdd{
+    background:linear-gradient(-45deg,blue,red);
+    height: 30px;
+    width: 60px;
+ }
+
+ .form_show{
+  margin-top:10px;
+ }
+
+ .form_add_work_schedule{
+   width: 100%;
+ 
+   border-radius: 5px;
+   background-color: #f0f0f0; /* Màu xám nhạt cho form */
+      padding: 1rem; /* Thêm padding nếu cần */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ để nổi bật form */
+
+ }
+
+ .form_group{
+   margin-bottom:20px;
+ }
+
+.form_add_work_schedule input[type="text"]{
+   width: calc(100% - 20px); /* Đảm bảo input rộng toàn bộ form trừ padding */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #ffffff; /* Màu nền cho ô input */
+      color:#000;
+}
+
+ .form_time{
+   margin-bottom: 20px;
+   display: flex;
+ }
+
+
+
+ .btn_form_add_work_schedule button{
+   margin:10px;
+   width: 50px;
+   height: 30px;
+   transition-duration: 0.4s;
+ }
+
+ .btn_form_add_work_schedule button:hover{
+   background-color: crimson;
+   color: white;
+}
+ 
+
+   
+

@@ -14,6 +14,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@types/styled-components": "^5.1.34",
     "axios": "^1.7.2",
+    "date-fns": "^3.6.0",
     "framer-motion": "^11.2.12",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^8.5.1",

@@ -134,6 +134,7 @@ export default function AdminEmployeesPage(){
             if(response.status === 400){
                 console.log(response.data.message);
             }
+            alert("Thêm nhân viên thành công");
         } catch (error) {
             console.error('Error submitting employee data:', error);
         }

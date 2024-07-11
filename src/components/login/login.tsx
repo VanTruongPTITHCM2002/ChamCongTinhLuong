@@ -67,7 +67,7 @@ export default function LoginPage(){
     return(
         <div className={classes.container}>
         <form onSubmit={handleSubmit} className={classes.form}>
-        <h1 className={classes.subject}>Phần mềm quản lý chấm công và tính lương</h1>
+        <h1 className={classes.subject}>Ứng dụng chấm công và tính lương</h1>
           <h4 className={classes.title}>Đăng nhập</h4>
           
             <input

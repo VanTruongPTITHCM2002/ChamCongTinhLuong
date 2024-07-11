@@ -17,9 +17,9 @@
 }
 
 .navbar li{
-    padding: 20px 25px;
+    padding: 15px 20px;
     display: block;
-    width: 100%;
+    width: 95%;
 }
 
 .navbar li a{
@@ -37,5 +37,7 @@
 
 .navbar li:hover{
     background-color: gray;
+    border-radius: 5px;
+    margin: 0 5px;
 }
 
