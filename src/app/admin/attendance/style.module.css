@@ -1,0 +1,8 @@
+.maincontainer{
+    position:absolute;
+    top:0;
+    left:200px;
+    height: 100%;
+    width: calc(100% - 200px);
+    background-color: #f5f5f5;
+}

@@ -1,6 +1,7 @@
 
 import Image from 'next/image'
 import classes from './navbar.module.css'
+import Link from 'next/link'
 export default function Navbar(){
     return (
         <div className={classes.navbar}>
@@ -9,13 +10,14 @@ export default function Navbar(){
             </div>
         <ul>
             
-            <li><a href="/admin/dashboard">Trang chủ</a></li>
-            <li><a href="/admin/accounts">Quản lý tài khoản</a></li>
-            <li><a href="/admin/employees">Quản lý nhân viên</a></li>
-            <li><a href="/admin/workschedule">Quản lý lịch làm việc</a></li>
-            <li><a href="#">Quản lý chấm công</a></li>
-            <li><a href="#">Quản lý tính lương</a></li>
-            <li><a href="#">Quản lý thưởng phạt</a></li>
+            <li><Link href="/admin/dashboard">Trang chủ</Link></li>
+            <li><Link href="/admin/accounts">Quản lý tài khoản</Link></li>
+            <li><Link href="/admin/employees">Quản lý nhân viên</Link></li>
+            <li><Link href="/admin/workschedule">Quản lý lịch làm việc</Link></li>
+            <li><Link href="/admin/attendance">Quản lý chấm công</Link></li>
+            <li><Link href="/admin/payroll">Quản lý tính lương</Link></li>
+            <li><Link href="#">Quản lý thưởng phạt</Link></li>
+            <li><Link href='#'>Quản lý hợp đồng lao động</Link></li>
         </ul>
     </div>
     )

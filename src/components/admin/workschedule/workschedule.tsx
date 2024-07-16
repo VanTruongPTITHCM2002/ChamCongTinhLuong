@@ -1,14 +1,50 @@
 'use client'
-import { useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import classes from './workschedule.module.css'
 import {format,addWeeks, subWeeks,startOfWeek,endOfWeek, set} from 'date-fns';
 import { vi } from 'date-fns/locale';
 import Modal from '@/components/modal';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
+interface IFEmployee{
+    id?:string;
+    idemployee?:string,
+    firstname?:string;
+    lastname?:string;
+    name?:string;
+    workdate?:string;
+    startime?:string;
+    endtime?:string;
+}
+interface newIFEMployee{
+    idemployee:string,
+    name:string;
+    workdate:string;
+    startime:string;
+    endtime:string;
+}
+interface WorkSchedule{
+    workdate:string;
+    startime:string;
+    endtime:string;
+}
+
+interface workDate{
+    date: string;
+}
+
 export default function WorkSchedule(){
+   
+    const dateRef = useRef<HTMLInputElement>(null);
     const [date,setDate] = useState(new Date());    
     const [isSelected, setIsSelected] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState<string>('');
+    const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
+    const [workEmoloyee,setWorkEmployee] = useState<newIFEMployee[]>([]);
+    const [selectedEmployee, setSelectedEmployee] = useState<string>('');
+    const [employeeDetails, setEmployeeDetails] = useState<IFEmployee | null>(null);
     const handlePrevDay = () => {
         setDate(prevDate => subWeeks(prevDate, 1));
       };
@@ -19,11 +55,23 @@ export default function WorkSchedule(){
       const startOfWeekDate = startOfWeek(date, { weekStartsOn: 1 });
   const endOfWeekDate = endOfWeek(date, { weekStartsOn: 1 });
 
-  const handleAddWorkSchedule = ()=>{
+  const handleAddWorkSchedule = async ()=>{
+    try {
+        const response = await axios.get('http://localhost:8084/api/v1/workschedule/getidemp');
+        console.log(response.data);
+        setIdEmployee(response.data);
+        if (response.data.length > 0) {
+            const firstEmployeeId = response.data[0].id;
+            fetchEmployeeDetails(firstEmployeeId);
+          }
+    } catch (error) {
+        console.error('Error fetching id employee:', error);
+    }
         setIsSelected(true)
   }
 
-  const handleDetailWorkSchedule = (dayOffset: number) => {
+  const handleDetailWorkSchedule = async  (dayOffset: number) => {
+  
     
     const currentDay = startOfWeekDate.getDay(); // Ngày hiện tại trong tuần (0: Chủ nhật, 1: Thứ hai, ..., 6: Thứ bảy)
 
@@ -38,7 +86,28 @@ export default function WorkSchedule(){
     // Định dạng ngày thành chuỗi YYYY-MM-DD
     const formattedDate = selectedDay.toISOString().split('T')[0];
     setSelectedDate(formattedDate);
-    setShowModal(true);
+    const work:workDate={
+        date:formattedDate
+    }
+    try {
+        const response = await axios.post('http://localhost:8084/api/v1/workschedule/workdate', {date:formattedDate});
+        console.log('Response:', response.data);
+        if(response.status === 400){
+            alert(response.data.status);
+        }
+        setWorkEmployee(response.data)
+        
+        setShowModal(true);
+        
+    } catch (error:any) {
+        if (error.response) {
+            // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
+            alert( error.response.data.message);
+            setShowModal(false);
+        }
+        
+    }
+   
   };
 
   const handleCloseModal = () => {
@@ -46,9 +115,102 @@ export default function WorkSchedule(){
     setShowModal(false);
     };
 
-const handleBack = ()=>{
-    setIsSelected(false);
+const handleBack = (event: React.MouseEvent<HTMLButtonElement>)=>{
+    event.preventDefault();
+    setShowModal(true);
+    setIsSelected(false)  
 }
+
+const handleCancel = (event: React.MouseEvent<HTMLButtonElement>)=>{
+    if (dateRef.current) dateRef.current.value='';
+    event.preventDefault();
+}
+const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    
+    const selectedId = event.target.value;
+    setSelectedEmployee(selectedId);
+    fetchEmployeeDetails(selectedId);
+
+};
+const fetchEmployeeDetails = async (id: string) => {
+    try {
+      const response = await axios.get<IFEmployee>(`http://localhost:8084/api/v1/workschedule/${id}`);
+      setEmployeeDetails(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching employee details:', error);
+      setEmployeeDetails(null); // Reset details if there is an error
+    }
+  };
+
+  const handleAddWorkScheduleDate = async (event:FormEvent)=>{
+    event.preventDefault();
+    const formElement = document.getElementById('form-add-work-date') as HTMLFormElement;
+    if (!formElement) {
+        console.error('Form element not found');
+        return;
+    }
+
+    const form = new FormData(formElement);
+    const workschedule:WorkSchedule ={
+        workdate:form.get('workdate') as string,
+        startime:form.get('startime') as string,
+        endtime: form.get('endtime') as string
+    }
+    
+    try {
+        const response = await axios.post('http://localhost:8084/api/v1/workschedule', workschedule);
+        console.log('Response:', response.data.message);
+        if(response.status === 400){
+            alert(response.data.status);
+        }
+        alert("Thêm lịch làm việc thành công");
+    } catch (error:any) {
+        if (error.response) {
+            // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
+            alert( error.response.data.message);
+        }
+        
+    }
+    
+  }
+
+  const handelAddEmployeeWorkSchedule = async (event:FormEvent)=>{
+  
+    event.preventDefault();
+    const formElement = document.getElementById('form-add-employe-work-schedule') as HTMLFormElement;
+    if (!formElement) {
+        console.error('Form element not found');
+        return;
+    }
+
+    const form = new FormData(formElement);
+    const ifemployee:IFEmployee ={
+            idemployee: form.get('manv') as string,
+            name: form.get('fullname') as string,
+            workdate:form.get('workdate') as string,
+            startime:form.get('startime') as string,
+            endtime:form.get('endtime') as string  
+    }
+
+    try {
+        const response = await axios.post('http://localhost:8084/api/v1/workschedule/workschedulemployee', ifemployee);
+        console.log('Response:', response.data.message);
+        if(response.status === 400){
+            alert(response.data.status);
+        }
+        alert("Thêm ca làm việc thành công");
+        setIsSelected(false);
+    } catch (error:any) {
+        if (error.response) {
+            // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
+            alert( error.response.data.message);
+        }
+        
+    }
+    
+    
+  }
 
     return (
         <div className={classes.article}>
@@ -87,48 +249,84 @@ const handleBack = ()=>{
                     </tr>
                 </tbody>
             </table>
+
+            <div className={classes.form_add_container}>
+                 <h2>Thêm lịch làm việc</h2> 
+             
+                <form id = 'form-add-work-date'>
+                <div className={classes.form_group}>
+                                  
+                                  <label>Ngày làm việc:</label>
+                                  <input type="date" name='workdate'  ref={dateRef} required/>
+                          </div>
+
+                          <div className={classes.form_time}>
+                              <div>
+                                  <label>Giờ bắt đầu:</label>
+                                  <input name="startime" type="time" defaultValue="08:00" readOnly/>
+                              </div>
+
+                              <div>
+                                  <label>Giờ kết thúc:</label>
+                                  <input name="endtime" type="time" defaultValue="17:00" readOnly/>
+                              </div>
+                          </div>
+
+                          <div className={classes.form_btn}>
+                              <div className={classes.btn_form_add_work_schedule}>
+                              <button type='submit' onClick={handleAddWorkScheduleDate}>Lưu</button>
+                              <button type='submit' onClick={handleCancel}>Hủy</button>
+                              </div>
+                          
+                          </div>
+                </form>
+            </div>
+
             <div id="modal-root">
             {showModal && (
                 <Modal onClose={handleCloseModal}>
                     {isSelected? (
                         <>
-                            <form className={classes.form_add_work_schedule}>
+                            <form id="form-add-employe-work-schedule" className={classes.form_add_work_schedule}>
 
                                 <div className={classes.form_group}>
                                     <label>Mã nhân viên:</label>
-                                    <select id='manv' name='manv' defaultValue='asdas' required>
-                                        <option value="">NV001</option>
-                                        <option value="">NV003</option>
-                                        <option value="">NV005</option>
+                                    <select id='manv' name='manv'  value={selectedEmployee}
+                onChange={handleSelectChange} required>
+                                            {idEmployee.map((employee) => (
+                                                <option key={employee.id} value={employee.id}>
+                                                    {employee.id}
+                                                </option>
+                                            ))}
                                     </select>
                                 </div>
 
                                 <div className={classes.form_group}>
                                     <label>Họ tên:</label>
-                                    <input type="text"/>
+                                    <input name="fullname"  type="text" value={employeeDetails ? `${employeeDetails.firstname} ${employeeDetails.lastname}` : ''} readOnly/>
                                 </div>
 
                                 <div className={classes.form_group}>
                                   
                                         <label>Ngày làm việc:</label>
-                                        <input type="date" value={selectedDate} readOnly/>
+                                        <input name="workdate" type="date" value={selectedDate} readOnly/>
                                 </div>
 
                                 <div className={classes.form_time}>
                                     <div>
                                         <label>Giờ bắt đầu:</label>
-                                        <input type="time"/>
+                                        <input name="startime" type="time" defaultValue="08:00" readOnly/>
                                     </div>
 
                                     <div>
                                         <label>Giờ kết thúc:</label>
-                                        <input type="time"/>
+                                        <input name="endtime" type="time" defaultValue="17:00" readOnly/>
                                     </div>
                                 </div>
 
                                 <div className={classes.form_group}>
                                     <div className={classes.btn_form_add_work_schedule}>
-                                    <button type='submit'>Lưu</button>
+                                    <button type='submit' onClick={handelAddEmployeeWorkSchedule}>Lưu</button>
                                     <button onClick={handleBack}>Hủy</button>
                                     </div>
                                 
@@ -150,13 +348,15 @@ const handleBack = ()=>{
                         </thead>
             
                         <tbody>
-                            <tr>
-                                <td>NV001</td>
-                                <td>Nguyễn Văn Trường</td>
-                                <td>10/07/2024</td>
-                                <td>08:00</td>
-                                <td>17:00</td>
-                                </tr>
+                        {workEmoloyee.map((item) => (
+                        <tr key={item.idemployee}>
+                            <td>{item.idemployee}</td>
+                            <td>{item.name}</td>
+                            <td>{item.workdate}</td>
+                            <td>{item.startime}</td>
+                            <td>{item.endtime}</td>
+                        </tr>
+                    ))}
                         </tbody>
 
                       </table>

@@ -1,0 +1,50 @@
+.article {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+}
+
+.article table {
+    white-space: nowrap;
+    border-collapse: collapse;
+    height: 100px;
+    text-align: center;
+    width: 100%;
+  /* Để bảng co giãn theo nội dung */
+ }
+
+
+ .article table th, 
+ .article table td {
+     border: 1px solid #000; /* Đường viền cho các ô */
+     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+     
+ }
+
+.article_option{
+    display: flex;
+    justify-content: space-between;
+}
+ 
+ .article_option select{
+    margin:10px;
+    height: 30px;
+ }
+
+ .article_option_button{
+    display: flex;
+    justify-content: center;
+ }
+
+ .article_option_button button{
+    margin: 10px;
+    height: 30px;
+ }
+
+ .btn_search{
+    height: 30px;
+ }
