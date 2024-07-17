@@ -21,7 +21,7 @@
     height: 100px;
     text-align: center;
     overflow-x: scroll;
-    
+    font-size:12px;
  /* Để bảng co giãn theo nội dung */
 }
 
@@ -31,6 +31,16 @@
     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
     
 }
+
+.article table th{
+    background-color: #95A5A6;
+  }
+
+.article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+    background-color: #eee;     }
+ 
+.article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+background-color:#fff;      }
 
 .article table .btn{
     display: flex;
@@ -42,7 +52,9 @@
     cursor: pointer;
 }
  
-
+.form_add_emp{
+    font-size: 12px;
+}
 
 
 .form_add_emp h2{
@@ -94,6 +106,10 @@
     width: 100px;
     height: 30px;
     background-color: #5F9EA0;
+}
+
+.form_update{
+    font-size:12px;
 }
 
 .form_update h2{

@@ -6,7 +6,8 @@ export default function Navbar(){
     return (
         <div className={classes.navbar}>
             <div className={classes.navbar_image}>  
-                <img src="/images/nextjs-icon-dark-background.png" alt="Example"  width="50" height= "50"/>
+                {/* <img src="/images/nextjs-icon-dark-background.png" alt="Example"  width="50" height= "50"/> */}
+                <Image src="/images/nextjs-icon-dark-background.png" alt="Example"  width="50" height= "50"/>
             </div>
         <ul>
             
