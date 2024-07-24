@@ -5,7 +5,7 @@ import AdminAccountsPage from '@/components/admin/accounts/accounts'
 export default function Account(){
     return (
         <div>
-            <Navbar/>
+            <Navbar currentPath="/admin/accounts"/>
             <div className={classes.maincontainer}>
             <Header/>
             <AdminAccountsPage/>

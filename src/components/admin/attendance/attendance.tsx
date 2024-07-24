@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react'
 import classes from './attendance.module.css'
 import axios from 'axios';
 import Modal from '@/components/modal';
+import Swal from 'sweetalert2';
 
 interface Attendance{
     idemployee:string;
@@ -243,12 +244,20 @@ export default function AdminAttendancePage(){
     
     const date = new Date();
     if(workRecord.year > date.getFullYear()){
-        alert('Vui lòng chọn năm hiện tại');
+        Swal.fire({
+            title: "Thất bại",
+            text: "Vui lòng chọn năm hiện tại",
+            icon: "error"
+          });
         return;
     }
-
-    if(workRecord.month !== date.getMonth()){
-        alert('Vui lòng chỉ chọn tháng hiện tại');
+  
+    if(workRecord.month !== (date.getMonth()+1)){
+        Swal.fire({
+            title: "Thất bại",
+            text: "Vui lòng chọn tháng hiện tại",
+            icon: "error"
+          });
         return;
     }
 
@@ -268,6 +277,11 @@ export default function AdminAttendancePage(){
     }
     }
 
+    const handleShowDetail =(reason:string | undefined)=>{
+        Swal.fire({
+            text:`${reason}`
+        })
+    }
     const buttonChangeStatus = ()=>{
         setChangeStatus(true);
     }
@@ -392,7 +406,10 @@ export default function AdminAttendancePage(){
                     <td>{e.date}</td>
                     <td>{e.checkintime}</td>
                     <td>{e.checkoutime}</td>
-                    <td>{e.explaination}</td>
+
+                    <td>
+                        <button onClick={()=> handleShowDetail(e.explaination)}>Xem chi tiết</button>   
+                    </td>
                     <td>
                         {!changeStatus?
                         (

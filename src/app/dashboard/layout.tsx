@@ -1,4 +1,5 @@
-import Dashboard from "@/components/dashboard";
+import AdminDashboard from "@/components/admin/dashboard";
+
 import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   }>) {
     return (
         <div>
-          <Dashboard/>
+          <AdminDashboard/>
           {children}
           </div>
     );

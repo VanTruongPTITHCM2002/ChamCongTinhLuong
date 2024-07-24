@@ -5,7 +5,7 @@ import AdminAttendancePage from '@/components/admin/attendance/attendance'
 export default function Account(){
     return (
         <div>
-            <Navbar/>
+            <Navbar currentPath="/admin/attendance"/>
             <div className={classes.maincontainer}>
             <Header/>
             <AdminAttendancePage/>

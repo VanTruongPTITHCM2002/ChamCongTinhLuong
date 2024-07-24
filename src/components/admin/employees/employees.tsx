@@ -4,7 +4,9 @@ import classes from './employees.module.css'
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/modal';
-
+import Swal from 'sweetalert2'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus, faPen, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface Employee {
     idemployee: string;
@@ -18,7 +20,9 @@ interface Employee {
     address: string;
     degree: number | string;
     status: number | string;
+    coefficientsalary:number;
 }
+
 export default function AdminEmployeesPage(){
     const router = useRouter();
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
@@ -36,31 +40,7 @@ export default function AdminEmployeesPage(){
 
     },[])
 
-    const degreeToString = (degree: number | string): string => {
-        switch (degree) {
-            case 1:
-                return 'Đại học';
-            case 2:
-                return 'Cao đẳng';
-            case 3:
-                return 'Thạc sĩ';
-            case 4:
-                return 'Tiến sĩ';
-            default:
-                return '';
-        }
-    };
-
-    const statusToString = (status: number | string): string => {
-        switch (status) {
-            case 1:
-                return 'Đang làm việc';
-            case 0:
-                return 'Ngưng làm việc';
-            default:
-                return '';
-        }
-    };
+    
    
     const [showModal, setShowModal] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
@@ -124,21 +104,29 @@ export default function AdminEmployeesPage(){
             email: form.get('email') as string,
             phonenumber: form.get('phonenumber') as string,
             address: form.get('address') as string,
-            degree: Number(form.get('degree')), // Parsing as number
-            status: Number(form.get('status')), // Parsing as number
+            degree: form.get('degree') as string, // Parsing as number
+            status: form.get('status') as string,
+            coefficientsalary: Number(form.get('coefficientsalary')) // Parsing as number
         };
     
         try {
             const response = await axios.post('http://localhost:8080/api/v1/employee', employee);
             console.log('Response:', response.data.message);
-            if(response.status === 400){
-                console.log(response.data.message);
+           
+                if(response.data.status === 201){
+                    Swal.fire({
+                        title: "Thành công",
+                        text: `${response.data.message}`,
+                        icon: "success"
+                      });
+                      setEmployeesData(prevEmployees => [...prevEmployees, employee]);
+                      
             }
-            alert("Thêm nhân viên thành công");
+         //   alert("Thêm nhân viên thành công");
         } catch (error) {
             console.error('Error submitting employee data:', error);
         }
-        setEmployeesData(prevEmployees => [...prevEmployees, employee]);
+       setShowModal(false);
         
     }
 
@@ -160,25 +148,35 @@ export default function AdminEmployeesPage(){
             email: form.get('email') as string,
             phonenumber: form.get('phonenumber') as string,
             address: form.get('address') as string,
-            degree: Number(form.get('degree')), // Parsing as number
-            status: Number(form.get('status')), // Parsing as number
+            degree: form.get('degree') as string, // Parsing as number
+            status: form.get('status') as string,
+            coefficientsalary: Number(form.get('coefficientsalary')) // Parsing as number
         };
         const id = employee.idemployee;
         try {
             const response = await axios.put(`http://localhost:8080/api/v1/employee/${id}`, employee);
-            console.log('Response:', response.data.message);
+            if(response.data.status === 200){
+                Swal.fire({
+                    title: "Thành công",
+                    text: `${response.data.message}`,
+                    icon: "success"
+                  });
+
+                  setEmployeesData(prevEmployees => {
+                    const updatedEmployees = prevEmployees.map(emp => {
+                        if (emp.idemployee === employee.idemployee) {
+                            return { ...emp, ...employee };
+                        }
+                        return emp;
+                    });
+                    return updatedEmployees;
+                });
+            }
+            
         } catch (error) {
             console.error('Error submitting employee data:', error);
         }
-        setEmployeesData(prevEmployees => {
-            const updatedEmployees = prevEmployees.map(emp => {
-                if (emp.idemployee === employee.idemployee) {
-                    return { ...emp, ...employee };
-                }
-                return emp;
-            });
-            return updatedEmployees;
-        });
+        
    
     setShowModal(false);
     setSelectedEmployee(null); 
@@ -211,7 +209,16 @@ export default function AdminEmployeesPage(){
       };
     return (
         <div className={classes.article}>
-               <button className={classes.btn_add_emp} onClick={handleClickAdd}>Thêm nhân viên</button>
+               <button className={classes.btn_add_emp} onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
+                width: "12px",
+                height: "12px",
+                overflow: "visible",
+                margin:"0",
+                padding:"0",
+                boxSizing: "border-box",
+                overflowClipMargin: "initial",
+                verticalAlign: "initial"
+            }} />Thêm nhân viên</button>
         <table>
             <thead>
                 <tr>
@@ -226,6 +233,7 @@ export default function AdminEmployeesPage(){
                 <th>Email</th>
                 <th>Bằng cấp</th>
                 <th>Trạng thái</th>
+                <th>Hệ số lương</th>
                 <th>Hành động</th>
                 </tr>
             </thead>
@@ -242,12 +250,13 @@ export default function AdminEmployeesPage(){
                             <td>{employee.phonenumber}</td>
                             <td>{employee.cmnd}</td>
                             <td>{employee.email}</td>
-                            <td>{degreeToString(employee.degree)}</td>
-                            <td>{statusToString(employee.status)}</td>
+                            <td>{employee.degree}</td>
+                            <td>{employee.status}</td>
+                            <td>{employee.coefficientsalary}</td>
                             
                             <td>
                                 <div className={classes.btn}>
-                                    <button className={classes.btn_update} onClick={() => handleUpdateClick(employee)}>Cập nhật</button>
+                                    <button className={classes.btn_update} onClick={() => handleUpdateClick(employee)}><FontAwesomeIcon icon={faPen}/></button>
                                     {/* <a onClick={() => handleDeleteEmployee(employee.idemployee)}>Xóa</a> */}
                                 </div>
                             </td>
@@ -304,17 +313,27 @@ export default function AdminEmployeesPage(){
                                 <div className={classes.form_group}>
                                     <label htmlFor="degree">Bằng Cấp:</label>
                                     <select id="degree" name="degree" required defaultValue={selectedEmployee.degree}>
-                                        <option value="1">Đại học</option>
-                                        <option value="2">Cao đẳng</option>
-                                        <option value="3">Thạc sĩ</option>
-                                        <option value="4">Tiến sĩ</option>
+                                        <option value="Đại học">Đại học</option>
+                                        <option value="Cao đẳng">Cao đẳng</option>
+                                        <option value="Thạc sĩ">Thạc sĩ</option>
+                                        <option value="Tiễn sĩ">Tiến sĩ</option>
                                     </select>
                                 </div>
                                 <div className={classes.form_group}>
                                     <label htmlFor="status">Trạng Thái:</label>
                                     <select id="status" name="status" required defaultValue={selectedEmployee.status}>
-                                        <option value="1">Đang làm việc</option>
-                                        <option value="0">Ngưng hoạt động</option>
+                                        <option value="Đang hoạt động">Đang hoạt động</option>
+                                        <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+                                    </select>
+                                </div>
+                                <div className={classes.form_group}>
+                                    <label htmlFor="coefficientsalary">Hệ số lương:</label>
+                                    <select id="coefficientsalary" name="coefficientsalary" required defaultValue={selectedEmployee.coefficientsalary}>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
                                     </select>
                                 </div>
                         {/* Thêm các trường thông tin khác */}
@@ -368,17 +387,27 @@ export default function AdminEmployeesPage(){
                                 <div className={classes.form_group}>
                                     <label htmlFor="degree">Bằng Cấp:</label>
                                     <select id="degree" name="degree" required>
-                                        <option value="1">Đại học</option>
-                                        <option value="2">Cao đẳng</option>
-                                        <option value="3">Thạc sĩ</option>
-                                        <option value="4">Tiến sĩ</option>
+                                    <option value="Đại học">Đại học</option>
+                                        <option value="Cao đẳng">Cao đẳng</option>
+                                        <option value="Thạc sĩ">Thạc sĩ</option>
+                                        <option value="Tiễn sĩ">Tiến sĩ</option>
                                     </select>
                                 </div>
                                 <div className={classes.form_group}>
                                     <label htmlFor="status">Trạng Thái:</label>
                                     <select id="status" name="status" required>
-                                        <option value="1">Đang làm việc</option>
-                                        <option value="0">Ngưng hoạt động</option>
+                                    <option value="Đang hoạt động">Đang hoạt động</option>
+                                    <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+                                    </select>
+                                </div>
+                                <div className={classes.form_group}>
+                                    <label htmlFor="coefficientsalary">Hệ số lương:</label>
+                                    <select id="coefficientsalary" name="coefficientsalary" required>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
                                     </select>
                                 </div>
 

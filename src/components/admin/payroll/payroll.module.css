@@ -1,0 +1,129 @@
+.article {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+}
+
+.article table {
+    white-space: nowrap;
+    border-collapse: collapse;
+    height: 100px;
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+  /* Để bảng co giãn theo nội dung */
+ }
+
+ .article table th, 
+ .article table td {
+     border: 1px solid #000; /* Đường viền cho các ô */
+     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+     
+ }
+
+ 
+.article table th{
+    background-color: #95A5A6;
+  }
+
+.article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+    background-color: #eee;     }
+ 
+.article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+background-color:#fff;      }
+
+.article_option{
+    display: flex;
+   align-items: center;
+   justify-content: space-between;
+   margin-bottom: 10px;
+}
+
+.article_option_search input{
+    margin-right: 10px;
+    background-color: #fff;
+    color: #000;
+    width: 200px;
+    height: 25px;
+    border-radius: 4px;
+}
+
+.article_option_search_button{
+    margin-top:10px;
+    width: 35px;
+    height: 30px;
+}
+
+.article_option_button_calsalary{
+    width: 100px;
+    height: 30px;
+    
+}
+
+.article_button_detail{
+    width: 50px;
+    height: 30px;
+    background-color: #FFC107;
+}
+
+.form_add_salary{
+    display: grid;
+    gap: 20px;
+  }
+
+.form_title{
+    text-align: center;
+}
+ 
+ .form_add_salary input{
+     background-color: #f1f1f1;  
+     color: #000;
+     width: 100%;  
+     height: 10px;
+     padding: 16px 16px;  
+     border: none;  
+     border-radius: 4px; 
+ }
+ 
+ .form_add_salary select { 
+     width: 100%;  
+     padding: 16px 16px;  
+     border: none;  
+     border-radius: 4px; 
+      background-color: #f1f1f1;
+      color:#000;
+    }
+ 
+  .form_add_salary_button{
+    display: flex;
+    justify-content: center;
+  }
+ 
+  .form_add_salary_button button{
+    margin:10px;
+    height: 30px;
+    width: 50px;
+  }
+ 
+  .article_option_button_updatesalary{
+    width: 50px;
+    height: 30px;
+    background-color:  #007BFF;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 15px;
+    cursor: pointer;
+  }
+
+  .article_option_button_back{
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 15px;
+    cursor: pointer;
+  }

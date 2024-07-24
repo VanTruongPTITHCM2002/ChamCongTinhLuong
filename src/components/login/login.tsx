@@ -5,6 +5,21 @@ import { useRouter } from "next/navigation"
 import jwt from 'jsonwebtoken'
 import classes from './login.module.css'
 import axios from "axios"
+import Swal from "sweetalert2"
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
+
+
+
 export default function LoginPage(){
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -39,10 +54,60 @@ export default function LoginPage(){
                   };
                    const token = jwt.sign(payload, "asdadsadasdasdasddas")
                 localStorage.setItem('token', token);
-                router.push('/admin/dashboard');
+                localStorage.setItem('username',email);
+                Swal.fire({
+                  title: "Loading.....",
+                  html: "Chương trình đang tải",
+                  timer: 1000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  
+                  },
+                  willClose: () => {
+                    router.push('/admin/dashboard');
+                  }
+                }).then((result) => {
+                  /* Read more about handling dismissals below */
+                  if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log("I was closed by the timer");
+                  }
+                });
+                
+                
                 }
                   else{
-                    alert('Bạn không có quyền đăng nhập');
+                    // Swal.fire({
+                    //   title: "Thất bại",
+                    //   text: "Bạn không có quyền truy cập",
+                    //   icon: "error"
+                    // });
+                    const payload = {
+                      email: email,
+                      role: response.data.data.role
+                    };
+                     const token = jwt.sign(payload, `${process.env.SECRET_KEY}`)
+                  localStorage.setItem('token', token);
+                  localStorage.setItem('username',email);
+                  Swal.fire({
+                    title: "Loading.....",
+                    html: "Chương trình đang tải",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                      Swal.showLoading();
+                    
+                    },
+                    willClose: () => {
+                      router.push(`/${email}/dashboard`);
+                    }
+                  }).then((result) => {
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                      console.log("I was closed by the timer");
+                    }
+                  });
+                  
                   }
                }
                
@@ -54,9 +119,17 @@ export default function LoginPage(){
             .catch(error => {
               
                 if (error.response.status === 404) {
-                  alert('Không tìm thấy tài khoản');
+                  Swal.fire({
+                    title: "Thất bại",
+                    text: `${error.response.data.message}`,
+                    icon: "error"
+                  });
                 } else if (error.response.status === 400) {
-                  alert('Tài khoản hoặc mật khẩu không đúng');
+                  Swal.fire({
+                    title: "Thất bại",
+                    text: `${error.response.data.message}`,
+                    icon: "error"
+                  });
                 }
                 
             });
@@ -77,6 +150,7 @@ export default function LoginPage(){
               value={email}
               placeholder="Nhập tài khoản"
               onChange={(e) => setEmail(e.target.value)}
+              defaultValue={''}
               required
             />
          
@@ -88,6 +162,7 @@ export default function LoginPage(){
               value={password}
               placeholder="Nhập mật khẩu"
               onChange={(e) => setPassword(e.target.value)}
+              defaultValue={''}
               required
             />
           

@@ -6,7 +6,7 @@ export default function Page(){
     
     return(
         <div>
-            <Navbar/>
+            <Navbar currentPath="/admin/workschedule"/>
             <div className={classes.maincontainer}>
             <Header/>
             <WorkSchedule/>

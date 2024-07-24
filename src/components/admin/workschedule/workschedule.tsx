@@ -6,7 +6,7 @@ import { vi } from 'date-fns/locale';
 import Modal from '@/components/modal';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-
+import Swal from 'sweetalert2';
 interface IFEmployee{
     id?:string;
     idemployee?:string,
@@ -164,11 +164,21 @@ const fetchEmployeeDetails = async (id: string) => {
         if(response.status === 400){
             alert(response.data.status);
         }
-        alert("Thêm lịch làm việc thành công");
+      //  alert("Thêm lịch làm việc thành công");
+      Swal.fire({
+        title: "Thành công",
+        text: `${response.data.message}`,
+        icon: "success"
+      });
     } catch (error:any) {
         if (error.response) {
             // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
-            alert( error.response.data.message);
+           // alert( error.response.data.message);
+            Swal.fire({
+                title: "Thất bại",
+                text: `${error.response.data.message}`,
+                icon: "error"
+              });
         }
         
     }

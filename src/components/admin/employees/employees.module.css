@@ -9,8 +9,9 @@
 }
 .btn_add_emp{
     height: 30px;
+    width: 120px;
     margin: 10px 0px 20px 10px;
-    background:linear-gradient(-45deg,blue,red);
+    background:#28a745;
 }
 
 
@@ -99,13 +100,17 @@ background-color:#fff;      }
 }
 
 .btn_cancel{
-    background-color: greenyellow;
+    background-color: #FF4C4C;
 }
 
 .btn_update{
-    width: 100px;
+    width: 50px;
     height: 30px;
-    background-color: #5F9EA0;
+    background-color:  #007BFF;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 15px;
+    cursor: pointer;
 }
 
 .form_update{

@@ -2,7 +2,7 @@
     color: #000;
     background-color: #fff;
     padding: 10px;
-   height: 80vh;
+   height: 85vh;
    margin:10px 10px 0 10px;
     overflow-x: auto; 
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
@@ -32,12 +32,22 @@
     
 }
 
+.article table th{
+    background-color: #95A5A6;
+  }
+ 
+ .article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+     background-color: #eee;     }
+  
+ .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+ background-color:#fff;      }
+
 .article table td:nth-child(4){
     width: 300px;
 }
 
 .article table .btn{
-    margin:10px;
+    margin:0 10px 0 0;
 }
 
 .article table a{
@@ -93,9 +103,46 @@
 }
 
 .btn_update{
-    width: 100px;
+    width: 50px;
     height: 30px;
-    background-color: #5F9EA0;
+    background-color:  #007BFF;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 15px;
+    cursor: pointer;
+}
+
+.btn_reset{
+    width: 50px;
+    height: 30px;
+    background-color: #FF4C4C;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 15px;
+    cursor: pointer;
+}
+
+
+.btn_check{
+    width: 50px;
+    height: 30px;
+    background-color:  #F5F5F5;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 15px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px #888888;
+}
+
+.btn_time{
+    width: 50px;
+    height: 30px;
+    background-color:#F5F5F5;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 15px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px #888888;
 }
 
 .form_update h2{
