@@ -7,20 +7,19 @@ export default function UserNavbar({ currentPath } : any){
     return (
         <div className={classes.navbar}>
             <div className={classes.navbar_image}>  
-                {/* <img src="/images/nextjs-icon-dark-background.png" alt="Example"  width="50" height= "50"/> */}
                 <Image src="/images/nextjs-icon-dark-background.png" alt="Example"  width="50" height= "50"/>
             </div>
             <ul>
-                <li className={currentPath === `/${username}/dashboard` ? classes.active : ""}>
+                <li className={currentPath === `dashboard` ? classes.active : ""}>
                 <Link href={`/${username}/dashboard`}>Trang chủ</Link>
                 </li>
-                <li className={currentPath === `/${username}/employees` ? classes.active : ""}>
-                    <Link href={`/${username}/employees`}>Thông tin cá nhân</Link>
+                <li className={currentPath === `profile` ? classes.active : ""}>
+                    <Link href={`/${username}/profile`}>Thông tin cá nhân</Link>
                 </li>
-                <li className={currentPath === `/${username}/workschedule` ? classes.active : ""}>
-                    <Link href={`/${username}/workschedule`}>Lịch làm việc</Link>
+                <li className={currentPath === `timesheet` ? classes.active : ""}>
+                    <Link href={`/${username}/timesheet`}>Lịch làm việc</Link>
                 </li>
-                <li className={currentPath === `/${username}/attendance` ? classes.active : ""}>
+                <li className={currentPath === `attendance` ? classes.active : ""}>
                     <Link href={`/${username}/attendance`}>Chấm công</Link>
                 </li>
                 <li className={currentPath === `/${username}/payroll` ? classes.active : ""}>

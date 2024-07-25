@@ -1,0 +1,135 @@
+.main_container {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+   
+}
+.main_container_add_attendance{
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+.check_in_button {
+    background-color: #007BFF; /* Blue */
+    color: white;
+    border: none;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.check_out_button {
+    background-color: #FF9800; /* Orange */
+    color: white;
+    border: none;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.check_in_button:hover {
+    background-color: #0056b3; /* Darker Blue */
+}
+
+.check_out_button:hover {
+    background-color: #e67e22; /* Darker Orange */
+}
+
+.add_reason button{
+    background-color: #9C27B0; /* Light Blue */
+    color: white;
+    border: none;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+ 
+.add_reason button:hover{
+    background-color: #7B1FA2; /* Darker Purple */
+}
+
+.main_container_table h2{
+    text-align: center;
+}
+
+.attendance_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    height: 10%;
+    text-align: center;
+    font-size:12px;
+}
+
+.attendance_table th, .attendance_table td {
+    border: 1px solid #ccc; /* Thay đổi màu viền */
+    padding: 5px; /* Tăng padding cho khoảng cách đẹp hơn */
+}
+
+.attendance_table th {
+    background-color: #00796b; /* Màu nền cho header */
+    color: white; /* Màu chữ cho header */
+    font-weight: bold;
+}
+
+.attendance_table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Màu nền cho hàng chẵn */
+}
+
+
+.attendance_table td {
+
+    color: #333;
+}
+
+.attendance_table td.selected {
+    background-color: #0056b3; /* Màu nền khi chọn */
+    color: white; /* Màu chữ khi chọn */
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: #f1f1f1;
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pagination button:hover {
+    background-color: #ddd;
+}
+
+.pagination button.active {
+    background-color: #007BFF;
+    color: white;
+}

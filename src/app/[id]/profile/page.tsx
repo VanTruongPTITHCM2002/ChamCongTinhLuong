@@ -1,15 +1,18 @@
+
 import UserContainer from "@/components/user/container/container";
-import UserDashboard from "@/components/user/dashboard/dashboard";
-import UserHeader from "@/components/user/header/header";
+
 import UserNavbar from "@/components/user/navbar/navbar";
+import UserProfile from "@/components/user/profile/profile";
+import { useRouter } from "next/navigation";
+
 
 export default function Page(){
-    
+
     return(
         <div>
-         <UserNavbar currentPath = "dashboard"/>
+         <UserNavbar currentPath = "profile"/>
          <UserContainer>
-            <UserDashboard/>
+            <UserProfile/>
           </UserContainer>
          
         </div>

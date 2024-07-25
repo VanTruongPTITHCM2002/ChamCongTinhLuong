@@ -4,7 +4,7 @@
     left: 0; /* Đặt navbar từ bên trái */
     width: 200px;
     height: 100vh;
-    background-color:#003d7a;
+    background-color:#00a18b;
     display: flex;
     flex-direction: column;
     z-index:2;
@@ -37,7 +37,7 @@
 }
 
 .navbar li:hover{
-    background-color: gray;
+    background-color: purple;
     border-radius: 5px;
     margin: 0 5px;
 }

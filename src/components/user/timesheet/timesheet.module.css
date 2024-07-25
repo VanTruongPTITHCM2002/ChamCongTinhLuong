@@ -1,0 +1,54 @@
+.main_container {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+   
+}
+
+.timeSheetTitle{
+    text-align: center;
+}
+
+
+
+.work_schedule {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    height: 10%;
+    text-align: center;
+    font-size:12px;
+}
+
+.work_schedule th, .work_schedule td {
+    border: 1px solid #ccc; /* Thay đổi màu viền */
+    padding: 10px; /* Tăng padding cho khoảng cách đẹp hơn */
+}
+
+.work_schedule th {
+    background-color: #00796b; /* Màu nền cho header */
+    color: white; /* Màu chữ cho header */
+    font-weight: bold;
+}
+
+.work_schedule tr:nth-child(even) {
+    background-color: #f2f2f2; /* Màu nền cho hàng chẵn */
+}
+
+
+.work_schedule td {
+
+    color: #333;
+}
+
+.work_schedule td.selected {
+    background-color: #0056b3; /* Màu nền khi chọn */
+    color: white; /* Màu chữ khi chọn */
+}
+
+
+
