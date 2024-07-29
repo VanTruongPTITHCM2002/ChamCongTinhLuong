@@ -5,15 +5,15 @@ import jwt from 'jsonwebtoken'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-export default function AdminChangePassword(){
-    const decoded:any = jwt.verify(String(localStorage.getItem('token')), String(process.env.NEXT_PUBLIC_SECRET_KEY));
+export default function UserChangePassword(){
+    const username = localStorage.getItem('username');
     const router = useRouter();
    
     const [password,setPassword]= useState('');
     const [newpassword,setNewPassoword] = useState('');
     const [renewpassword,setReNewPassword] = useState('');
-    // Lấy email từ payload
-    const username = decoded.email;
+
+
  
 
     const handleChangePassword = async()=>{

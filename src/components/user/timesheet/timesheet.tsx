@@ -23,6 +23,7 @@ export default function UserTimeSheet(){
             } 
         }catch(error:any){
             errorSwal('Thất bại',"Có lỗi xảy ra");
+            console.log(1);
         }
    }
 

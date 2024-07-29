@@ -22,13 +22,13 @@ export default function UserNavbar({ currentPath } : any){
                 <li className={currentPath === `attendance` ? classes.active : ""}>
                     <Link href={`/${username}/attendance`}>Chấm công</Link>
                 </li>
-                <li className={currentPath === `/${username}/payroll` ? classes.active : ""}>
-                    <Link href={`/${username}/payroll`}>Bảng lương</Link>
+                <li className={currentPath === `listsalary` ? classes.active : ""}>
+                    <Link href={`/${username}/listsalary`}>Bảng lương</Link>
                 </li>
-                <li className={currentPath === `/${username}/rewardpunish` ? classes.active : ""}>
-                    <Link href={`/${username}/rewardpunish`}>Bảng thưởng phạt</Link>
+                <li className={currentPath === `recordrewardpenalty` ? classes.active : ""}>
+                    <Link href={`/${username}/recordrewardpenalty`}>Bảng thưởng phạt</Link>
                 </li>
-                <li className={currentPath === `/${username}/contract` ? classes.active : ""}>
+                <li className={currentPath === `contract` ? classes.active : ""}>
                     <Link href={`/${username}/contract`}>Hợp đồng lao động</Link>
                 </li>
             </ul>

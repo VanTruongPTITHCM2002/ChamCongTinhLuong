@@ -12,7 +12,15 @@
     width: 120px;
     margin: 10px 0px 20px 10px;
     background:#28a745;
+    border: none;
+    border-radius: 4px;
 }
+
+.article h2{
+    text-align: center;
+}
+
+
 
 
 
@@ -23,6 +31,7 @@
     text-align: center;
     overflow-x: scroll;
     font-size:12px;
+    width: 100%;
  /* Để bảng co giãn theo nội dung */
 }
 
@@ -45,8 +54,7 @@ background-color:#fff;      }
 
 .article table .btn{
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    justify-content: center;
 }
 
 .article table a{
@@ -87,6 +95,7 @@ background-color:#fff;      }
 .form_group_button{
     display: flex;
     justify-content: center;
+   
 }
 
 .form_group_button button{
@@ -97,22 +106,43 @@ background-color:#fff;      }
 
 .btn_submit{
     background-color: blue;
+    border: none;
+    border-radius: 2px;
+    width: 50px;
+    height: 30px;
+    margin-right: 10px;
+    cursor: pointer;
 }
-
+.btn_submit:hover{
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
 .btn_cancel{
     background-color: #FF4C4C;
+    border: none;
+    border-radius: 2px;
+    width: 50px;
+    height: 30px;
+   cursor: pointer;
+}
+
+.btn_cancel:hover{
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
 }
 
 .btn_update{
-    width: 50px;
-    height: 30px;
-    background-color:  #007BFF;
-    border-radius: 5px;
-    text-align: center;
-    line-height: 15px;
+    background-color: #007bff; /* Màu xanh lam cho nút chi tiết */
+    color: white;
+    border: none;
+    padding: 5px 10px;
     cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
 }
 
+.btn_update:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
 .form_update{
     font-size:12px;
 }
@@ -128,3 +158,104 @@ background-color:#fff;      }
     padding:10px;
     border:1px solid #000;
 }
+
+.pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pagination .active {
+    background-color: #0056b3;
+    font-weight: bold;
+  }
+
+  .employeeDetails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.formGroup, .formGroupPair {
+    flex: 1 1 calc(50% - 20px); /* Đặt hai thẻ div trên một hàng, trừ đi khoảng cách giữa chúng */
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.formGroup label, .formGroupPair label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.formGroup input, .formGroup select{
+    background-color: #fff;
+    color: #000;
+    padding: 5px;
+}
+
+.formGroup h2{
+    text-align: center;
+}
+
+.input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff; /* White background for input fields */
+    color: #000; /* Ensure text is readable on white background */
+}
+
+.btn_detail {
+    background-color: #FFC107;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.btn_detail:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
+
+
+.formGroupButton {
+    display: flex;
+    justify-content: center; /* Căn giữa các nút */
+    width: 100%;
+    margin-top: 20px;
+}
+
+.centeredHeading {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333; /* Màu chữ */
+}
+
+.statusActive {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .statusInactive {
+    color: red;
+    font-weight: bold;
+  }

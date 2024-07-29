@@ -1,16 +1,17 @@
 import UserContainer from "@/components/user/container/container";
 
 import UserHeader from "@/components/user/header/header";
-import UserSalary from "@/components/user/listsalary/listsalary";
+
 import UserNavbar from "@/components/user/navbar/navbar";
+import UserRewardPenalty from "@/components/user/rewardpenalty/rewardpenalty";
 
 export default function Page(){
     
     return(
         <div>
-         <UserNavbar currentPath = "listsalary"/>
+         <UserNavbar currentPath = "recordrewardpenalty"/>
          <UserContainer>
-            <UserSalary/>
+        <UserRewardPenalty/>
           </UserContainer>
          
         </div>

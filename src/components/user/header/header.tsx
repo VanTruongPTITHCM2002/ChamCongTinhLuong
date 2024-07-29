@@ -31,7 +31,7 @@ export default function UserHeader(){
     }
 
     const handleChangePassword = ()=>{
-      //router.push('/admin/changepassword');
+      router.push(`/${email}/changepassword`);
     }
     return (
         <div className={classes.header}>

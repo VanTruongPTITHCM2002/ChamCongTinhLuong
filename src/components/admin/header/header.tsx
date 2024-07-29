@@ -17,15 +17,16 @@ export default function Header(){
       }
       setIsMenuVisible(!isMenuVisible);
     };
-    const decoded:any = jwt.verify(String(localStorage.getItem('token')), String(process.env.NEXT_PUBLIC_SECRET_KEY));
+    
 
   
     // Lấy email từ payload
-    const email = decoded.email;
+    const email = localStorage.getItem('username');
     console.log(email);
     const router = useRouter();
     const handleLogout = ()=>{
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
         router.push('/login');
     }
 

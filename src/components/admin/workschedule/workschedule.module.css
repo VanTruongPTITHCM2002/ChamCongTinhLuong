@@ -15,20 +15,47 @@
 .article table {
     white-space: nowrap;
     border-collapse: collapse;
-    height: 100px;
     text-align: center;
     width: 100%;
     font-size: 12px;
   /* Để bảng co giãn theo nội dung */
  }
 
- .btn_prev, .btn_next{
-    height: 30px;
-    margin: 10px 0px 20px 10px;
-    width: 50px;
-    background:linear-gradient(-45deg,blue,red);
- }
+ .btn_prev {
+   background-color: #f39c12; /* Màu cam sáng */
+   color: #fff; /* Trắng */
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+   border-radius: 5px;
+
+}
+
+.btn_next {
+   background-color: #3498db; /* Màu xanh dương sáng */
+   color: #fff; /* Trắng */
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+   border-radius: 5px;
+}
+
+.article_button{
+   margin-bottom: 10px;
+}
+
+.btnAddWorkSchedule{
+   background-color: green;
+   border: none;
+   border-radius: 2px;
+   height: 30px;
+   padding: 2px;
+}
  
+.btnAddWorkSchedule:hover{
+   background-color: #3498;
+}
+
  .article table th, 
  .article table td {
      border: 1px solid #000; /* Đường viền cho các ô */
@@ -36,6 +63,18 @@
      
  }
 
+ 
+ .article table th{
+     background-color: #95A5A6;
+   }
+
+
+ 
+ .article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+     background-color: #eee;     }
+  
+ .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+ background-color:#fff;      }
  .article .table_show_emp{
     margin-top: 50px;
  }
@@ -55,7 +94,11 @@
 
  .form_show{
   margin-top:10px;
+
  }
+
+
+
 
  .form_add_work_schedule{
    width: 100%;

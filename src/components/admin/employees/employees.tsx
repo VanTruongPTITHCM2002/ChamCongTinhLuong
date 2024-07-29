@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Modal from '@/components/modal';
 import Swal from 'sweetalert2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faPen, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faInfoCircle, faPen, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface Employee {
     idemployee: string;
@@ -20,12 +20,13 @@ interface Employee {
     address: string;
     degree: number | string;
     status: number | string;
-    coefficientsalary:number;
 }
 
 export default function AdminEmployeesPage(){
     const router = useRouter();
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
     useEffect(()=>{
          
         axios.get('http://localhost:8080/api/v1/employee')
@@ -39,7 +40,11 @@ export default function AdminEmployeesPage(){
  
 
     },[])
-
+    const totalPages = Math.ceil(employeesData.length / itemsPerPage);
+    
+    const handlePageChange = (pageNumber:number) => {
+      setCurrentPage(pageNumber);
+    };
     
    
     const [showModal, setShowModal] = useState(false);
@@ -106,7 +111,6 @@ export default function AdminEmployeesPage(){
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
-            coefficientsalary: Number(form.get('coefficientsalary')) // Parsing as number
         };
     
         try {
@@ -150,7 +154,6 @@ export default function AdminEmployeesPage(){
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
-            coefficientsalary: Number(form.get('coefficientsalary')) // Parsing as number
         };
         const id = employee.idemployee;
         try {
@@ -207,8 +210,81 @@ export default function AdminEmployeesPage(){
         setSelectedEmployee(null); // Reset lại trạng thái sau khi cập nhật
         setShowModal(false);
       };
+
+
+    const handleDetailClick = (employee:Employee) => {
+        Swal.fire({
+            title: `<strong>Chi tiết nhân viên</strong>`,
+            html: `
+                <div class="${classes.employeeDetails}">
+                    <div class="${classes.formGroup}">
+                        <label><strong>Mã nhân viên:</strong></label>
+                        <input type="text" value="${employee.idemployee}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>Họ:</strong></label>
+                        <input type="text" value="${employee.firstname}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>Tên:</strong></label>
+                        <input type="text" value="${employee.lastname}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>Giới tính:</strong></label>
+                        <input type="text" value="${employee.gender}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>Ngày sinh:</strong></label>
+                        <input type="text" value="${employee.birthdate}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>Địa chỉ:</strong></label>
+                        <input type="text" value="${employee.address}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>Số điện thoại:</strong></label>
+                        <input type="text" value="${employee.phonenumber}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>CMND:</strong></label>
+                        <input type="text" value="${employee.cmnd}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroup}">
+                        <label><strong>Email:</strong></label>
+                        <input type="text" value="${employee.email}" readonly class="${classes.input}"/>
+                    </div>
+                    <div class="${classes.formGroupPair}">
+                        <div class="${classes.formGroup}">
+                            <label><strong>Bằng cấp:</strong></label>
+                            <input type="text" value="${employee.degree}" readonly class="${classes.input}"/>
+                        </div>
+                        <div class="${classes.formGroup}">
+                            <label><strong>Trạng thái:</strong></label>
+                            <input type="text" value="${employee.status}" readonly class="${classes.input}"/>
+                        </div>
+                    </div>
+                </div>
+            `,
+            width: 600,
+            padding: '1em',
+            background: '#f9f9f9',
+            confirmButtonColor: '#007bff',
+            customClass: {
+                popup: classes.customSwalPopup,
+                title: classes.customSwalTitle,
+                htmlContainer: classes.customSwalHtml
+            }
+        });
+        
+        
+    };
+    const currentData = employeesData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
     return (
         <div className={classes.article}>
+            <h2>Bảng danh sách nhân viên</h2>
                <button className={classes.btn_add_emp} onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
                 width: "12px",
                 height: "12px",
@@ -227,37 +303,42 @@ export default function AdminEmployeesPage(){
                 <th>Tên nhân viên</th>
                 <th>Giới tính</th>
                 <th>Ngày sinh</th>
-                <th>Địa chỉ</th>
-                <th>Số điện thoại</th>
+                <th>Trạng thái</th>
+                {/* <th>Số điện thoại</th>
                 <th>CMND</th>
                 <th>Email</th>
                 <th>Bằng cấp</th>
-                <th>Trạng thái</th>
-                <th>Hệ số lương</th>
+                <th>Trạng thái</th> */}
                 <th>Hành động</th>
                 </tr>
             </thead>
 
             <tbody>
-                    {employeesData.map((employee, index) => (
+                    {currentData.map((employee, index) => (
                         <tr key={index}>
                             <td>{employee.idemployee}</td>
                             <td>{employee.firstname}</td>
                             <td>{employee.lastname}</td>
                             <td>{employee.gender}</td> 
                             <td>{employee.birthdate}</td>
-                            <td>{employee.address}</td>
-                            <td>{employee.phonenumber}</td>
+                            <td className={employee.status === 'Đang hoạt động' ? classes.statusActive : classes.statusInactive}>
+        {employee.status === 'Đang hoạt động' ? 'Đang hoạt động' : 'Ngưng hoạt động'}
+      </td>
+                            {/* <td>{employee.address}</td> */}
+                            {/* <td>{employee.phonenumber}</td>
                             <td>{employee.cmnd}</td>
                             <td>{employee.email}</td>
                             <td>{employee.degree}</td>
-                            <td>{employee.status}</td>
-                            <td>{employee.coefficientsalary}</td>
+                            <td>{employee.status}</td> */}
                             
                             <td>
                                 <div className={classes.btn}>
                                     <button className={classes.btn_update} onClick={() => handleUpdateClick(employee)}><FontAwesomeIcon icon={faPen}/></button>
-                                    {/* <a onClick={() => handleDeleteEmployee(employee.idemployee)}>Xóa</a> */}
+                                   
+                                   
+                                    <button className={classes.btn_detail} onClick={() => handleDetailClick(employee)}>
+                                    <FontAwesomeIcon icon={faInfoCircle} />
+                                </button> {/* <a onClick={() => handleDeleteEmployee(employee.idemployee)}>Xóa</a> */}
                                 </div>
                             </td>
                         </tr>
@@ -268,49 +349,50 @@ export default function AdminEmployeesPage(){
                 <Modal onClose={handleCloseModal}>
                     {/* Nội dung modal */}
                     {selectedEmployee ? (
-                        <form id='employeeFormUpdate' className={classes.form_update} onSubmit={handleFormSubmit}>
-                        <h2>Chỉnh sửa thông tin nhân viên</h2>
-                        <div  className={classes.form_group}>
+                        <form id='employeeFormUpdate' className={classes.employeeDetails} onSubmit={handleFormSubmit}>
+                        
+                            <h2 className={classes.centeredHeading}>Chỉnh sửa thông tin nhân viên</h2>
+                        <div  className={classes.formGroup}>
                                 <label>Mã nhân viên:</label>
                                 <input name="idemployee" type="text" defaultValue={selectedEmployee.idemployee} readOnly/>
                             </div>
-                            <div  className={classes.form_group}>
+                            <div  className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
                                 <input name="firstname" type="text" required defaultValue={selectedEmployee.firstname}/>
                             </div>
-                            <div  className={classes.form_group}>
+                            <div  className={classes.formGroup}>
                                 <label>Tên nhân viên:</label>
                                 <input name="lastname" type="text" required defaultValue={selectedEmployee.lastname}/>
                             </div>
                             
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="gender">Giới Tính:</label>
                                     <select id="gender" name="gender" required defaultValue={selectedEmployee.gender}>
                                         <option value="Nam">Nam</option>
                                         <option value="Nữ">Nữ</option>
                                     </select>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="address">Địa Chỉ:</label>
                                     <input type="text" id="address" name="address" required defaultValue={selectedEmployee.address}/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="phonenumber">Số Điện Thoại:</label>
                                     <input type="text" id="phonenumber" name="phonenumber" required defaultValue={selectedEmployee.phonenumber}/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="cmnd">CMND:</label>
                                     <input type="text" id="cmnd" name="cmnd" required defaultValue={selectedEmployee.cmnd}/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="email">Email:</label>
                                     <input type="email" id="email" name="email" required defaultValue={selectedEmployee.email}/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="birthdate">Ngày sinh:</label>
                                     <input type="date" id="birthdate" name="birthdate" required defaultValue={selectedEmployee.birthdate}/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="degree">Bằng Cấp:</label>
                                     <select id="degree" name="degree" required defaultValue={selectedEmployee.degree}>
                                         <option value="Đại học">Đại học</option>
@@ -319,72 +401,65 @@ export default function AdminEmployeesPage(){
                                         <option value="Tiễn sĩ">Tiến sĩ</option>
                                     </select>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="status">Trạng Thái:</label>
                                     <select id="status" name="status" required defaultValue={selectedEmployee.status}>
                                         <option value="Đang hoạt động">Đang hoạt động</option>
                                         <option value="Ngưng hoạt động">Ngưng hoạt động</option>
                                     </select>
                                 </div>
-                                <div className={classes.form_group}>
-                                    <label htmlFor="coefficientsalary">Hệ số lương:</label>
-                                    <select id="coefficientsalary" name="coefficientsalary" required defaultValue={selectedEmployee.coefficientsalary}>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
+                                <div className={classes.formGroup}>
+
                                 </div>
                         {/* Thêm các trường thông tin khác */}
-                        <div className={classes.form_group_button}>
+                        <div className={classes.formGroupButton}>
                           <button type="submit" className={classes.btn_submit} onClick={handleUpdateEmployee}>Lưu</button>
                           <button type="button"  className={classes.btn_cancel} onClick={handleCancelEdit}>Hủy</button>
                         </div>
                       </form>
-                    ):  <form  id='employeeForm' className={classes.form_add_emp} onSubmit={handleFormSubmit}>
-                    <h2>Thêm mới nhân viên</h2>
-                            <div  className={classes.form_group}>
+                    ):  <form  id='employeeForm' className={classes.employeeDetails} onSubmit={handleFormSubmit}>
+                    <h2 className={classes.centeredHeading}>Thêm mới nhân viên</h2>
+                            <div  className={classes.formGroup}>
                                 <label>Mã nhân viên:</label>
                                 <input name="idemployee" type="text" defaultValue={employeeId} readOnly/>
                             </div>
-                            <div  className={classes.form_group}>
+                            <div className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
                                 <input name="firstname" type="text" required/>
                             </div>
-                            <div  className={classes.form_group}>
+                            <div  className={classes.formGroup}>
                                 <label>Tên nhân viên:</label>
                                 <input name="lastname" type="text" required/>
                             </div>
-                            <div>
-                                <div className={classes.form_group}>
+                            
+                                <div className={classes.formGroup}>
                                     <label htmlFor="gender">Giới Tính:</label>
                                     <select id="gender" name="gender" required>
                                         <option value="Nam">Nam</option>
                                         <option value="Nữ">Nữ</option>
                                     </select>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="address">Địa Chỉ:</label>
                                     <input type="text" id="address" name="address" required/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="phonenumber">Số Điện Thoại:</label>
                                     <input type="text" id="phonenumber" name="phonenumber" required/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="cmnd">CMND:</label>
                                     <input type="text" id="cmnd" name="cmnd" required/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="email">Email:</label>
                                     <input type="email" id="email" name="email" required/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="birthdate">Ngày sinh:</label>
                                     <input type="date" id="birthdate" name="birthdate" required/>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="degree">Bằng Cấp:</label>
                                     <select id="degree" name="degree" required>
                                     <option value="Đại học">Đại học</option>
@@ -393,32 +468,35 @@ export default function AdminEmployeesPage(){
                                         <option value="Tiễn sĩ">Tiến sĩ</option>
                                     </select>
                                 </div>
-                                <div className={classes.form_group}>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="status">Trạng Thái:</label>
                                     <select id="status" name="status" required>
                                     <option value="Đang hoạt động">Đang hoạt động</option>
                                     <option value="Ngưng hoạt động">Ngưng hoạt động</option>
                                     </select>
                                 </div>
-                                <div className={classes.form_group}>
-                                    <label htmlFor="coefficientsalary">Hệ số lương:</label>
-                                    <select id="coefficientsalary" name="coefficientsalary" required>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                </div>
+                              
 
-                            </div>
-                            <div className={classes.form_group_button}>
+                         
+                            <div className={classes.formGroupButton}>
                                 <button className={classes.btn_submit} type="submit" onClick={handleAddEmployee}>Thêm</button>
                                 <button className={classes.btn_cancel} type="button" onClick={handleCancelEdit}>Hủy</button>
                             </div>
                 </form>}
                 </Modal>
             )}</div>
+
+<div className={classes.pagination}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? classes.active : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
     )
 }

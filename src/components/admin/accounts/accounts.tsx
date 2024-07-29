@@ -99,6 +99,7 @@ export default function AdminAccountsPage(){
 
     return (
         <div className={classes.article}>
+        <h2>Bảng danh sách tài khoản của nhân viên</h2>
         <table>
             <thead>
                 <tr>
@@ -146,7 +147,7 @@ export default function AdminAccountsPage(){
             ) : (
                 <div className={classes.btn}>
                     <button className={classes.btn_update} onClick={() => handleUpdateAccountStatus(isNumber)}>
-                        <FontAwesomeIcon icon={faPen} style={{ marginRight: "5px" }} />
+                        <FontAwesomeIcon icon={faPen} style={{ marginLeft: "5px" }} />
                     </button>
                     <button className={classes.btn_reset} onClick={() => handleResetPasswod(accountData[isNumber].username)}>
                         <FontAwesomeIcon icon={faRotateLeft} style={{ marginRight: "5px" }} />

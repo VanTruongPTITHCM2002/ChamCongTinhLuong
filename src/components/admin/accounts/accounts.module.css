@@ -14,7 +14,9 @@
     background:linear-gradient(-45deg,blue,red);
 }
 
-
+.article h2{
+    text-align: center;
+}
 
 .article table {
     border-collapse: collapse;
@@ -108,8 +110,10 @@
     background-color:  #007BFF;
     border-radius: 5px;
     text-align: center;
-    line-height: 15px;
     cursor: pointer;
+    border: none;
+    margin-right: 5px;
+    padding: 5px 20px;
 }
 
 .btn_reset{
@@ -118,8 +122,9 @@
     background-color: #FF4C4C;
     border-radius: 5px;
     text-align: center;
-    line-height: 15px;
     cursor: pointer;
+    border:none;
+    padding: 5px 20px;
 }
 
 

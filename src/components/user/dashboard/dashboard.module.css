@@ -9,3 +9,13 @@
     display: flex;
     flex-wrap: wrap;
 }
+.chartContainer {
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  .chartTitle {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }

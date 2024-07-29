@@ -7,6 +7,10 @@ import Modal from '@/components/modal';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircle, faCirclePlus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { error } from 'console';
+import { errorSwal } from '@/components/user/custom/sweetalert';
 interface IFEmployee{
     id?:string;
     idemployee?:string,
@@ -150,12 +154,23 @@ const fetchEmployeeDetails = async (id: string) => {
         console.error('Form element not found');
         return;
     }
+    
 
     const form = new FormData(formElement);
     const workschedule:WorkSchedule ={
         workdate:form.get('workdate') as string,
         startime:form.get('startime') as string,
         endtime: form.get('endtime') as string
+    }
+
+    if(workschedule.workdate.trim() === ''){
+        errorSwal("Thất bại","Vui lòng chọn ngày");
+        return;
+    }
+    const currentDay = new Date(workschedule.workdate).getDay();
+    if(currentDay === 0){
+        errorSwal("Thất bại","Vui lòng không chọn chủ nhật");
+        return;
     }
     
     try {
@@ -226,7 +241,7 @@ const fetchEmployeeDetails = async (id: string) => {
         <div className={classes.article}>
            
                
-                    <div> 
+                    <div className={classes.article_button}> 
                 <button className= {classes.btn_prev} onClick={handlePrevDay}>Trước</button>
                 <span>Tuần: {format(startOfWeekDate, 'dd/MM/yyyy', { locale: vi })} - {format(endOfWeekDate, 'dd/MM/yyyy', { locale: vi })}</span>
                 <button className={classes.btn_next} onClick={handleNextDay}>Sau</button>
@@ -345,7 +360,10 @@ const fetchEmployeeDetails = async (id: string) => {
                         </>
                     ):(
                         <>
-                    <button onClick={handleAddWorkSchedule}>Thêm nhân viên vào ca làm việc</button>
+                    <button className={classes.btnAddWorkSchedule} onClick={handleAddWorkSchedule}>
+                        <FontAwesomeIcon icon={faPlus}
+                        style={{marginRight:"5px"}}/>
+                        Thêm nhân viên</button>
                       <table className={classes.form_show}>
                         <thead>
                             <tr>
