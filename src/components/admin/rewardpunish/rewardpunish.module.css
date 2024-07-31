@@ -35,10 +35,16 @@
 }
 
 .article_button_add button{
-    width: 50px;
-    height: 30px;
     background-color: #4CAF50;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
     border-radius: 4px;
+    cursor: pointer;
+}
+
+.article_button_add button:hover{
+    background-color: #2b822d;
 }
 
 .article table {
@@ -75,7 +81,17 @@
 
  .button_delete{
     background-color: #F44336;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
  }
+
+.button_delete:hover{
+  background-color: #91170e;
+}
 
  .button_update{
     background-color:  #007BFF;
@@ -118,4 +134,55 @@
     margin:10px;
     height: 30px;
     width: 50px;
+  }
+
+  .pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pagination .active {
+    background-color: #0056b3;
+    font-weight: bold;
+  }
+
+  
+  .btnAdd{
+    background-color: #007bff;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btnAdd:hover{
+    background-color: #0056b3;
+  }
+
+  .btnCancel{
+    background-color: crimson;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btnCancel:hover{
+    background-color: rgb(146, 16, 42);
   }

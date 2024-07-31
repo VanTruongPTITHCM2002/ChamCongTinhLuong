@@ -22,6 +22,7 @@ interface IFEmployee{
 export default function AdminContract(){
 
     const [showContract,setShowContract] = useState<Contract[]>([]);
+    const [contracts,setContracts] = useState<Contract[]>([]);
     const [modal,setModal] = useState(false);
     const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
     const [selectedIdEmployee, setSelectedIdEmployee] = useState<string>('');
@@ -33,12 +34,16 @@ export default function AdminContract(){
         startdate: '',
         endate: '',
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
     const [isUpdate,setIsUpdate] = useState(false);
     const getAll = async ()=>{
         try{
             const response =  await axios.get("http://localhost:8087/api/v1/contract");
             if(response.status === 200){
                 setShowContract(response.data.data);
+                setContracts(response.data.data);
             }
         }catch(error){
             console.error('Xảy ra lỗi trong quá trình tải dữ liệu')
@@ -230,16 +235,46 @@ export default function AdminContract(){
         }
        
     }
+    const totalPages = Math.ceil(showContract.length / itemsPerPage);
+    
+    const handlePageChange = (pageNumber:number) => {
+      setCurrentPage(pageNumber);
+    };
+    const currentData = showContract.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
+
+      const searchButton = ()=>{
+        if(searchTerm === ''){
+            setShowContract(contracts);
+           
+         }else{
+            const filterdata = showContract.filter(
+                (item) =>
+                  item.idemployee.includes(searchTerm) ||
+                    item.workingdays === Number(searchTerm)
+                    || item.startdate.includes(searchTerm)
+                    || item.endate.includes(searchTerm)
+                
+              );
+          setShowContract(filterdata);
+        }
+      }
+      const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+      };
     return(
         <div className={classes.article}>
                <div className={classes.article_button}>
                 <div className={classes.article_button_search}>
                     <input type="text" 
-                    value={searchId}
-                    onChange={handleInputChange}
+                    value={searchTerm}
+                    onChange={handleSearch} 
                     />
                     <button 
-                    onClick={searchContractByid}
+                    onClick={searchButton}
                     ><FontAwesomeIcon icon={faMagnifyingGlass} 
                        
                        style={{width:"10px",
@@ -272,14 +307,15 @@ export default function AdminContract(){
                 </thead>
 
                 <tbody>
-                    {showContract.map((contract,index)=>(
+                    {currentData.map((contract,index)=>(
                              <tr key={index}>
                              <td>{contract.idemployee}</td>
                              <td>{contract.basicsalary}</td>
                              <td>{contract.workingdays}</td>
                              <td>{contract.startdate}</td>
                              <td>{contract.endate}</td>
-                             <td>{contract.status}</td>
+                             <td  className={contract.status === "Còn hợp đồng" ? classes.statusActive : classes.statusInactive}
+                             >{contract.status}</td>
                              <td>
                                  <div className={classes.button_update_delete}>
                                          
@@ -351,7 +387,7 @@ export default function AdminContract(){
                                 id='startdate'
                                 name='startdate'
                                 defaultValue={formData.startdate}
-                               
+                               readOnly
                                 required
                             />
                         </div>
@@ -363,15 +399,15 @@ export default function AdminContract(){
                                 id='endate'
                                 name='endate'
                                 defaultValue={formData.endate}
-                               
+                               readOnly
                                 required
                             />
                         </div>
                     </div>
 
                     <div className={classes.form_add_salary_button}>
-                        <button onClick={SaveUpdateContract}>Thêm</button>
-                        <button onClick={closeModal}>Hủy</button>
+                        <button className={classes.btnSave} onClick={SaveUpdateContract}>Lưu</button>
+                        <button className={classes.btnCancel} onClick={closeModal}>Hủy</button>
                     </div>
                 </form>
 
@@ -419,10 +455,10 @@ export default function AdminContract(){
                             </div>
                             </div>
                         <div className={classes.form_add_salary_button}>
-                            <button  
+                            <button  className={classes.btnSave}
                        onClick={addContract}
                             >Thêm</button>
-                            <button 
+                            <button className={classes.btnCancel}
                             onClick={closeModal}
                             >Hủy</button>
                         </div>
@@ -433,7 +469,18 @@ export default function AdminContract(){
                 </Modal>
 )}
         </div>
-
+     
+        <div className={classes.pagination}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? classes.active : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
 
             </div>
     )

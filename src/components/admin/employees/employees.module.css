@@ -9,13 +9,39 @@
 }
 .btn_add_emp{
     height: 30px;
-    width: 120px;
-    margin: 10px 0px 20px 10px;
+    width: 200px;
     background:#28a745;
     border: none;
     border-radius: 4px;
 }
 
+.btn_add_emp:hover
+{
+    background-color: #0056b3;
+}
+
+.article_button{
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.article_button input{
+    background-color: #eee;
+    width: 200px;
+    height: 30px;
+    margin-right: 5px;
+    padding-left: 2px;
+    color:#000;
+    border-radius: 4px;
+    outline: none;
+}
+
+.article_button button{
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+}
 .article h2{
     text-align: center;
 }
@@ -251,7 +277,7 @@ background-color:#fff;      }
 }
 
 .statusActive {
-    color: green;
+    color: rgb(30, 194, 30);
     font-weight: bold;
   }
   
@@ -259,3 +285,8 @@ background-color:#fff;      }
     color: red;
     font-weight: bold;
   }
+
+  .error_message {
+    color: red;
+    font-size: 0.875rem;
+}

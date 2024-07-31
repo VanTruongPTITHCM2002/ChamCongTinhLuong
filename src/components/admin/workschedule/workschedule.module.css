@@ -8,6 +8,10 @@
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
 }
 
+.article h2{
+   text-align: center;
+}
+
 .article span{
     padding:10px;
 }
@@ -50,6 +54,7 @@
    border-radius: 2px;
    height: 30px;
    padding: 2px;
+   cursor: pointer;
 }
  
 .btnAddWorkSchedule:hover{
@@ -68,7 +73,18 @@
      background-color: #95A5A6;
    }
 
+.article table button{
+   width: 50px;
+   height: 30px;
+   background-color: rgb(192, 192, 30);
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
 
+.article table button:hover{
+   background-color: #95A5A6;
+}
  
  .article table tr:nth-child(even) {            /* added all even rows a #eee color  */
      background-color: #eee;     }
@@ -130,30 +146,63 @@
 
 
 
- .btn_form_add_work_schedule button{
+
+
+.btnSave{
    margin:10px;
    width: 50px;
    height: 30px;
    transition-duration: 0.4s;
- }
+   background-color: #3498db;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
 
- .btn_form_add_work_schedule button:hover{
+.btnSave:hover{
+   background-color: #3498;
+}
+
+.btnCancel{
    background-color: crimson;
    color: white;
+   margin:10px;
+   width: 50px;
+   height: 30px;
+   transition-duration: 0.4s;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
 }
  
+.btnCancel:hover{
+   background-color: rgb(184, 35, 64);
+}
 
 .form_add_container{
+   margin-top: 5px;
    display: flex;
    flex-direction: column;
    justify-content: center;
    align-items: center;
    font-size: 12px;
+   border: 2px solid #00796b; /* Màu sắc và độ dày của border */
+   padding: 20px; /* Khoảng cách giữa nội dung và border */
+   border-radius: 8px; /* Góc bo tròn cho border */
+   background-color: #f9f9f9; /* Màu nền cho div */
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng cho div */
 }
+
+
 
 .form_add_container h2{
    margin-top:10px;
    margin-bottom: 10px;
+}
+
+.form_add_container input{
+   background-color: #ccc;
+   color: #000;
 }
 
 .form_btn{

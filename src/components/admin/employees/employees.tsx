@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import Modal from '@/components/modal';
 import Swal from 'sweetalert2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faInfoCircle, faPen, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faInfoCircle, faPen, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { errorSwal } from '@/components/user/custom/sweetalert';
 
 interface Employee {
     idemployee: string;
@@ -25,13 +26,16 @@ interface Employee {
 export default function AdminEmployeesPage(){
     const router = useRouter();
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
+    const [employees,setEmployees] = useState<Employee[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
     useEffect(()=>{
          
         axios.get('http://localhost:8080/api/v1/employee')
         .then(response => {
             setEmployeesData(response.data.data);
+            setEmployees(response.data.data);
             console.log('Dữ liệu nhân viên:', employeesData);
         })
         .catch(error => {
@@ -97,8 +101,24 @@ export default function AdminEmployeesPage(){
             console.error('Form element not found');
             return;
         }
-
+    
+     
         const form = new FormData(formElement);
+        let hasErrors = false;
+        let errorMessages: string = '';
+        for (const [key, value] of form.entries()) {
+            if (!value) {
+                errorMessages = `${key} không được để trống.`;
+                hasErrors = true;
+                break; // Ngắt vòng lặp sớm
+            }
+        }
+        if (hasErrors) {
+          errorSwal('Thất bại',errorMessages);
+            setShowModal(true); // Hiển thị modal nếu cần
+            return;
+        }
+    
         const employee: Employee = {
             idemployee: form.get('idemployee') as string,
             firstname: form.get('firstname') as string,
@@ -142,6 +162,7 @@ export default function AdminEmployeesPage(){
             return;
         }
         const form = new FormData(formElement);
+      
         const employee: Employee = {
             idemployee: form.get('idemployee') as string,
             firstname: form.get('firstname') as string,
@@ -185,32 +206,7 @@ export default function AdminEmployeesPage(){
     setSelectedEmployee(null); 
     }
 
-    const handleFormSubmit = (event: FormEvent) => {
-        event.preventDefault();
     
-        const form = new FormData(event.target as HTMLFormElement);
-        const updatedHoNV = form.get('hoNV') as string;
-        const updatedTenNV = form.get('tenNV') as string;
-    
-        const updatedEmployees = employeesData.map(employee => {
-            if (employee.idemployee === selectedEmployee?.idemployee) {
-                // Nếu tìm thấy nhân viên được chọn, cập nhật họ và tên
-                return {
-                    ...employee,
-                    hoNV: updatedHoNV,
-                    tenNV: updatedTenNV
-                };
-            }
-            return employee; // Trả về nguyên vẹn nhân viên khác
-        });
-    
-        // Cập nhật lại danh sách nhân viên và đóng modal
-        setEmployeesData(updatedEmployees);
-    
-        setSelectedEmployee(null); // Reset lại trạng thái sau khi cập nhật
-        setShowModal(false);
-      };
-
 
     const handleDetailClick = (employee:Employee) => {
         Swal.fire({
@@ -265,7 +261,7 @@ export default function AdminEmployeesPage(){
                     </div>
                 </div>
             `,
-            width: 600,
+            width: 700,
             padding: '1em',
             background: '#f9f9f9',
             confirmButtonColor: '#007bff',
@@ -282,10 +278,89 @@ export default function AdminEmployeesPage(){
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
       );
+
+      const searchButton = ()=>{
+        if(searchTerm === ''){
+            setEmployeesData(employees);
+           
+         }else{
+            const filterdata = employeesData.filter(
+                (item) =>
+                  item.idemployee.includes(searchTerm) ||
+                  item.firstname.includes(searchTerm)
+                  || item.lastname.includes(searchTerm) ||
+                  item.email.includes(searchTerm) ||
+                  item.gender.includes(searchTerm)
+                
+              );
+          setEmployeesData(filterdata);
+        }
+      }
+      const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+      };
+     
+
+    
+  
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          const value = e.target.value;
+          const regex = /^[a-zA-Z0-9\p{L}\p{M}\s]+$/u;
+            if(value.trim() ===''){
+                return;
+            }
+            if (!regex.test(value)) {
+                errorSwal('Lỗi','Tên chỉ được chứa các ký tự [a-z], [A-Z], [0-9]');
+            } 
+        
+      };
+      const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const regex = /^[a-zA-Z0-9\p{L}\p{M}\s,/]+$/u;
+
+          if(value.trim() ===''){
+              return;
+          }
+          if (!regex.test(value)) {
+              errorSwal('Lỗi','Tên không chứa kí tự đặc biệt');
+          } 
+      
+    };
+      const checkNumber =(e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const value = e.target.value;
+        const regex = /^[0-9]+$/
+        if(value.trim() ===''){
+            return;
+        }
+       
+        if(!regex.test(value)){
+        
+            errorSwal('Lỗi','Không được nhập chữ');
+        }
+       
+      }
+  
+      
     return (
         <div className={classes.article}>
+             
             <h2>Bảng danh sách nhân viên</h2>
-               <button className={classes.btn_add_emp} onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
+            <div className={classes.article_button}>
+
+                <div>
+                      <input type="text" placeholder='Tìm kiếm...' 
+                              value={searchTerm}
+                              onChange={handleSearch}
+                        />
+                        <button onClick={searchButton}>
+                            <FontAwesomeIcon icon={faSearch} />
+                        </button> 
+                </div>
+            
+
+                        <button className={classes.btn_add_emp} onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
                 width: "12px",
                 height: "12px",
                 overflow: "visible",
@@ -294,7 +369,9 @@ export default function AdminEmployeesPage(){
                 boxSizing: "border-box",
                 overflowClipMargin: "initial",
                 verticalAlign: "initial"
-            }} />Thêm nhân viên</button>
+            }} /></button>
+             </div>
+             
         <table>
             <thead>
                 <tr>
@@ -349,7 +426,7 @@ export default function AdminEmployeesPage(){
                 <Modal onClose={handleCloseModal}>
                     {/* Nội dung modal */}
                     {selectedEmployee ? (
-                        <form id='employeeFormUpdate' className={classes.employeeDetails} onSubmit={handleFormSubmit}>
+                        <form id='employeeFormUpdate' className={classes.employeeDetails}>
                         
                             <h2 className={classes.centeredHeading}>Chỉnh sửa thông tin nhân viên</h2>
                         <div  className={classes.formGroup}>
@@ -358,11 +435,13 @@ export default function AdminEmployeesPage(){
                             </div>
                             <div  className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
-                                <input name="firstname" type="text" required defaultValue={selectedEmployee.firstname}/>
+                                <input name="firstname" type="text" required defaultValue={selectedEmployee.firstname}
+                                onChange={handleChange}/>
                             </div>
                             <div  className={classes.formGroup}>
                                 <label>Tên nhân viên:</label>
-                                <input name="lastname" type="text" required defaultValue={selectedEmployee.lastname}/>
+                                <input name="lastname" type="text" required defaultValue={selectedEmployee.lastname}
+                                onChange={handleChange}/>
                             </div>
                             
                                 <div className={classes.formGroup}>
@@ -374,11 +453,15 @@ export default function AdminEmployeesPage(){
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="address">Địa Chỉ:</label>
-                                    <input type="text" id="address" name="address" required defaultValue={selectedEmployee.address}/>
+                                    <input type="text" id="address" name="address" required defaultValue={selectedEmployee.address}
+                                    onChange={handleAddress}
+                                    />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="phonenumber">Số Điện Thoại:</label>
-                                    <input type="text" id="phonenumber" name="phonenumber" required defaultValue={selectedEmployee.phonenumber}/>
+                                    <input type="text" id="phonenumber" name="phonenumber" required defaultValue={selectedEmployee.phonenumber}
+                                    onChange={checkNumber}
+                                    />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="cmnd">CMND:</label>
@@ -417,7 +500,7 @@ export default function AdminEmployeesPage(){
                           <button type="button"  className={classes.btn_cancel} onClick={handleCancelEdit}>Hủy</button>
                         </div>
                       </form>
-                    ):  <form  id='employeeForm' className={classes.employeeDetails} onSubmit={handleFormSubmit}>
+                    ):  <form  id='employeeForm' className={classes.employeeDetails} >
                     <h2 className={classes.centeredHeading}>Thêm mới nhân viên</h2>
                             <div  className={classes.formGroup}>
                                 <label>Mã nhân viên:</label>
@@ -425,11 +508,17 @@ export default function AdminEmployeesPage(){
                             </div>
                             <div className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
-                                <input name="firstname" type="text" required/>
+                                <input name="firstname" type="text" required
+                              
+                                onChange={handleChange}
+                             />
+                             
                             </div>
                             <div  className={classes.formGroup}>
                                 <label>Tên nhân viên:</label>
-                                <input name="lastname" type="text" required/>
+                                <input name="lastname" type="text" required
+                                 onChange={handleChange}
+                                />
                             </div>
                             
                                 <div className={classes.formGroup}>
@@ -441,11 +530,15 @@ export default function AdminEmployeesPage(){
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="address">Địa Chỉ:</label>
-                                    <input type="text" id="address" name="address" required/>
+                                    <input type="text" id="address" name="address" required
+                                     onChange={handleAddress}
+                                    />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="phonenumber">Số Điện Thoại:</label>
-                                    <input type="text" id="phonenumber" name="phonenumber" required/>
+                                    <input type="text" id="phonenumber" name="phonenumber" required
+                                    onChange={checkNumber}
+                                    />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="cmnd">CMND:</label>

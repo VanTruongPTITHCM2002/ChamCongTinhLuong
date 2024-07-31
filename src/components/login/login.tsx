@@ -23,19 +23,13 @@ const Toast = Swal.mixin({
 export default function LoginPage(){
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
-    const loginMessage = localStorage.getItem('loginMessage');
-    if(loginMessage){
-      alert(loginMessage)
-     const storage = localStorage.removeItem('loginMessage');
-    }
+    
     const [email,setEmail] = useState('');
     const [password,setPassword]= useState('');
     const router = useRouter();
     
     
-    const options = {
-      expiresIn: '1h' // Token hết hạn sau 1 giờ
-    };
+ 
     const handleSubmit = (e: React.FormEvent)=>{
         e.preventDefault();
         const data = {
@@ -43,18 +37,13 @@ export default function LoginPage(){
       password:password
     }
 
-        axios.post('http://localhost:8082/api/v1/auth/login',data)
+        axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/auth/login`,data)
             .then(response => {
-               console.log('Dữ liệu:',response.data)
+               
                if(response.status === 200){
                 if(response.data.data.role === 'ADMIN'){
-                  const payload = {
-                    email: email,
-                    role: response.data.data.role
-                  };
-                   const token = jwt.sign(payload, "asdadsadasdasdasddas")
-                localStorage.setItem('token', token);
-                localStorage.setItem('username',email);
+                 
+               
                 Swal.fire({
                   title: "Loading.....",
                   html: "Chương trình đang tải",
@@ -65,30 +54,24 @@ export default function LoginPage(){
                   
                   },
                   willClose: () => {
+                    localStorage.setItem('token', response.data.data.token);
+                    localStorage.setItem('username',response.data.data.username);
                     router.push('/admin/dashboard');
                   }
                 }).then((result) => {
                   /* Read more about handling dismissals below */
                   if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log("I was closed by the timer");
+                   
                   }
                 });
                 
                 
                 }
                   else{
-                    // Swal.fire({
-                    //   title: "Thất bại",
-                    //   text: "Bạn không có quyền truy cập",
-                    //   icon: "error"
-                    // });
-                    const payload = {
-                      email: email,
-                      role: response.data.data.role
-                    };
-                     const token = jwt.sign(payload, `${process.env.SECRET_KEY}`)
-                  localStorage.setItem('token', token);
-                  localStorage.setItem('username',email);
+               
+                    
+                  localStorage.setItem('token', response.data.data.token);
+                  localStorage.setItem('username',response.data.data.username);
                   Swal.fire({
                     title: "Loading.....",
                     html: "Chương trình đang tải",
@@ -99,7 +82,7 @@ export default function LoginPage(){
                     
                     },
                     willClose: () => {
-                      router.push(`/${email}/dashboard`);
+                      router.push(`/${response.data.data.username}/dashboard`);
                     }
                   }).then((result) => {
                     /* Read more about handling dismissals below */
@@ -113,7 +96,7 @@ export default function LoginPage(){
                
             })
             .then(data => {
-                console.log("API Data:", data);
+               
              
             })
             .catch(error => {
@@ -146,11 +129,12 @@ export default function LoginPage(){
             <input
             className={classes.inputStyle}
               type="text"
-              id="email"
+             
+              name="username"
               value={email}
               placeholder="Nhập tài khoản"
               onChange={(e) => setEmail(e.target.value)}
-              defaultValue={''}
+             
               required
             />
          
@@ -158,11 +142,12 @@ export default function LoginPage(){
             <input
             className={classes.inputStyle}
               type="password"
-              id="password"
+            
+              name="password"
               value={password}
               placeholder="Nhập mật khẩu"
               onChange={(e) => setPassword(e.target.value)}
-              defaultValue={''}
+             
               required
             />
           

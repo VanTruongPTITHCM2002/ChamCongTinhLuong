@@ -1,38 +1,67 @@
 'use client'
 import classes from './dashboard.module.css'
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Bar } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+// Đăng ký các thành phần cần thiết
+Chart.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+const options = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+      x: {
+          title: {
+              display: true,
+              text: 'X Axis'
+          }
+      },
+      y: {
+          title: {
+              display: true,
+              text: 'Y Axis'
+          }
+      }
+  }
+};
+
+const data1 = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
   datasets: [
-    {
-      label: 'Dataset 1',
-      data: [65, 59, 80, 81, 56, 55, 40],
-      fill: false,
-      borderColor: 'rgba(75,192,192,1)',
-    },
-  ],
+      {
+          label: 'Dataset 1',
+          data: [65, 59, 80, 81, 56, 55],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+      }
+  ]
+};
+
+const data2 = {
+  labels: ['July', 'August', 'September', 'October', 'November', 'December'],
+  datasets: [
+      {
+          label: 'Dataset 2',
+          data: [75, 69, 70, 91, 76, 85],
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgba(153, 102, 255, 1)',
+          borderWidth: 1
+      }
+  ]
 };
 
 
-  
-
-const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const, 
-      },
-      title: {
-        display: true,
-        text: 'Sample Line Chart',
-      },
-    },
-  };
 export default function AdminDashboard(){
+    const router = useRouter();
+   
+
+    if(!localStorage.getItem('username')){
+        router.push('/login');
+        return null;
+    }
     return (
         <div className={classes.article}>
             <div className={classes.main}>
@@ -50,14 +79,16 @@ export default function AdminDashboard(){
             </div>
 
             </div>
-           
             <div className={classes.chartContainer}>
-     
-      <Line data={data} options={options} />
-
-   
-      <Line data={data} options={options} />
+    <div className={classes.chart}>
+        <Bar data={data1} options={options} />
     </div>
+    <div className={classes.chart}>
+        <Bar data={data2} options={options} />
+    </div>
+</div>
+
+
         </div>
     )
 }

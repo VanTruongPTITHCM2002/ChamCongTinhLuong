@@ -8,9 +8,9 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faCirclePlus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faCircleInfo, faCirclePlus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { error } from 'console';
-import { errorSwal } from '@/components/user/custom/sweetalert';
+import { errorAlert, errorSwal } from '@/components/user/custom/sweetalert';
 interface IFEmployee{
     id?:string;
     idemployee?:string,
@@ -61,7 +61,11 @@ export default function WorkSchedule(){
 
   const handleAddWorkSchedule = async ()=>{
     try {
-        const response = await axios.get('http://localhost:8084/api/v1/workschedule/getidemp');
+        const response = await axios.get('http://localhost:8084/api/v1/workschedule/getidemp',{
+            params:{
+                date:selectedDate.replace(/-/g, '/')
+            }
+        });
         console.log(response.data);
         setIdEmployee(response.data);
         if (response.data.length > 0) {
@@ -97,6 +101,7 @@ export default function WorkSchedule(){
         const response = await axios.post('http://localhost:8084/api/v1/workschedule/workdate', {date:formattedDate});
         console.log('Response:', response.data);
         if(response.status === 400){
+           
             alert(response.data.status);
         }
         setWorkEmployee(response.data)
@@ -106,7 +111,8 @@ export default function WorkSchedule(){
     } catch (error:any) {
         if (error.response) {
             // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
-            alert( error.response.data.message);
+            //alert( error.response.data.message);
+            errorAlert(  error.response.data.message);
             setShowModal(false);
         }
         
@@ -177,7 +183,8 @@ const fetchEmployeeDetails = async (id: string) => {
         const response = await axios.post('http://localhost:8084/api/v1/workschedule', workschedule);
         console.log('Response:', response.data.message);
         if(response.status === 400){
-            alert(response.data.status);
+            errorSwal('Thất bại',response.data.message)
+           return;
         }
       //  alert("Thêm lịch làm việc thành công");
       Swal.fire({
@@ -222,14 +229,15 @@ const fetchEmployeeDetails = async (id: string) => {
         const response = await axios.post('http://localhost:8084/api/v1/workschedule/workschedulemployee', ifemployee);
         console.log('Response:', response.data.message);
         if(response.status === 400){
-            alert(response.data.status);
+            errorSwal('Thất bại',response.data.message)
+          return;
         }
         alert("Thêm ca làm việc thành công");
         setIsSelected(false);
     } catch (error:any) {
         if (error.response) {
             // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
-            alert( error.response.data.message);
+            errorSwal('Thất bại',error.response.data.message)
         }
         
     }
@@ -240,7 +248,7 @@ const fetchEmployeeDetails = async (id: string) => {
     return (
         <div className={classes.article}>
            
-               
+               <h2>Quản lý lịch làm việc</h2>
                     <div className={classes.article_button}> 
                 <button className= {classes.btn_prev} onClick={handlePrevDay}>Trước</button>
                 <span>Tuần: {format(startOfWeekDate, 'dd/MM/yyyy', { locale: vi })} - {format(endOfWeekDate, 'dd/MM/yyyy', { locale: vi })}</span>
@@ -264,13 +272,13 @@ const fetchEmployeeDetails = async (id: string) => {
                 <tbody>
                     <tr>
                         <td>Ca làm việc 8:00 - 17:00</td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(1)}>Xem chi tiết</button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(2)}>Xem chi tiết</button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(3)}>Xem chi tiết</button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(4)}>Xem chi tiết</button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(5)}>Xem chi tiết</button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(6)}>Xem chi tiết</button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(7)}>Xem chi tiết</button></td>
+                        <td><button onClick={()=>handleDetailWorkSchedule(1)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
+                        <td><button onClick={()=>handleDetailWorkSchedule(2)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
+                        <td><button onClick={()=>handleDetailWorkSchedule(3)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
+                        <td><button onClick={()=>handleDetailWorkSchedule(4)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
+                        <td><button onClick={()=>handleDetailWorkSchedule(5)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
+                        <td><button onClick={()=>handleDetailWorkSchedule(6)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
+                        <td><button onClick={()=>handleDetailWorkSchedule(7)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -299,8 +307,8 @@ const fetchEmployeeDetails = async (id: string) => {
 
                           <div className={classes.form_btn}>
                               <div className={classes.btn_form_add_work_schedule}>
-                              <button type='submit' onClick={handleAddWorkScheduleDate}>Lưu</button>
-                              <button type='submit' onClick={handleCancel}>Hủy</button>
+                              <button className={classes.btnSave} type='submit' onClick={handleAddWorkScheduleDate}>Lưu</button>
+                              <button className={classes.btnCancel} type='submit' onClick={handleCancel}>Hủy</button>
                               </div>
                           
                           </div>
@@ -351,8 +359,8 @@ const fetchEmployeeDetails = async (id: string) => {
 
                                 <div className={classes.form_group}>
                                     <div className={classes.btn_form_add_work_schedule}>
-                                    <button type='submit' onClick={handelAddEmployeeWorkSchedule}>Lưu</button>
-                                    <button onClick={handleBack}>Hủy</button>
+                                    <button className={classes.btnSave} type='submit' onClick={handelAddEmployeeWorkSchedule}>Lưu</button>
+                                    <button className={classes.btnCancel} onClick={handleBack}>Hủy</button>
                                     </div>
                                 
                                 </div>

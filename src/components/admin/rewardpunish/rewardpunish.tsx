@@ -20,6 +20,7 @@ interface IFEmployee{
 }
 export default function AdminRewardPunishPage(){
     const[showRewardPunish,setShowRewardPunish] = useState<RewardPunish[]>([]);
+    const[rewardPunish,setRewardPunish] = useState<RewardPunish[]>([]);
     const [modal,setModal] = useState(false);
     const[isAdd,setIsAdd] = useState(false);
     const [isUpdate,setIsUpdate] = useState(false);
@@ -27,6 +28,9 @@ export default function AdminRewardPunishPage(){
     const [searchId, setSearchId] = useState<string>('');
     const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
     const [selectedIdEmployee, setSelectedIdEmployee] = useState<string>('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
     const getAll = async ()=>{
@@ -34,6 +38,7 @@ export default function AdminRewardPunishPage(){
             const response =  await axios.get("http://localhost:8086/api/v1/rewardpunish");
             if(response.status === 200){
                 setShowRewardPunish(response.data.data);
+                setRewardPunish(response.data.data);
             }
         }catch(error){
             console.error('Xảy ra lỗi trong quá trình tải dữ liệu')
@@ -161,14 +166,44 @@ export default function AdminRewardPunishPage(){
         }
        
     }
+    const totalPages = Math.ceil(showRewardPunish.length / itemsPerPage);
+    
+    const handlePageChange = (pageNumber:number) => {
+      setCurrentPage(pageNumber);
+    };
+    const currentData = showRewardPunish.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
+
+      const searchButton = ()=>{
+        if(searchTerm === ''){
+            setShowRewardPunish(rewardPunish);
+           
+         }else{
+            const filterdata = showRewardPunish.filter(
+                (item) =>
+                  item.idemployee.includes(searchTerm) ||
+                  item.reason.includes(searchTerm) ||
+                    item.type.includes(searchTerm) 
+                
+              );
+          setShowRewardPunish(filterdata);
+        }
+      }
+      const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+      };
     return (
         <div className={classes.article}>
             <div className={classes.article_button}>
                 <div className={classes.article_button_search}>
-                    <input type="text" value={searchId}
-                    onChange={handleInputChange}
+                    <input type="text"  value={searchTerm}
+                         onChange={handleSearch} 
+                    
                     />
-                    <button onClick={searchPayrollByid}
+                    <button   onClick={searchButton}
                     ><FontAwesomeIcon icon={faMagnifyingGlass} 
                        
                        style={{width:"10px",
@@ -199,7 +234,7 @@ export default function AdminRewardPunishPage(){
                     </thead>
 
                     <tbody>
-                        {showRewardPunish.map((r,index)=>(
+                        {currentData.map((r,index)=>(
                             <tr key={index}>
                             <td>{r.idemployee}</td>
                             <td>{r.type}</td>
@@ -211,9 +246,8 @@ export default function AdminRewardPunishPage(){
                                         
                                         <button className={classes.button_delete}
                                             onClick={()=>deleteRewardPunish(r)}
-                                        ><FontAwesomeIcon icon={faTrash} style={{width:"10px",
-                               height:"10px"
-                       }}/></button>
+                                        ><FontAwesomeIcon icon={faTrash} 
+                       /></button>
                                 </div>
 
                             </td>
@@ -269,17 +303,30 @@ export default function AdminRewardPunishPage(){
                             </div>
                           
                         <div className={classes.form_add_salary_button}>
-                            <button  
+                            <button   className={classes.btnAdd}
                            onClick={addRewardPunish}
                             >Thêm</button>
                             <button 
                             onClick={closeModal}
+                            className={classes.btnCancel}
                             >Hủy</button>
                         </div>
                     </form>
                 </Modal>
 )}
         </div>
+
+        <div className={classes.pagination}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? classes.active : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
         </div>
     )
 }

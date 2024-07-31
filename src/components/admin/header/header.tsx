@@ -22,7 +22,7 @@ export default function Header(){
   
     // Lấy email từ payload
     const email = localStorage.getItem('username');
-    console.log(email);
+   
     const router = useRouter();
     const handleLogout = ()=>{
         localStorage.removeItem('token');

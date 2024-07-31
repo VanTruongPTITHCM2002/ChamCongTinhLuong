@@ -9,10 +9,37 @@
     font-size: 12px;
 }
 
+.article h2{
+  text-align: center;
+}
+
+.article_option_select{
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.article_option_select input{
+  background-color: #eee;
+  width: 200px;
+  height: 30px;
+  margin-right: 5px;
+  padding-left: 2px;
+  color:#000;
+  border-radius: 4px;
+  outline: none;
+}
+
+.article_option_select button{
+  width: 50px;
+  height: 30px;
+  cursor: pointer;
+}
+
 .article table {
     white-space: nowrap;
     border-collapse: collapse;
-    height: 100px;
+  
     text-align: center;
     width: 100%;
    
@@ -65,7 +92,104 @@ background-color:#fff;      }
     margin: 10px;
     height: 30px;
     width: 50px;
+    background-color: #007bff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
  }
+
+ .btn_update:hover{
+  background-color: #0056b3;
+ }
+
+ .btn_cancel{
+  margin: 10px;
+    height: 30px;
+    width: 50px;
+    background-color: crimson;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+ }
+
+ .btn_cancel:hover{
+  background-color: rgb(180, 40, 68);
+ }
+ 
+.btnUpdate{
+  background-color: #007bff; /* Màu xanh lam cho nút chi tiết */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.tableUpdate input, .tableUpdate select{
+  background-color: #eee;
+  color: #000;
+  border-radius: 4px;
+}
+
+.buttonWordRecord{
+  background-color: green; /* Màu xanh lam cho nút chi tiết */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 5px;
+  border-radius: 3px;
+  width: 50px;
+  transition: background-color 0.3s;
+}
+
+.buttonWordRecord:hover{
+  background-color: rgb(8, 107, 8);
+}
+
+.buttonBackWordRecord{
+  background-color: red; /* Màu xanh lam cho nút chi tiết */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 5px;
+  border-radius: 3px;
+  width: 50px;
+  transition: background-color 0.3s;
+}
+
+.buttonBackWordRecord:hover{
+  background-color: rgb(133, 13, 13);
+}
+
+.article_option_button_workrecord button{
+  height: 30px;
+  width: 50px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #F4A460;
+}
+
+.article_option_button_workrecord button:hover{
+  background-color:#95A5A6;
+}
+
+.article_option_button_explain button{
+  height: 30px;
+  width: 50px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #655069;
+}
+
+.article_option_button_explain button:hover{
+  background-color: darkgoldenrod;
+}
 
  .form_add_work_record{
    display: grid;
@@ -87,7 +211,7 @@ background-color:#fff;      }
     border: none;  
     border-radius: 4px; 
      background-color: #f1f1f1;
-     color:#000;
+    color: #000;
    }
 
  .form_add_work_record_button{
@@ -101,8 +225,116 @@ background-color:#fff;      }
    width: 50px;
  }
 
+ .btnAdd{
+   background-color: #007bff;
+   color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 50px;
+   transition: background-color 0.3s;
+ }
+
+ .btnAdd:hover{
+  background-color: #0056b3;
+ }
+
+ .btnCancel{
+  background-color: crimson;
+  color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 50px;
+   transition: background-color 0.3s;
+ }
+
+ .btnDetails{
+  background-color:#def460;
+  color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 40px;
+   transition: background-color 0.3s;
+ }
+
+ .btnUpdateExplain{
+  background-color: #007bff;
+   color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 40px;
+   transition: background-color 0.3s;
+ }
+
+ .btnUpdateExplain:hover{
+  background-color: #0056b3;
+ }
+ 
+ .btnDetails:hover{
+  background-color:#ea9143;
+ }
+
+.btnCancel:hover{
+  background-color: rgb(190, 29, 61);
+}
+
  .button_explain button{
    margin: 10px;
    height: 30px;
    width: 50px;
  }
+
+ .pagination {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
+}
+
+.pagination .active {
+  background-color: #0056b3;
+  font-weight: bold;
+}
+
+.btnTableExplain select{
+  background-color: #eee;
+  color:#000;
+}
+
+.statusActive {
+  color: rgb(30, 194, 30);
+  font-weight: bold;
+}
+
+.statusInactive {
+  color: red;
+  font-weight: bold;
+}
+
+.statusUnActive{
+  color: grey;
+  font-weight: bold;
+}

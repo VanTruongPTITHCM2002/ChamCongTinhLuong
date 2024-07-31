@@ -1,7 +1,7 @@
 'use client'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classes from './payroll.module.css'
-import { faCalculator, faDeleteLeft, faEye, faMagnifyingGlass, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faCalculator, faDeleteLeft, faEye, faMagnifyingGlass, faMoneyBill, faPen } from '@fortawesome/free-solid-svg-icons'
 import { FormEvent, useEffect, useState } from 'react'
 import Modal from '@/components/modal'
 import axios, { AxiosResponse } from 'axios'
@@ -52,6 +52,10 @@ const AdminPayrollPage = () =>{
     const [searchId, setSearchId] = useState<string>('');
     const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
     const [showPayroll,setShowPayroll] = useState<Payroll[]>([]);
+    const [showPay,setShowPay] = useState<Payroll[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
     const today = new Date();
 
     useEffect(() => {
@@ -59,6 +63,7 @@ const AdminPayrollPage = () =>{
             try {
                 const response = await axios.get('http://localhost:8085/api/v1/payroll');
                 setShowPayroll(response.data.data);
+                setShowPay(response.data.data);
             } catch (error) {
                 console.error('Error fetching payroll data:', error);
             }
@@ -151,6 +156,7 @@ const AdminPayrollPage = () =>{
                     icon:"success"
                 }
             )
+            setShowPayroll([response.data.data,...showPayroll]);
            
 
         }else{
@@ -249,15 +255,48 @@ const AdminPayrollPage = () =>{
     const handleInputChange = (event:any) => {
         setSearchId(event.target.value);
     };
+
+    const totalPages = Math.ceil(showPayroll.length / itemsPerPage);
+    
+    const handlePageChange = (pageNumber:number) => {
+      setCurrentPage(pageNumber);
+    };
+    const currentData = showPayroll.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
+      const searchButton = ()=>{
+        if(searchTerm === ''){
+            setShowPayroll(showPay);
+           
+         }else{
+            const filterdata = showPayroll.filter(
+                (item) =>
+                  item.idemployee.includes(searchTerm) ||
+                  item.month === Number(searchTerm)
+                  || item.year === Number(searchTerm) ||
+                  item.name.includes(searchTerm) 
+                
+                
+              );
+          setShowPayroll(filterdata);
+        }
+      }
+      const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+      };
     return (
         <div className={classes.article}>
             <div className={classes.article_option}>
             {num !== -1 ? (
                 <>
                    <div className={classes.article_option_search}>
-                   <button className={classes.article_option_button_back}
+                   <button className={classes.btnCalculateSalary}
                    onClick={()=>updateStatus(num)}
-                   >Thanh toán</button>
+                   >
+                    <FontAwesomeIcon icon={faMoneyBill} />
+                    Thanh toán</button>
                 
                 </div> 
                <div className={classes.article_option_button}>
@@ -276,9 +315,13 @@ const AdminPayrollPage = () =>{
             :(
                 <>
                     <div className={classes.article_option_search}>
-                        <input type="text" value = {searchId} 
-                        onChange={handleInputChange}/>
-                        <button className={classes.article_option_search_button}  onClick={searchPayrollByid}>   <FontAwesomeIcon icon={faMagnifyingGlass} 
+                        <input type="text" 
+                         value={searchTerm}
+                         onChange={handleSearch} 
+                         placeholder='Tìm kiếm....'
+                        style={{paddingLeft:"5px"}}
+                        />
+                        <button className={classes.article_option_search_button}  onClick={searchButton}>   <FontAwesomeIcon icon={faMagnifyingGlass} 
                        
                         style={{width:"10px",
                                 height:"10px"
@@ -287,11 +330,11 @@ const AdminPayrollPage = () =>{
 
                 <div className={classes.article_option_button}>
                     <button className={classes.article_option_button_calsalary}
-                        onClick={showModalAddSalary}
+                        onClick={showModalAddSalary} title="Tính lương"
                     ><FontAwesomeIcon icon={faCalculator} 
                      style={{width:"10px",
                                 height:"10px"}}
-                    />Tính lương</button>
+                    /></button>
                 </div>
                 </>
             )}
@@ -342,7 +385,7 @@ const AdminPayrollPage = () =>{
                
                 <td>{showPayroll[num].totalpayment}</td>
                 {/* <td style={{cursor:"pointer"}}>{showPayroll[num].status}</td> */}
-                <td >
+                <td className={showPayroll[num].status === "Đã thanh toán"?classes.statusActive:classes.statusInactive} >
              {showPayroll[num].status}
             </td>
                 {/* <td>
@@ -358,14 +401,16 @@ const AdminPayrollPage = () =>{
                 </td> */}
             </tr>
         ):(
-             showPayroll.map((p,index)=>(
+            currentData.map((p,index)=>(
                 <tr key={index}>
                     <td>{p.idemployee}</td>
                     <td>{p.name}</td>
                     <td>{p.month}</td>
                     <td>{p.year}</td>
                     <td>{p.totalpayment}</td>
-                    <td><button className={classes.article_button_detail}
+                    <td>
+                        
+                        <button className={classes.article_button_detail} title='Xem chi tiết'
                     onClick={()=>showDetailSalary(index)}
                     ><FontAwesomeIcon icon={faEye}  style={{width:"15px",
                         height:"15px"
@@ -380,6 +425,18 @@ const AdminPayrollPage = () =>{
                   
                 </tbody>
             </table>
+           
+        <div className={classes.pagination}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? classes.active : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
 
             <div id="modal-root"> {modal && (
                 <Modal onClose={closeModal}  payrollCustom={payrollCustom}>
@@ -418,13 +475,14 @@ const AdminPayrollPage = () =>{
                                 <input type='text' id='status' name='status' value="Chưa thanh toán"/>
                             </div>
                         <div className={classes.form_add_salary_button}>
-                            <button  onClick={calculateSalary}>Tính</button>
-                            <button onClick={closeModal}>Hủy</button>
+                            <button className={classes.btnCal}  onClick={calculateSalary}>Tính</button>
+                            <button className={classes.btnCancel} onClick={closeModal}>Hủy</button>
                         </div>
                     </form>
                 </Modal>
 )}
         </div>
+        
         </div>
 
     )

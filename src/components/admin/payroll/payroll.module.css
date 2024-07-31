@@ -11,7 +11,7 @@
 .article table {
     white-space: nowrap;
     border-collapse: collapse;
-    height: 100px;
+  
     text-align: center;
     width: 100%;
     font-size: 12px;
@@ -59,15 +59,35 @@ background-color:#fff;      }
 }
 
 .article_option_button_calsalary{
-    width: 100px;
-    height: 30px;
+  background-color: green;
+  border:none;
+  color: white;
+  width: 50px;
+  height: 30px;
+  transition-duration: 0.4s;
+  border-radius: 4px;
+  cursor: pointer;
     
 }
 
+.article_option_button_calsalary:hover{
+  background-color: rgb(16, 120, 16);
+}
+
 .article_button_detail{
-    width: 50px;
-    height: 30px;
+   
     background-color: #FFC107;
+    border:none;
+    color: white;
+    width: 40px;
+    height: 20px;
+    transition-duration: 0.4s;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.article_button_detail:hover{
+  background-color: #ecbb2a;
 }
 
 .form_add_salary{
@@ -120,10 +140,89 @@ background-color:#fff;      }
   }
 
   .article_option_button_back{
-    width: 100px;
-    height: 30px;
-    border-radius: 5px;
-    text-align: center;
-    line-height: 15px;
+    background-color: crimson;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
     cursor: pointer;
+    
+  }
+  .btnCalculateSalary{
+    background-color: rgb(26, 163, 117);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btnCalculateSalary:hover{
+    background-color: rgb(21, 142, 102);
+  }
+
+  .article_option_button_back:hover{
+    background-color: rgb(201, 39, 72);
+  }
+
+  .pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pagination .active {
+    background-color: #0056b3;
+    font-weight: bold;
+  }
+
+  .statusActive {
+    color: rgb(30, 194, 30);
+    font-weight: bold;
+  }
+  
+  .statusInactive {
+    color: red;
+    font-weight: bold;
+  }
+
+  .btnCal{
+    background-color: #007bff;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btnCal:hover{
+    background-color: #0056b3;
+  }
+
+  .btnCancel{
+    background-color: crimson;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btnCancel:hover{
+    background-color: rgb(146, 16, 42);
   }

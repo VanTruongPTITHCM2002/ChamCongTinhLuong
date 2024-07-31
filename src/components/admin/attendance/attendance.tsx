@@ -4,6 +4,9 @@ import classes from './attendance.module.css'
 import axios from 'axios';
 import Modal from '@/components/modal';
 import Swal from 'sweetalert2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBorderNone, faCircle, faCirclePlus, faDeleteLeft, faInfoCircle, faPen, faSearch, faTableList } from '@fortawesome/free-solid-svg-icons';
+import { errorSwal, successSwal } from '@/components/user/custom/sweetalert';
 
 interface Attendance{
     idemployee:string;
@@ -26,7 +29,7 @@ interface Attendance_Explain{
     status:string
 }
 interface IFEmployee{
-    id:string;
+    idemployee:string;
 }
 
 interface Filter{
@@ -48,12 +51,17 @@ export default function AdminAttendancePage(){
     const [modal,setModal] = useState(false);
     const [changeStatus,setChangeStatus] = useState(false);
     const [attendance,setAttendance] = useState<Attendance[]>([]);
+    const [attendaces,setAttendances] = useState<Attendance[]>([]);
     const [attedance_explain,setAttendance_Explain] = useState<Attendance_Explain[]>([]);
     const [option,setOption] = useState<string>('');
     const [selectedEmployee, setSelectedEmployee] = useState<string>('');
     const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
     const [workRecordList,setWorkRecordList] = useState<WorkRecord[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const inputRefs = useRef<Record<number, any>>({});
+    const [num,setNum] = useState(-1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
     const customModalStyles = {
         width: '50%', // Tùy chỉnh độ rộng của modal
         height: '50%', // Tùy chỉnh chiều cao của modal
@@ -68,7 +76,8 @@ export default function AdminAttendancePage(){
         { value: 'Đi làm đầy đủ', label: 'Đi làm đầy đủ' },
         { value: 'Nghỉ bù', label: 'Nghỉ bù' },
         { value: 'Làm thêm giờ', label: 'Làm thêm giờ' },
-        { value: 'Công tác', label: 'Công tác' }
+        { value: 'Công tác', label: 'Công tác' },
+        {value:'Đi trễ về sớm',label: 'Đi trễ về sớm'}
       ];
 
     useEffect(()=>{
@@ -84,14 +93,24 @@ export default function AdminAttendancePage(){
         try {
             const response = await axios.get('http://localhost:8083/api/v1/attendance');
             setAttendance(response.data.data);
+            setAttendances(response.data.data);
         } catch (error) {
             console.error('Error fetching employee ID:', error);
+           
         }
     };
-
+    const totalPages = Math.ceil(attendance.length / itemsPerPage);
+    
+    const handlePageChange = (pageNumber:number) => {
+      setCurrentPage(pageNumber);
+    };
+    const currentData = attendance.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
     const getIDemployee = async ()=>{
         try {
-            const response = await axios.get('http://localhost:8084/api/v1/workschedule/getidemp');
+            const response = await axios.get('http://localhost:8083/api/v1/workrecord/getid');
             console.log(response.data);
             setIdEmployee(response.data);
         
@@ -168,8 +187,9 @@ export default function AdminAttendancePage(){
         
     }
 
-    const handleClickUpdate = ()=>{
+    const handleClickUpdate = (a:number)=>{
         setIsUpdate(true);
+        setNum(a);
     }
     const handleClickSave = async (index:number)=>{
         const updatedAttendance: Attendance = {
@@ -178,20 +198,22 @@ export default function AdminAttendancePage(){
             checkouttime: inputRefs.current[index]?.checkouttime?.value || attendance[index].checkouttime,
             status: inputRefs.current[index]?.status?.value || attendance[index].status,
             attendanceStatusName: inputRefs.current[index]?.status?.value || attendance[index].status,
-            numberwork: parseFloat(inputRefs.current[index]?.numberwork?.value) || attendance[index].numberwork,
+            numberwork:inputRefs.current[index]?.numberwork?.value || attendance[index].numberwork ||0
           };
         try{
-            const response = await axios.put('http://localhost:8083/api/v1/attendance',updatedAttendance);
+            const response = await axios.put('http://localhost:8083/api/v1/attendance/admin',updatedAttendance);
             if(response.status === 200){
-                alert(response.data.message);
+                successSwal('Thành công',response.data.message);
                 setAttendance((prevAttendance) => {
                     const newAttendance = [...prevAttendance];
                     newAttendance[index] = updatedAttendance;
                     return newAttendance;
                   });
+                  setNum(-1);
             }
-        }catch(error){
-            alert('Xảy ra lỗi trong quá trình call API');
+        }catch(error:any){
+           
+            errorSwal('Thất bại', error.response.data.message)
         }
         setIsUpdate(false);
     }
@@ -265,13 +287,14 @@ export default function AdminAttendancePage(){
         const response = await axios.post('http://localhost:8083/api/v1/workrecord', workRecord);
         console.log('Response:', response.data.message);
         if(response.status === 400){
-            alert(response.data.status);
+           errorSwal('Thất bại',response.data.message)
+           return;
         }
-        alert("Thêm bảng ghi công thành công");
+        successSwal('Thành công',response.data.message);
     } catch (error:any) {
         if (error.response) {
-            // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
-            alert( error.response.data.message);
+            
+            errorSwal('Thất bại',error.response.data.message)
         }
         
     }
@@ -293,7 +316,7 @@ export default function AdminAttendancePage(){
         try{
             const response = await axios.put('http://localhost:8083/api/v1/attendance_explain',updatedAttendanceExplain);
             if(response.status === 200){
-                alert(response.data.message);
+           successSwal('Thành công',response.data.message)
                 setAttendance_Explain((prevAttendanceExplain) => {
                     const newAttendanceExplain = [...prevAttendanceExplain];
                     newAttendanceExplain[index] = updatedAttendanceExplain;
@@ -305,30 +328,54 @@ export default function AdminAttendancePage(){
         }
         setChangeStatus(false);
     }
+    const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+      };
+      const searchButton = ()=>{
+        if(searchTerm === ''){
+            setAttendance(attendaces);
+           
+         }else{
+            const filterdata = attendance.filter(
+                (item) =>
+                  item.idemployee.includes(searchTerm) ||
+                  item.dateattendance?.includes(searchTerm)
+             
+                
+              );
+          setAttendance(filterdata);
+        }
+      }
     return (
         <div className={classes.article}>
+            {workRecord?<h2>Quản lý bảng ghi ngày công</h2>
+        :attendanceExplain?<h2>Quản lý giải trình</h2>:<h2>Quản lý chấm công</h2> 
+        }
+           
             <div className={classes.article_option}>
                 
                 <div className={classes.article_option_select}>
             
             {!workRecord && !attendanceExplain?(
                     <>
-                           <select id='manv' name='manv'  value={selectedEmployee}
-                onChange={handleSelectChange} required>
-                    <option value={'all'}>--Tất cả--</option>
-                                            {idEmployee.map((employee) => (
-                                                <option key={employee.id} value={employee.id}>
-                                                    {employee.id}
-                                                </option>
-                                            ))}
-                                    </select>
-                                    <button className={classes.btn_search} onClick={handleButtonClick}>Tìm kiếm</button>
+                           <input type="text" placeholder='Tìm kiếm...' 
+                              value={searchTerm}
+                              onChange={handleSearch}
+                        />
+                        <button onClick={searchButton} className={classes.btn_search}>
+                            <FontAwesomeIcon icon={faSearch}/>
+                        </button> 
+                                    
                     </>
             ):(
                  <>
                     <input style={{ height: '30px',marginRight:'5px'}}   value={inputValue} 
+                    placeholder='Tìm kiếm...'
                 onChange={handleInputChange}  type='text'/>
-                    <button className={classes.btn_search} onClick={()=>buttonSearch(option)}>Tìm kiếm</button>
+                    <button className={classes.btn_search} onClick={()=>buttonSearch(option)}>
+                    <FontAwesomeIcon icon={faSearch} />
+                       </button>
                  </>   
             )}
          
@@ -336,22 +383,36 @@ export default function AdminAttendancePage(){
                 <div className={classes.article_option_button}>
                     {workRecord ? (
                         <div>
-                            <button onClick={handleModalAddWorkRecord}>Thêm bảng ghi công</button>
-                            <button onClick={()=>handleBack(2)}>Quay lại</button>
+                            <button className={classes.buttonWordRecord}  onClick={handleModalAddWorkRecord}>
+                                <FontAwesomeIcon icon={faCirclePlus}/>
+                                </button>
+                            <button className={classes.buttonBackWordRecord} onClick={()=>handleBack(2)}>
+                            <FontAwesomeIcon icon={faDeleteLeft}/>
+                                </button>
                         </div>
                     ) : attendanceExplain ? (
                         <div>
                         
-                        <button onClick={()=>handleBack(3)}>Quay lại</button>
+                        <button onClick={()=>handleBack(3)}
+                            className={classes.buttonBackWordRecord}
+                            >
+                                <FontAwesomeIcon icon={faDeleteLeft}/>
+                            </button>
                     </div>
                     ):(
                         <>
                                 <div className={classes.article_option_button_workrecord}>
-                                    <button onClick={handleClickWorkRecord}>Bảng ngày ghi công</button>
+                                    <button onClick={handleClickWorkRecord} title="Bảng ghi ngày công">
+                                    <FontAwesomeIcon icon={faTableList}  />
+                                    </button>
                                 </div>
 
                                 <div className={classes.article_option_button_explain}>
-                                    <button onClick={handleCliCkAttendanceExplain}>Bảng giải trình</button>
+                                    <button onClick={handleCliCkAttendanceExplain}
+                                    title="Bảng giải trình"
+                                    >
+                                    <FontAwesomeIcon icon={faBorderNone} />
+                                    </button>
                                 </div>
                         </>
                     )}
@@ -361,7 +422,7 @@ export default function AdminAttendancePage(){
             {workRecord ?
             ( 
                 <>
-                <table>
+                <table className={classes.tableWorkRecord}>
                     <thead>
                         <tr>
                             <th>Mã nhân viên</th>
@@ -386,7 +447,7 @@ export default function AdminAttendancePage(){
                 </>
             )
         : attendanceExplain? (
-            <table>
+            <table className={classes.btnTableExplain}>
             <thead>
                 <tr>
                     <th>Mã nhân viên</th>
@@ -408,9 +469,11 @@ export default function AdminAttendancePage(){
                     <td>{e.checkoutime}</td>
 
                     <td>
-                        <button onClick={()=> handleShowDetail(e.explaination)}>Xem chi tiết</button>   
+                        <button className={classes.btnDetails} onClick={()=> handleShowDetail(e.explaination)}>
+                            <FontAwesomeIcon icon={faInfoCircle}/>
+                         </button>   
                     </td>
-                    <td>
+                    <td className={e.status === "Đang chờ duyệt" ? classes.statusUnActive: e.status === 'Duyệt' ? classes.statusActive: classes.statusInactive}>
                         {!changeStatus?
                         (
                             e.status
@@ -430,11 +493,13 @@ export default function AdminAttendancePage(){
                     <td>
                         {!changeStatus?
                         (
-                          <button onClick={buttonChangeStatus}>Thay đổi</button>    
+                          <button className={classes.btnUpdateExplain} onClick={buttonChangeStatus}>
+                            <FontAwesomeIcon icon={faPen}/>
+                          </button>    
                         ):(
                             <div className={classes.button_explain}>
-                                <button onClick={()=>buttonUpdateAttendanceExplain(index)}>Lưu</button>
-                                <button onClick={handleCancel}>Hủy</button>
+                                <button className={classes.btn_update} onClick={()=>buttonUpdateAttendanceExplain(index)}>Lưu</button>
+                                <button className={classes.btn_cancel} onClick={handleCancel}>Hủy</button>
                             </div>
                             
                         )}
@@ -448,7 +513,7 @@ export default function AdminAttendancePage(){
             </tbody>
         </table>
         ) :
-        ( <table>
+        ( <table className={classes.tableUpdate}>
             <thead>
                 <tr>
                     <th>Mã nhân viên</th>
@@ -462,32 +527,29 @@ export default function AdminAttendancePage(){
             </thead>
 
             <tbody>
-                {attendance.map((attend,index) => (
-                    <tr key={index}>
-                        <td>{attend.idemployee}</td>
-                        <td>{attend.dateattendance}</td>
-                        {isUpdate?
-                        (
-                            <>
-                               <>
-                <td>
+
+                {isUpdate?(
+                        <tr key={currentData[num].idemployee}>
+                            <td>{currentData[num].idemployee}</td>
+                            <td>{currentData[num].dateattendance}</td>
+                            <td>
                   <input
                     type="time"
-                    defaultValue={attend.checkintime}
-                    ref={(el) => (inputRefs.current[index] = { ...inputRefs.current[index], checkintime: el })}
+                    defaultValue={currentData[num].checkintime}
+                    ref={(el) => (inputRefs.current[num] = { ...inputRefs.current[num], checkintime: el })}
                   />
                 </td>
                 <td>
                   <input
                     type="time"
-                    defaultValue={attend.checkouttime}
-                    ref={(el) => (inputRefs.current[index] = { ...inputRefs.current[index], checkouttime: el })}
+                    defaultValue={currentData[num].checkouttime}
+                    ref={(el) => (inputRefs.current[num] = { ...inputRefs.current[num], checkouttime: el })}
                   />
                 </td>
                 <td>
                 <select
-                defaultValue={attend.attendanceStatusName}
-                ref={(el) => (inputRefs.current[index] = { ...inputRefs.current[index], status: el })}
+                defaultValue={currentData[num].attendanceStatusName}
+                ref={(el) => (inputRefs.current[num] = { ...inputRefs.current[num], status: el })}
               >
                 <option value="">Chọn trạng thái</option>
                 {statusOptions.map((option) => (
@@ -500,31 +562,38 @@ export default function AdminAttendancePage(){
                 <td>
                   <input
                     type="number"
-                    step="0.01"
-                    defaultValue={attend.numberwork}
-                    ref={(el) => (inputRefs.current[index] = { ...inputRefs.current[index], numberwork: el })}
+                    step="0.2"
+                    
+                    defaultValue={currentData[num]?.numberwork || 0}
+                    ref={(el) => (inputRefs.current[num] = { ...inputRefs.current[num], numberwork: el })}
                   />
                 </td>
                 <td>
-                    <button  className={classes.btn_update} onClick={() => handleClickSave(index)}>Lưu</button>
+                    <button  className={classes.btn_update} onClick={() => handleClickSave(num)}>Lưu</button>
 
-                    <button  className={classes.btn_update} onClick={handleCancel}>Hủy</button>
+                    <button  className={classes.btn_cancel} onClick={handleCancel}>Hủy</button>
                 </td>
-              </>
-                            </>
-                        ): 
-                    (
-                            <>
-                              <td>{attend.checkintime}</td>
+                        </tr>
+                )
+                    :(
+                        currentData.map((attend,index) => (
+                            <tr key={index}>
+                                <td>{attend.idemployee}</td>
+                                <td>{attend.dateattendance}</td>
+                                <td>{attend.checkintime}</td>
                         <td>{attend.checkouttime}</td>
                         <td>{attend.attendanceStatusName}</td>
                         <td>{attend.numberwork}</td>
-                        <td><button onClick={handleClickUpdate}>Chỉnh sửa</button></td>
-                            </>
-                    )}
-                      
-                    </tr>
-                ))}
+                        <td><button className={classes.btnUpdate} onClick={()=>handleClickUpdate(index)}>
+                            <FontAwesomeIcon icon={faPen}/>
+                            </button></td>
+                            </tr>
+                    )
+                 )
+                )
+                }
+
+           
               
             </tbody>
         </table>)
@@ -539,8 +608,8 @@ export default function AdminAttendancePage(){
                         <select id='manv' name='manv'  value={selectedEmployee}
                 onChange={handleSelectChange} required>
                                             {idEmployee.map((employee) => (
-                                                <option key={employee.id} value={employee.id}>
-                                                    {employee.id}
+                                                <option key={employee.idemployee} value={employee.idemployee}>
+                                                    {employee.idemployee}
                                                 </option>
                                             ))}
                                     </select>
@@ -557,13 +626,28 @@ export default function AdminAttendancePage(){
                         </div>
 
                         <div className={classes.form_add_work_record_button}>
-                            <button onClick={buttonAddWorkRecord}>Thêm</button>
-                            <button onClick={closeModal}>Hủy</button>
+                            <button className={classes.btnAdd} onClick={buttonAddWorkRecord}>
+                               
+                                Thêm
+                                
+                                </button>
+                            <button className={classes.btnCancel} onClick={closeModal}>Hủy</button>
                         </div>
                     </form>
                 </Modal>
 )}
         </div>
+        <div className={classes.pagination}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? classes.active : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
         </div>
     )
 }

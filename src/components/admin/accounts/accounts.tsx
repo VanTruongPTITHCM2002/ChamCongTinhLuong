@@ -5,7 +5,7 @@ import axios from 'axios';
 import { error } from 'console';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faPen, faRotateLeft, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPen, faRotateLeft, faSave, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface Account{
     username:string,
@@ -17,11 +17,18 @@ interface Account{
 export default function AdminAccountsPage(){
     const [isUpdate,setIsUpdate] = useState(false);
     const [accountData,setAccountData] = useState<Account[]>([]);
+    const [accounts,setAccounts] = useState<Account[]>([]);
     const [isNumber,setIsNumber] = useState<number>(-1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [tempStatus,setTempStatus] = useState('');
+    const [originStatus,setOriginStatus] = useState('');
     const getAccounts = async ()=>{
         axios.get('http://localhost:8082/api/v1/account')
         .then(response=>{
             setAccountData(response.data.data);
+            setAccounts(response.data.data);
         }).catch(error=>{
             console.error("Xảy ra lỗi khi lấy dữ liệu từ API");
         });
@@ -31,6 +38,12 @@ export default function AdminAccountsPage(){
         getAccounts();
     },[]);
 
+    const totalPages = Math.ceil(accountData.length / itemsPerPage);
+    
+    const handlePageChange = (pageNumber:number) => {
+      setCurrentPage(pageNumber);
+    };
+    
     const handleUpdateAccountStatus = (index:number)=>{
         setIsNumber(index);
         setIsUpdate(true);
@@ -38,8 +51,22 @@ export default function AdminAccountsPage(){
 
     const handleUpdateAccountStatusSave = async (account:Account,num?:number)=>{
         if(num === -1){
+            if(tempStatus !== originStatus){
+                const updatedData = currentData.map((acc, idx) => {
+                    if (acc.username === account.username) {
+                        return {
+                            ...acc,
+                            status: originStatus
+                        };
+                    }
+                    return acc;
+                });
+                setAccountData(updatedData);
+            }
+            
             setIsUpdate(false);
             setIsNumber(-1);
+            
             return;
         }
         try {
@@ -58,8 +85,11 @@ export default function AdminAccountsPage(){
         setIsNumber(-1);
     }
     const handleStatusChange = (index:number, newStatus:string) => {
+        
         const updatedAccounts = [...accountData];
+        setOriginStatus(updatedAccounts[index].status);
         updatedAccounts[index].status = newStatus;
+        setTempStatus(newStatus);
         setAccountData(updatedAccounts);
       };
 
@@ -96,10 +126,50 @@ export default function AdminAccountsPage(){
           });
        
     }
+    const currentData = accountData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
+
+      const searchButton = ()=>{
+        if(searchTerm === ''){
+            setAccountData(accounts);
+           
+         }else{
+            const filterdata = accountData.filter(
+                (item) =>
+                  item.username.includes(searchTerm) ||
+                  item.status.includes(searchTerm)
+                  || item.role.includes(searchTerm)
+              );
+          setAccountData(filterdata);
+        }
+      }
+      const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+        const term = event.target.value;
+        setSearchTerm(term);
+      };
 
     return (
         <div className={classes.article}>
         <h2>Bảng danh sách tài khoản của nhân viên</h2>
+        <div className={classes.article_button}>
+            {!isUpdate &&
+            (
+                <>
+                        <input type="text" placeholder='Tìm kiếm...' 
+                              value={searchTerm}
+                              onChange={handleSearch}
+                        />
+                        <button onClick={searchButton}>
+                            <FontAwesomeIcon icon={faSearch} />
+                        </button>  
+                </>
+            )
+            }
+             
+        </div>
+       
         <table>
             <thead>
                 <tr>
@@ -157,11 +227,11 @@ export default function AdminAccountsPage(){
         </td>
     </tr>
 ) : (
-    accountData.map((account, index) => (
+    currentData.map((account, index) => (
         <tr key={index}>
             <td>{account.username}</td>
             <td>{account.role}</td>
-            <td>
+            <td className={account.status === 'Đang hoạt động' ? classes.statusActive : classes.statusInactive}>
                 {isUpdate ? 
                     (
                         <select 
@@ -205,6 +275,18 @@ export default function AdminAccountsPage(){
 )}
                 </tbody>
         </table>
+
+        <div className={classes.pagination}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? classes.active : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
             </div>
     )
 }
