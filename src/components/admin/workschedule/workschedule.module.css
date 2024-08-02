@@ -67,22 +67,37 @@
      padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
      
  }
-
+ .btnCancel{
+   background-color: crimson;
+   color: white;
+   margin:10px;
+   width: 50px;
+   height: 30px;
+   transition-duration: 0.4s;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
+ 
+.btnCancel:hover{
+   background-color: rgb(184, 35, 64);
+}
  
  .article table th{
      background-color: #95A5A6;
    }
 
-.article table button{
-   width: 50px;
+.btnDetail{
+   width: 30px;
    height: 30px;
    background-color: rgb(192, 192, 30);
    border: none;
    border-radius: 4px;
    cursor: pointer;
+
 }
 
-.article table button:hover{
+.btnDetail:hover{
    background-color: #95A5A6;
 }
  
@@ -163,21 +178,7 @@
    background-color: #3498;
 }
 
-.btnCancel{
-   background-color: crimson;
-   color: white;
-   margin:10px;
-   width: 50px;
-   height: 30px;
-   transition-duration: 0.4s;
-   border: none;
-   border-radius: 4px;
-   cursor: pointer;
-}
- 
-.btnCancel:hover{
-   background-color: rgb(184, 35, 64);
-}
+
 
 .form_add_container{
    margin-top: 5px;
@@ -210,4 +211,35 @@
    justify-content: center;
 }
    
+
+/* CSS cho các chi tiết nhân viên */
+.employeeDetails {
+   display: grid;
+   grid-template-columns: 1fr 1fr; /* Hai cột có kích thước bằng nhau */
+   gap: 10px; /* Khoảng cách giữa các cột */
+   padding: 10px;
+}
+
+.formGroup {
+   display: flex;
+   flex-direction: column;
+}
+
+.formGroup label {
+   font-weight: bold;
+   margin-bottom: 5px;
+}
+
+.formGroup input, .formGroup select {
+   padding: 5px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-size: 14px;
+   background-color: #ccc;
+   color: #000;
+}
+
+.formGroup input[readonly], .formGroup select[readonly] {
+   background-color: #e9ecef; /* Màu nền cho trường đọc */
+}
 

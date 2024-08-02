@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBorderNone, faCircle, faCirclePlus, faDeleteLeft, faInfoCircle, faPen, faSearch, faTableList } from '@fortawesome/free-solid-svg-icons';
 import { errorSwal, successSwal } from '@/components/user/custom/sweetalert';
+import { Payroll } from '../payroll/payroll';
 
 interface Attendance{
     idemployee:string;
@@ -62,10 +63,12 @@ export default function AdminAttendancePage(){
     const [num,setNum] = useState(-1);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
+    const [indexArray,setIndexArrray] = useState(-1);
     const customModalStyles = {
         width: '50%', // Tùy chỉnh độ rộng của modal
         height: '50%', // Tùy chỉnh chiều cao của modal
     };
+    const [showPayroll,setShowPayroll] = useState<Payroll[]>([]);
     const statusOptions = [
         { value: 'Đi trễ', label: 'Đi trễ' },
         { value: 'Về sớm', label: 'Về sớm' },
@@ -79,10 +82,26 @@ export default function AdminAttendancePage(){
         { value: 'Công tác', label: 'Công tác' },
         {value:'Đi trễ về sớm',label: 'Đi trễ về sớm'}
       ];
-
+      const fetchPayroll = async () => {
+        try {
+            const response = await axios.get('http://localhost:8085/api/v1/payroll');
+            setShowPayroll(response.data.data);
+            
+        } catch (error) {
+            console.error('Error fetching payroll data:', error);
+        }
+    };
+    
+    const isDateInPayrollMonthYear = (dateattendance: string): boolean => {
+        const [yearFromDate, monthFromDate] = dateattendance.split('-').map(Number);
+        const isInPayroll = showPayroll.some(payroll => {
+            return payroll.month === monthFromDate && payroll.year === yearFromDate;
+        });
+        return isInPayroll;
+    };
     useEffect(()=>{
          
-
+        fetchPayroll();
         fetchAttendance();
         getIDemployee();
     },[])
@@ -131,6 +150,8 @@ export default function AdminAttendancePage(){
         }
         setWorkRecord(true);
         setOption('workrecord');
+        setIsUpdate(false);
+        setChangeStatus(false);
     }
 
     const handleBack = (num:number)=>{
@@ -151,6 +172,9 @@ export default function AdminAttendancePage(){
         }
         setOption('attedance_explain')
         setAttendanceExplain(true);
+        setIsUpdate(false);
+        setChangeStatus(false);
+   
     }
     
     const handleCancel = ()=>{
@@ -305,7 +329,8 @@ export default function AdminAttendancePage(){
             text:`${reason}`
         })
     }
-    const buttonChangeStatus = ()=>{
+    const buttonChangeStatus = (index:number)=>{
+        setIndexArrray(index);
         setChangeStatus(true);
     }
     const buttonUpdateAttendanceExplain = async (index:number)=>{
@@ -461,55 +486,66 @@ export default function AdminAttendancePage(){
             </thead>
 
             <tbody>
-                {attedance_explain.map((e,index)=>(
-                    <tr key={index}>
-                    <td>{e.idemployee}</td>
-                    <td>{e.date}</td>
-                    <td>{e.checkintime}</td>
-                    <td>{e.checkoutime}</td>
 
+                {changeStatus?
+                (
+                    <tr key={attedance_explain[indexArray].idemployee}>
+                       <td>{attedance_explain[indexArray].idemployee}</td>
+                    <td>{attedance_explain[indexArray].date}</td>
+                    <td>{attedance_explain[indexArray].checkintime}</td>
+                    <td>{attedance_explain[indexArray].checkoutime}</td>
                     <td>
-                        <button className={classes.btnDetails} onClick={()=> handleShowDetail(e.explaination)}>
+                        <button className={classes.btnDetails} onClick={()=> handleShowDetail(attedance_explain[indexArray].explaination)}>
                             <FontAwesomeIcon icon={faInfoCircle}/>
                          </button>   
                     </td>
-                    <td className={e.status === "Đang chờ duyệt" ? classes.statusUnActive: e.status === 'Duyệt' ? classes.statusActive: classes.statusInactive}>
-                        {!changeStatus?
-                        (
-                            e.status
-                        ):(
-                             <select defaultValue={e.status}
-                             ref={(el) => (inputRefs.current[index] = { ...inputRefs.current[index], status: el })}
+                    <td>
+                    <select defaultValue={attedance_explain[indexArray].status}
+                             ref={(el) => (inputRefs.current[indexArray] = { ...inputRefs.current[indexArray], status: el })}
                              >
                             <option value="Đang chờ duyệt">Đang chờ duyệt</option>
                             <option value="Duyệt">Duyệt</option>
                             <option value="Không duyệt">Không duyệt</option>
                         </select>
-                        )}
-
-                       
-                       </td>
-
-                    <td>
-                        {!changeStatus?
-                        (
-                          <button className={classes.btnUpdateExplain} onClick={buttonChangeStatus}>
-                            <FontAwesomeIcon icon={faPen}/>
-                          </button>    
-                        ):(
+                    </td>
+                  
+                            <td>
                             <div className={classes.button_explain}>
-                                <button className={classes.btn_update} onClick={()=>buttonUpdateAttendanceExplain(index)}>Lưu</button>
+                                <button className={classes.btn_update} onClick={()=>buttonUpdateAttendanceExplain(indexArray)}>Lưu</button>
                                 <button className={classes.btn_cancel} onClick={handleCancel}>Hủy</button>
                             </div>
-                            
-                        )}
-                      
-                        
+                            </td>
+                    </tr>
+                   
+                ):(
+
+                    attedance_explain.map((e,index)=>(
+                        <tr key={index}>
+                        <td>{e.idemployee}</td>
+                        <td>{e.date}</td>
+                        <td>{e.checkintime}</td>
+                        <td>{e.checkoutime}</td>
+                        <td>
+                        <button className={classes.btnDetails} onClick={()=> handleShowDetail(e.explaination)}>
+                            <FontAwesomeIcon icon={faInfoCircle}/>
+                         </button>   
                     </td>
-                </tr>
-                ))
+                    <td className={e.status === 'Duyệt' ? classes.statusActive : e.status === "Không duyệt"?classes.statusInactive
+                        : classes.statusUnActive
+                    }>{e.status}</td>
+                    <td>
+                  
+                    <button  disabled={isDateInPayrollMonthYear(e.date?e.date:'')} className={classes.btnUpdateExplain} onClick={()=>buttonChangeStatus(index)}>
+                            <FontAwesomeIcon icon={faPen}/>
+                          </button>    
+               
                 
-            }
+                    </td>
+                           
+                    </tr>
+                )))}
+
+             
             </tbody>
         </table>
         ) :
@@ -584,7 +620,7 @@ export default function AdminAttendancePage(){
                         <td>{attend.checkouttime}</td>
                         <td>{attend.attendanceStatusName}</td>
                         <td>{attend.numberwork}</td>
-                        <td><button className={classes.btnUpdate} onClick={()=>handleClickUpdate(index)}>
+                        <td><button    disabled={isDateInPayrollMonthYear(attend.dateattendance?attend.dateattendance:'')} className={classes.btnUpdate} onClick={()=>handleClickUpdate(index)}>
                             <FontAwesomeIcon icon={faPen}/>
                             </button></td>
                             </tr>

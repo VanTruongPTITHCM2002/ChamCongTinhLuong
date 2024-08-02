@@ -6,15 +6,15 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 export default function AdminChangePassword(){
-    const decoded:any = jwt.verify(String(localStorage.getItem('token')), String(process.env.NEXT_PUBLIC_SECRET_KEY));
+    
     const router = useRouter();
    
     const [password,setPassword]= useState('');
     const [newpassword,setNewPassoword] = useState('');
     const [renewpassword,setReNewPassword] = useState('');
     // Lấy email từ payload
-    const username = decoded.email;
- 
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token')
 
     const handleChangePassword = async()=>{
         const data = {
@@ -32,7 +32,13 @@ export default function AdminChangePassword(){
         return;
         }
         try{
-            const response = await axios.put("http://localhost:8082/api/v1/account/change_password",data);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account/change_password`,data,
+              {
+                headers: {
+                        Authorization: `Bearer ${token}`
+                      }
+              }
+            );
            
             Swal.fire({
               title:"Thành công",

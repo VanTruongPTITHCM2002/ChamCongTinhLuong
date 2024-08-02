@@ -68,3 +68,53 @@
  .dropdownMenu li:hover {
    background-color: #f0f0f0;
  }
+
+ /* Container cho modal chi tiết nhân viên */
+/* Container cho modal chi tiết nhân viên */
+.employeeDetails {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1em;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Hai cột với kích thước bằng nhau */
+  gap: 1em; /* Khoảng cách giữa các ô */
+  font-size: 12px;
+ 
+}
+
+/* Nhóm form để các trường nằm cùng nhau */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style cho các trường đầu vào */
+.input {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #000;
+  font-size: 14px;
+  box-sizing: border-box; /* Đảm bảo padding và border nằm trong kích thước tổng cộng của phần tử */
+}
+
+/* Style cho nhãn */
+.formGroup label {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+/* Style cho tiêu đề modal */
+.customSwalTitle {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+
+/* Custom popup của SweetAlert */
+.customSwalPopup {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}

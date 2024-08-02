@@ -112,6 +112,8 @@ export default function UserAttendance(){
         
         return;
       }
+
+
   
       const newEntry: Attendance = {
         idemployee: `${username}` , 
@@ -135,6 +137,10 @@ export default function UserAttendance(){
             setAttendance([newEntry,...attendance]);
             setError(null);
                 successSwal('Thành công',`${response.data.message}`);
+          }
+          if(response.data.status === 404){
+            errorSwal('Thất bại',response.data.message);
+            return;
           }
       }catch(error:any){
           errorSwal('Thất bại',`${error.response.data.message}`);
@@ -197,6 +203,10 @@ export default function UserAttendance(){
                   setError(null);
                   successSwal('Thành công',`${response.data.message}`);
             }
+            if(response.data.status === 404){
+              errorSwal('Thất bại',response.data.message);
+              return;
+            }
         }catch(error:any){
             errorSwal('Thất bại',`${error.response.data.message}`);
         }
@@ -234,7 +244,7 @@ export default function UserAttendance(){
     };
     const handleSelectRow = async() => {
       if (selectedRowIndex !== null) {
-        const { value: text } = await Swal.fire({
+        const { value: text ,isDismissed } = await Swal.fire({
           input: "textarea",
           inputLabel: "Nhập lý do",
           inputPlaceholder: "Type your message here...",
@@ -243,6 +253,9 @@ export default function UserAttendance(){
           },
           showCancelButton: true
         });
+        if (isDismissed) {
+          return; 
+      }
         const selectedRow  = {
           idemployee: attendance[selectedRowIndex].idemployee,
           date: attendance[selectedRowIndex].dateattendance,
@@ -250,7 +263,25 @@ export default function UserAttendance(){
           checkoutime: attendance[selectedRowIndex].checkouttime,
           reason:text
         } 
-       
+        const normalizeTime = (time: string) => {
+          // Nếu định dạng thời gian là "HH:mm", thêm giây nếu cần
+          if (time.length === 5) {
+              return `${time}:00`;
+          }
+          return time; // Đã là định dạng "HH:mm:ss"
+      };
+      const isCheck =   attendance_explain.some(existingRow =>
+          existingRow.idemployee === selectedRow.idemployee &&
+          existingRow.date === selectedRow.date &&
+          normalizeTime(existingRow.checkintime) === normalizeTime(selectedRow.checkintime) &&
+          normalizeTime(existingRow.checkoutime) === normalizeTime(selectedRow.checkoutime)
+      );
+  
+     
+       if(isCheck){
+          errorSwal('Thất bại','Không thêm giải trình do đã có');
+          return;
+       }
         try{
           const response = await axios.post('http://localhost:8083/api/v1/attendance_explain',selectedRow);
           if(response.status === 201){
@@ -389,7 +420,7 @@ export default function UserAttendance(){
                     <td>{a.checkintime}</td>
                     <td>{a.checkoutime}</td>
                     <td>{a.explaination}</td>
-                    <td>{a.status}</td>
+                    <td className={a.status === "Duyệt"? classes.statusActive: a.status === "Không duyệt"?classes.statusInactive:classes.statusUnActive}>{a.status}</td>
                   </tr>
               ))}
              

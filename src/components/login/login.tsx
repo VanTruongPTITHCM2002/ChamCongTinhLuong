@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import classes from './login.module.css'
 import axios from "axios"
 import Swal from "sweetalert2"
+import { errorSwal } from "../user/custom/sweetalert"
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -68,7 +69,12 @@ export default function LoginPage(){
                 
                 }
                   else{
-               
+                    if (response.data.data.status === 0) {
+                      errorSwal('Thất bại', "Bạn không thể đăng nhập");
+                      router.push('/login');
+                      return;
+                  }
+  
                     
                   localStorage.setItem('token', response.data.data.token);
                   localStorage.setItem('username',response.data.data.username);

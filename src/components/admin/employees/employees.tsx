@@ -36,7 +36,7 @@ export default function AdminEmployeesPage(){
         .then(response => {
             setEmployeesData(response.data.data);
             setEmployees(response.data.data);
-            console.log('Dữ liệu nhân viên:', employeesData);
+
         })
         .catch(error => {
             console.error('Lỗi khi lấy dữ liệu từ API:', error);
@@ -108,7 +108,13 @@ export default function AdminEmployeesPage(){
         let errorMessages: string = '';
         for (const [key, value] of form.entries()) {
             if (!value) {
-                errorMessages = `${key} không được để trống.`;
+                const inputElement = document.querySelector(`[name="${key}"]`);
+        
+                // Tìm label tương ứng với input
+                const label =  inputElement?.previousElementSibling;
+                if (label && label.tagName === 'LABEL') {
+                    errorMessages = `${label.textContent} không được để trống.`;
+                }
                 hasErrors = true;
                 break; // Ngắt vòng lặp sớm
             }

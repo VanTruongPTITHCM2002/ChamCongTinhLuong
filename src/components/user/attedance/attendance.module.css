@@ -95,10 +95,7 @@
 }
 
 
-.attendance_table td {
 
-    color: #333;
-}
 
 .attendance_table td.selected {
     background-color: #0056b3; /* Màu nền khi chọn */
@@ -133,3 +130,18 @@
     background-color: #007BFF;
     color: white;
 }
+
+.statusActive {
+    color: rgb(30, 194, 30);
+    font-weight: bold;
+  }
+  
+  .statusInactive {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .statusUnActive{
+    color: grey;
+    font-weight: bold;
+  }

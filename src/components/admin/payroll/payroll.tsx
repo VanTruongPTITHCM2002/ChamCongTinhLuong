@@ -24,7 +24,7 @@ interface SalaryRequest{
     status:string;
 }
 
-interface Payroll{
+export interface Payroll{
     idemployee:string;
     name:string;
     month:number;
@@ -70,7 +70,7 @@ const AdminPayrollPage = () =>{
         };
         
         fetchPayroll();
-        console.log(1);
+      
     }, []);
    // setShowPayroll(showPay);
     // Định dạng ngày thành YYYY-MM-DD

@@ -319,7 +319,7 @@ export default function AdminContract(){
                              <td>
                                  <div className={classes.button_update_delete}>
                                          
-                                         <button className={classes.button_update}
+                                         <button  disabled={contract.status === 'Hết hợp đồng'} className={classes.button_update}
                                              onClick={()=>updateContract(contract)}
                                          ><FontAwesomeIcon icon={faPen} style={{width:"10px",
                                 height:"10px"

@@ -24,8 +24,19 @@ export default function AdminAccountsPage(){
     const [searchTerm, setSearchTerm] = useState('');
     const [tempStatus,setTempStatus] = useState('');
     const [originStatus,setOriginStatus] = useState('');
+    const token = localStorage.getItem('token');
     const getAccounts = async ()=>{
-        axios.get('http://localhost:8082/api/v1/account')
+        axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account`,{
+            headers: {
+                      Authorization: `Bearer ${token}`
+                    }
+                  }
+        )
+         // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/amount`, {
+        //     headers: {
+        //       Authorization: `Bearer ${token}`
+        //     }
+        //   });
         .then(response=>{
             setAccountData(response.data.data);
             setAccounts(response.data.data);
@@ -70,7 +81,12 @@ export default function AdminAccountsPage(){
             return;
         }
         try {
-            const response = await axios.put(`http://localhost:8082/api/v1/account/${account.username}`,account);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account/${account.username}`,account,{
+                 headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                }
+            );
             if (response.status === 200) {
                 Swal.fire({
                     title: "Thành công",
@@ -106,7 +122,11 @@ export default function AdminAccountsPage(){
           }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await axios.put(`http://localhost:8082/api/v1/account/${username}/reset_password`);
+                    const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account/${username}/reset_password`,{},{
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                          }
+                    });
                     if (response.status === 200) {
                       Swal.fire({
                           title: "Thành công",

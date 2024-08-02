@@ -16,7 +16,6 @@ interface Employee {
     address: string;
     degree: number | string;
     status: number | string;
-    coefficientsalary?: number;
 }
 export default function UserProfile() {
     const [personal, setPersonal] = useState<Employee>();
@@ -68,7 +67,6 @@ export default function UserProfile() {
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
-            coefficientsalary: 1 // Parsing as number
         };
         const id = employee.idemployee;
         try {

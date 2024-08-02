@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 export default function UserChangePassword(){
     const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
     const router = useRouter();
    
     const [password,setPassword]= useState('');
@@ -32,7 +33,13 @@ export default function UserChangePassword(){
         return;
         }
         try{
-            const response = await axios.put("http://localhost:8082/api/v1/account/change_password",data);
+          const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account/change_password`,data,
+            {
+              headers: {
+                      Authorization: `Bearer ${token}`
+                    }
+            }
+          );
            
             Swal.fire({
               title:"Thành công",

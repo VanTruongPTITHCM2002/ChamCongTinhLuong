@@ -94,7 +94,7 @@ export default function UserContract (){
                                  <td>{contract.workingdays}</td>
                                  <td>{contract.startdate}</td>
                                  <td>{contract.endate}</td>
-                                 <td>{contract.status}</td>
+                                 <td className={contract.status === 'Còn hợp đồng'?classes.statusActive:classes.statusInactive}>{contract.status}</td>
                              </tr>
                         ))};
                         

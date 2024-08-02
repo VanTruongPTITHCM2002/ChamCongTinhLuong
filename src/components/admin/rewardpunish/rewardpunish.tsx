@@ -7,6 +7,8 @@ import { FormEvent, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import Modal from '@/components/modal/modal';
 import Swal from 'sweetalert2';
+import { Payroll } from '../payroll/payroll';
+import { errorSwal } from '@/components/user/custom/sweetalert';
 interface RewardPunish{
     idemployee:string;
     type:string;
@@ -33,6 +35,17 @@ export default function AdminRewardPunishPage(){
     const [searchTerm, setSearchTerm] = useState('');
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
+    const [showPayroll,setShowPayroll] = useState<Payroll[]>([]);
+    const fetchPayroll = async () => {
+        try {
+            const response = await axios.get('http://localhost:8085/api/v1/payroll');
+            setShowPayroll(response.data.data);
+        } catch (error) {
+            console.error('Error fetching payroll data:', error);
+        }
+    };
+    
+   
     const getAll = async ()=>{
         try{
             const response =  await axios.get("http://localhost:8086/api/v1/rewardpunish");
@@ -55,8 +68,16 @@ export default function AdminRewardPunishPage(){
         }
     
     }
+    const isDateInPayrollMonthYear = (dateattendance: string): boolean => {
+        const [yearFromDate, monthFromDate] = dateattendance.split('-').map(Number);
+        const isInPayroll = showPayroll.some(payroll => {
+            return payroll.month === monthFromDate && payroll.year === yearFromDate;
+        });
+        return isInPayroll;
+    };
     useEffect(()=>{
         getAll();
+        fetchPayroll();
     },[])
 
     const closeModal = ()=>{
@@ -79,14 +100,20 @@ export default function AdminRewardPunishPage(){
             console.error('Form element not found');
             return;
         }
-    
+        const formatDateToAPI = (date: string): string => {
+            const dateObj = new Date(date);
+            const year = dateObj.getFullYear();
+            const month = (dateObj.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+            const day = dateObj.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
         const form = new FormData(formElement);
         const rewardPunish:RewardPunish ={
             idemployee:form.get('manv') as string,
             type: form.get('type') as string,
             cash: Number(form.get('cash') as string),
             reason: form.get('reason') as string,
-            setupdate: form.get('date') as string,
+            setupdate: formatDateToAPI(form.get('date') as string),
             status: "Tồn tại"
         }
         try{
@@ -99,6 +126,9 @@ export default function AdminRewardPunishPage(){
                })
                setShowRewardPunish(prevRewardPunish => [...prevRewardPunish, rewardPunish]);
                setModal(false);
+            }
+            if(response.data.status === 404){
+                errorSwal('Thất bại',response.data.message);
             }
         }catch(error){
             console.error('Xảy ra lỗi trong quá trình tải dữ liệu')
@@ -244,7 +274,7 @@ export default function AdminRewardPunishPage(){
                             <td>
                                 <div className={classes.button_update_delete}>
                                         
-                                        <button className={classes.button_delete}
+                                        <button disabled= {isDateInPayrollMonthYear(r.setupdate)} className={classes.button_delete}
                                             onClick={()=>deleteRewardPunish(r)}
                                         ><FontAwesomeIcon icon={faTrash} 
                        /></button>

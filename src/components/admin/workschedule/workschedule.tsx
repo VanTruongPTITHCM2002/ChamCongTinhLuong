@@ -8,9 +8,9 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faCircleInfo, faCirclePlus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faCircleInfo, faCirclePlus, faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { error } from 'console';
-import { errorAlert, errorSwal } from '@/components/user/custom/sweetalert';
+import { errorAlert, errorSwal, successSwal } from '@/components/user/custom/sweetalert';
 interface IFEmployee{
     id?:string;
     idemployee?:string,
@@ -60,13 +60,19 @@ export default function WorkSchedule(){
   const endOfWeekDate = endOfWeek(date, { weekStartsOn: 1 });
 
   const handleAddWorkSchedule = async ()=>{
+    const date = new Date();
+    const date2 = new Date(selectedDate);
+    if(date > date2){
+        errorSwal("Thất bại","Không thể thêm nhân viên vào ca này");
+        return;
+    }
     try {
         const response = await axios.get('http://localhost:8084/api/v1/workschedule/getidemp',{
             params:{
                 date:selectedDate.replace(/-/g, '/')
             }
         });
-        console.log(response.data);
+       
         setIdEmployee(response.data);
         if (response.data.length > 0) {
             const firstEmployeeId = response.data[0].id;
@@ -98,7 +104,10 @@ export default function WorkSchedule(){
         date:formattedDate
     }
     try {
-        const response = await axios.post('http://localhost:8084/api/v1/workschedule/workdate', {date:formattedDate});
+        const response = await axios.post('http://localhost:8084/api/v1/workschedule/workdate', {
+            date:formattedDate}
+        
+        );
         console.log('Response:', response.data);
         if(response.status === 400){
            
@@ -119,6 +128,47 @@ export default function WorkSchedule(){
     }
    
   };
+
+  const handelDeleteWorkSchedule = async(index:number)=>{
+    const currentDay = startOfWeekDate.getDay(); // Ngày hiện tại trong tuần (0: Chủ nhật, 1: Thứ hai, ..., 6: Thứ bảy)
+
+    // Tính toán ngày đầu tuần (Thứ 2 của tuần này)
+    const startOfWeek = new Date(startOfWeekDate);
+    startOfWeek.setDate(startOfWeekDate.getDate()); // Điều chỉnh để có Chủ nhật
+
+    // Tính toán ngày được chọn
+    const selectedDay = new Date(startOfWeek);
+    selectedDay.setDate(startOfWeek.getDate() + index); // Thêm số ngày tương ứng
+
+    // Định dạng ngày thành chuỗi YYYY-MM-DD
+    const formattedDate = selectedDay.toISOString().split('T')[0];
+    setSelectedDate(formattedDate);
+    const work:workDate={
+        date:formattedDate
+    }
+
+    try {
+        const response = await axios.delete('http://localhost:8084/api/v1/workschedule', 
+            
+            { params:{
+                date:formattedDate.replace(/-/g, '/')}
+            }
+            );
+       
+            if(response.status === 200){
+                successSwal('Thành công',response.data.message);
+            }
+       
+    } catch (error:any) {
+        if (error.response) {
+            // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
+            //alert( error.response.data.message);
+            errorAlert(  error.response.data.message);
+            setShowModal(false);
+        }
+        
+    }
+  }
 
   const handleCloseModal = () => {
     setIsSelected(false)      
@@ -153,6 +203,7 @@ const fetchEmployeeDetails = async (id: string) => {
     }
   };
 
+  // Thêm lịch làm việc
   const handleAddWorkScheduleDate = async (event:FormEvent)=>{
     event.preventDefault();
     const formElement = document.getElementById('form-add-work-date') as HTMLFormElement;
@@ -178,6 +229,23 @@ const fetchEmployeeDetails = async (id: string) => {
         errorSwal("Thất bại","Vui lòng không chọn chủ nhật");
         return;
     }
+    const clearTime = (date: Date) => {
+        date.setHours(0, 0, 0, 0);
+        return date;
+    };
+    const date = new Date();
+    const workdDate = new Date(workschedule.workdate);
+    
+    if(clearTime(workdDate).getTime() === clearTime(date).getTime()){
+        errorSwal("Thất bại","Không thể tạo lịch làm việc cho ngày hôm này vui lòng tạo trước 1 ngày");
+        return;
+    }
+
+    if(clearTime(workdDate).getTime() < clearTime(date).getTime()){
+        errorSwal("Thất bại","Không thể tạo lịch làm việc ngày trong quá khứ");
+        return;
+    }
+
     
     try {
         const response = await axios.post('http://localhost:8084/api/v1/workschedule', workschedule);
@@ -207,6 +275,7 @@ const fetchEmployeeDetails = async (id: string) => {
     
   }
 
+  // Thêm nhân viên vào ca làm việc
   const handelAddEmployeeWorkSchedule = async (event:FormEvent)=>{
   
     event.preventDefault();
@@ -217,7 +286,7 @@ const fetchEmployeeDetails = async (id: string) => {
     }
 
     const form = new FormData(formElement);
-    const ifemployee:IFEmployee ={
+    const ifemployee:newIFEMployee ={
             idemployee: form.get('manv') as string,
             name: form.get('fullname') as string,
             workdate:form.get('workdate') as string,
@@ -232,7 +301,8 @@ const fetchEmployeeDetails = async (id: string) => {
             errorSwal('Thất bại',response.data.message)
           return;
         }
-        alert("Thêm ca làm việc thành công");
+        successSwal("Thành công",response.data.message);
+        setWorkEmployee([ifemployee,...workEmoloyee]);
         setIsSelected(false);
     } catch (error:any) {
         if (error.response) {
@@ -244,6 +314,63 @@ const fetchEmployeeDetails = async (id: string) => {
     
     
   }
+  const deleteEmployee =async (idemployee:string,date:string) => {
+
+    const clearTime = (date: Date) => {
+        date.setHours(0, 0, 0, 0);
+        return date;
+    };
+    const currentdate = new Date();
+    const workdDate = new Date(date);
+    
+  
+
+    if(clearTime(currentdate).getTime() >= clearTime(workdDate).getTime()){
+        errorSwal("Thất bại","Không thể xóa nhân viên khỏi lịch trước đó");
+        return;
+    }
+
+    const result = await Swal.fire({
+        title: 'Xác nhận xóa',
+        text: `Bạn có chắc chắn muốn xóa ${idemployee} khỏi ngày làm việc ${date}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+        customClass: {
+            popup: 'custom-popup',
+            title: 'custom-title',
+            confirmButton: 'custom-confirm-button',
+            cancelButton: 'custom-cancel-button'
+        }
+    });
+
+    if (result.isConfirmed) {
+        // Thực hiện hành động xóa tại đây
+        try{
+            const response = await axios.delete("http://localhost:8084/api/v1/workscheduledetail",
+                { params:{
+                    idemployee:idemployee,
+                    date:date.replace(/-/g, '/')}
+                }
+            )
+            if(response.data.status === 200){
+                successSwal('Thành công',response.data.message);
+                setWorkEmployee(prev => {
+                    // Loại bỏ mục với idemployee và workdate tương ứng
+                    return prev.filter(emp => !(emp.idemployee === idemployee && emp.workdate === date));
+                });
+           
+                return;
+            }
+        }catch(error){
+    
+        }
+    } 
+    
+};
 
     return (
         <div className={classes.article}>
@@ -272,13 +399,29 @@ const fetchEmployeeDetails = async (id: string) => {
                 <tbody>
                     <tr>
                         <td>Ca làm việc 8:00 - 17:00</td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(1)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(2)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(3)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(4)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(5)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(6)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
-                        <td><button onClick={()=>handleDetailWorkSchedule(7)}><FontAwesomeIcon icon={faCircleInfo} /></button></td>
+                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(1)}><FontAwesomeIcon icon={faCircleInfo} 
+                       
+                        /></button>
+                            <button className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(1)}><FontAwesomeIcon icon={faTrash}/></button>
+                        </td>
+                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(2)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button  className={classes.btnCancel}  onClick={()=>handelDeleteWorkSchedule(2)}><FontAwesomeIcon icon={faTrash}/></button>
+                        </td>
+                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(3)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(3)}><FontAwesomeIcon icon={faTrash}/></button>
+                        </td>
+                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(4)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(4)}><FontAwesomeIcon icon={faTrash}/></button>
+                        </td>
+                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(5)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(5)}><FontAwesomeIcon icon={faTrash}/></button>
+                        </td>
+                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(6)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(6)}><FontAwesomeIcon icon={faTrash}/></button>
+                        </td>
+                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(7)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(7)}><FontAwesomeIcon icon={faTrash}/></button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -380,6 +523,7 @@ const fetchEmployeeDetails = async (id: string) => {
                                 <th>Ngày làm việc</th>
                                 <th>Giờ bắt đầu</th>
                                 <th>Giờ kết thúc</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
             
@@ -391,6 +535,10 @@ const fetchEmployeeDetails = async (id: string) => {
                             <td>{item.workdate}</td>
                             <td>{item.startime}</td>
                             <td>{item.endtime}</td>
+                            <td>
+                                {/* <button onClick={()=>editEmployee(item.idemployee,item)} className={classes.btnSave}><FontAwesomeIcon icon={faPen}/></button> */}
+                                <button onClick={()=>deleteEmployee(item.idemployee,item.workdate)} className={classes.btnCancel}><FontAwesomeIcon icon={faTrash}/></button>
+                            </td>
                         </tr>
                     ))}
                         </tbody>
