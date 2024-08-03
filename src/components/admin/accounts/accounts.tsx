@@ -156,7 +156,7 @@ export default function AdminAccountsPage(){
             setAccountData(accounts);
            
          }else{
-            const filterdata = accountData.filter(
+            const filterdata = accounts.filter(
                 (item) =>
                   item.username.includes(searchTerm) ||
                   item.status.includes(searchTerm)

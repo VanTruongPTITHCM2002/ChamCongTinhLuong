@@ -178,6 +178,8 @@ background-color:#fff;      }
   background-color:#95A5A6;
 }
 
+
+
 .article_option_button_explain button{
   height: 30px;
   width: 50px;
@@ -264,7 +266,17 @@ background-color:#fff;      }
    width: 40px;
    transition: background-color 0.3s;
  }
-
+ .btnAddAttendance{
+  background-color:rgb(15, 201, 15);
+  color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 40px;
+   transition: background-color 0.3s;
+ }
  .btnUpdateExplain{
   background-color: #007bff;
    color: white;
@@ -287,6 +299,10 @@ background-color:#fff;      }
 
 .btnCancel:hover{
   background-color: rgb(190, 29, 61);
+}
+
+.btnAddAttendance:hover{
+  background-color:rgb(34, 128, 34);
 }
 
  .button_explain button{
@@ -338,3 +354,42 @@ background-color:#fff;      }
   color: grey;
   font-weight: bold;
 }
+
+/* CSS cho SweetAlert2 */
+.custom-swal-popup {
+  width: 500px; /* Chiều rộng của popup */
+}
+
+.custom-swal-title {
+  font-size: 1.5rem; /* Kích thước tiêu đề */
+}
+
+.custom-swal-html {
+  padding: 20px; /* Khoảng cách bên trong */
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.formGroup label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.swalInput {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: #eee;
+  color: #000;
+}
+

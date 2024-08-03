@@ -35,6 +35,10 @@
 
 }
 
+.btn_prev:hover{
+   background-color: #c68418;
+}
+
 .btn_next {
    background-color: #3498db; /* Màu xanh dương sáng */
    color: #fff; /* Trắng */
@@ -42,6 +46,10 @@
    border: none;
    cursor: pointer;
    border-radius: 5px;
+}
+
+.btn_next:hover{
+   background-color: #217cb9; /* Màu xanh dương sáng */
 }
 
 .article_button{

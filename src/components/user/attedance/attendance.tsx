@@ -86,7 +86,7 @@ export default function UserAttendance(){
 
     const getAttendanceExplain = async()=>{
       try{
-        const response  = await axios(`http://localhost:8083/api/v1/attendance_explain/${username}`);
+        const response  = await axios.get(`http://localhost:8083/api/v1/attendance_explain/${username}`);
         if(response.status === 200){
             setAttendance_Explain(response.data.data.reverse());
         }

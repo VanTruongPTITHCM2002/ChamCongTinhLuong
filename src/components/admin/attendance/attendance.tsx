@@ -372,6 +372,82 @@ export default function AdminAttendancePage(){
           setAttendance(filterdata);
         }
       }
+      const addAttendance = async () => {
+        const { value: formValues } = await Swal.fire({
+          title: 'Thêm chấm công',
+          html: `
+            <div class="${classes.formGrid}">
+              <div class="${classes.formGroup}">
+                <label for="idemployee"><strong>Mã nhân viên:</strong></label>
+                <input type="text" class="${classes.swalInput}" id="idemployee" placeholder="Nhập mã nhân viên">
+              </div>
+              <div class="${classes.formGroup}">
+                <label for="dateattendance"><strong>Ngày chấm công:</strong></label>
+                <input type="date" class="${classes.swalInput}" id="dateattendance" placeholder="dd-mm-yyyy">
+              </div>
+              <div class="${classes.formGroup}">
+                <label for="checkintime"><strong>Thời gian vào:</strong></label>
+                <input type="time" class="${classes.swalInput}" value="08:00" id="checkintime" placeholder="hh:mm">
+              </div>
+              <div class="${classes.formGroup}">
+                <label for="checkouttime"><strong>Thời gian ra:</strong></label>
+                <input type="time" class="${classes.swalInput}" value="17:00" id="checkouttime" placeholder="hh:mm">
+              </div>
+              <div class="${classes.formGroup}">
+                <label for="status"><strong>Trạng thái:</strong></label>
+                <select class="${classes.swalInput}" id="status">
+                  ${statusOptions.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+                </select>
+              </div>
+              <div class="${classes.formGroup}">
+                <label for="numberwork"><strong>Số công:</strong></label>
+                <input type="number" class="${classes.swalInput}" id="numberwork" step="0.1" min="0" placeholder="Nhập số công">
+              </div>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonColor: '#007bff',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Thêm',
+          cancelButtonText: 'Hủy',
+          customClass: {
+            popup: classes.customSwalPopup,
+            title: classes.customSwalTitle,
+            htmlContainer: classes.customSwalHtml
+          }
+        });
+      
+        if (formValues) {
+          // Lấy dữ liệu từ các trường nhập liệu sau khi nhấn "Lưu"
+          const attendanceData = {
+            idemployee: (document.getElementById('idemployee') as HTMLInputElement)?.value ?? '',
+            dateattendance: (document.getElementById('dateattendance') as HTMLInputElement)?.value ?? '',
+            checkintime: (document.getElementById('checkintime') as HTMLInputElement)?.value ?? '',
+            checkouttime: (document.getElementById('checkouttime') as HTMLInputElement)?.value ?? '',
+            status: (document.getElementById('status') as HTMLSelectElement)?.value ?? '',
+            numberwork: parseFloat((document.getElementById('numberwork') as HTMLInputElement)?.value ?? '0')
+          };
+      
+          console.log('Attendance Data:', attendanceData); // Xem dữ liệu trong console
+      
+          try {
+            const response = await axios.post('http://localhost:8083/api/v1/attendance/admin/add-attendance', attendanceData);
+            
+            if (response.status === 201) {
+              Swal.fire('Thành công', response.data.message, 'success');
+            }
+            if(response.data.status === 404){
+                errorSwal('Thất bại',response.data.message)
+            }
+          } catch (error: any) {
+            Swal.fire('Thất bại', error.response?.data?.message || 'Đã có lỗi xảy ra', 'error');
+          }
+        } else {
+          Swal.fire('Hủy', 'Bạn đã hủy việc thêm chấm công.', 'info');
+        }
+      };
+
+
     return (
         <div className={classes.article}>
             {workRecord?<h2>Quản lý bảng ghi ngày công</h2>
@@ -426,6 +502,11 @@ export default function AdminAttendancePage(){
                     </div>
                     ):(
                         <>
+                                <div>
+                                    <button className={classes.btnAddAttendance} onClick={addAttendance} title='Thêm chấm công giùm'>
+                                        <FontAwesomeIcon icon={faCirclePlus}/>
+                                    </button>
+                                </div>
                                 <div className={classes.article_option_button_workrecord}>
                                     <button onClick={handleClickWorkRecord} title="Bảng ghi ngày công">
                                     <FontAwesomeIcon icon={faTableList}  />
@@ -598,7 +679,7 @@ export default function AdminAttendancePage(){
                 <td>
                   <input
                     type="number"
-                    step="0.2"
+                    step="0.1"
                     
                     defaultValue={currentData[num]?.numberwork || 0}
                     ref={(el) => (inputRefs.current[num] = { ...inputRefs.current[num], numberwork: el })}

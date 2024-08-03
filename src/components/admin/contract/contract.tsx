@@ -19,6 +19,17 @@ interface Contract{
 interface IFEmployee{
     idemployee:string;
 }
+
+const formattedAmount = (num:Float32Array | number)=>{
+    return  num.toLocaleString('vi-VN', {
+     style: 'currency',
+     currency: 'VND',
+   });
+ }
+ function formatDateString(dateString: string): string {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  }
 export default function AdminContract(){
 
     const [showContract,setShowContract] = useState<Contract[]>([]);
@@ -250,12 +261,13 @@ export default function AdminContract(){
             setShowContract(contracts);
            
          }else{
-            const filterdata = showContract.filter(
+            const filterdata = contracts.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
                     item.workingdays === Number(searchTerm)
                     || item.startdate.includes(searchTerm)
                     || item.endate.includes(searchTerm)
+                    || item.status?.toString().includes(searchTerm)
                 
               );
           setShowContract(filterdata);
@@ -267,11 +279,13 @@ export default function AdminContract(){
       };
     return(
         <div className={classes.article}>
+             <h2 style={{textAlign:"center"}}>Quản lý hợp đồng lao động</h2>
                <div className={classes.article_button}>
                 <div className={classes.article_button_search}>
                     <input type="text" 
                     value={searchTerm}
                     onChange={handleSearch} 
+                     placeholder='Tìm kiếm...'
                     />
                     <button 
                     onClick={searchButton}
@@ -297,7 +311,7 @@ export default function AdminContract(){
                 <thead>
                     <tr>
                         <th>Mã nhân viên</th>
-                        <th>Lương cô bản</th>
+                        <th>Lương cơ bản</th>
                         <th>Số ngày công</th>
                         <th>Ngày bắt đầu</th>
                         <th>Ngày kết thúc</th>
@@ -310,10 +324,10 @@ export default function AdminContract(){
                     {currentData.map((contract,index)=>(
                              <tr key={index}>
                              <td>{contract.idemployee}</td>
-                             <td>{contract.basicsalary}</td>
+                             <td>{ formattedAmount (contract.basicsalary)}</td>
                              <td>{contract.workingdays}</td>
-                             <td>{contract.startdate}</td>
-                             <td>{contract.endate}</td>
+                             <td>{formatDateString(contract.startdate)}</td>
+                             <td>{ formatDateString(contract.endate)}</td>
                              <td  className={contract.status === "Còn hợp đồng" ? classes.statusActive : classes.statusInactive}
                              >{contract.status}</td>
                              <td>

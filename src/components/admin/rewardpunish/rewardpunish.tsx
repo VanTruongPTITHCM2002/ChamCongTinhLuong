@@ -20,6 +20,16 @@ interface RewardPunish{
 interface IFEmployee{
     idemployee:string;
 }
+const formattedAmount = (num:Float32Array | number)=>{
+    return  num.toLocaleString('vi-VN', {
+     style: 'currency',
+     currency: 'VND',
+   });
+ }
+ function formatDateString(dateString: string): string {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  }
 export default function AdminRewardPunishPage(){
     const[showRewardPunish,setShowRewardPunish] = useState<RewardPunish[]>([]);
     const[rewardPunish,setRewardPunish] = useState<RewardPunish[]>([]);
@@ -211,11 +221,13 @@ export default function AdminRewardPunishPage(){
             setShowRewardPunish(rewardPunish);
            
          }else{
-            const filterdata = showRewardPunish.filter(
+            const filterdata = rewardPunish.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
                   item.reason.includes(searchTerm) ||
                     item.type.includes(searchTerm) 
+                    || item.setupdate.includes(searchTerm)
+                    || item.cash.toString().includes(searchTerm)
                 
               );
           setShowRewardPunish(filterdata);
@@ -227,11 +239,12 @@ export default function AdminRewardPunishPage(){
       };
     return (
         <div className={classes.article}>
+             <h2 style={{textAlign:"center"}}>Quản lý thưởng phạt</h2>
             <div className={classes.article_button}>
                 <div className={classes.article_button_search}>
                     <input type="text"  value={searchTerm}
                          onChange={handleSearch} 
-                    
+                    placeholder='Tìm kiếm...'
                     />
                     <button   onClick={searchButton}
                     ><FontAwesomeIcon icon={faMagnifyingGlass} 
@@ -268,9 +281,9 @@ export default function AdminRewardPunishPage(){
                             <tr key={index}>
                             <td>{r.idemployee}</td>
                             <td>{r.type}</td>
-                            <td>{r.cash}</td>
+                            <td>{ formattedAmount(r.cash)}</td>
                             <td>{r.reason}</td>
-                            <td>{r.setupdate}</td>
+                            <td>{formatDateString(r.setupdate)}</td>
                             <td>
                                 <div className={classes.button_update_delete}>
                                         
@@ -310,7 +323,7 @@ export default function AdminRewardPunishPage(){
 
                         <div>
                             <label htmlFor='type'>Loại:</label>
-                           <select id ='type' name = 'type'>
+                           <select id ='type' name = 'type' required>
                                        <option value="Thưởng">Thưởng</option>
                                        <option value="Phạt">Phạt</option>         
                            </select>
@@ -318,11 +331,11 @@ export default function AdminRewardPunishPage(){
 
                         <div>
                             <label htmlFor='cash'>Số tiền:</label>
-                            <input id='cash' name='cash' type='number' required/>
+                            <input id='cash' name='cash' type='number' min={0} required/>
                         </div>
                         <div>
                             <label htmlFor='reason'>Lý do:</label>
-                                <input type='text' id='reason' name='reason'/>
+                                <input type='text' id='reason' name='reason' required/>
                             </div>
 
                             <div>

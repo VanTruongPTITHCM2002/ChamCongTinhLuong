@@ -11,24 +11,39 @@ import { errorAlert, errorSwal } from '@/components/user/custom/sweetalert';
 Chart.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
       x: {
-          title: {
-              display: true,
-              text: 'Tháng'
-          }
+        title: {
+          display: true,
+          text: 'Tháng'
+        }
       },
       y: {
-          title: {
-              display: true,
-              text: 'VNĐ'
+        title: {
+          display: true,
+          text: 'VNĐ'
+        },
+        ticks: {
+          // Định dạng các nhãn trên trục y thành tiền VNĐ
+          callback: function (value: number | string): string {
+            return Number(value).toLocaleString('vi-VN', {
+              style: 'currency',
+              currency: 'VND',
+            });
           }
+        }
       }
-  }
-};
-
+    }
+  };
+const formattedAmount = (num:number | Float32Array)=>{
+   return num.toLocaleString('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  });
+}
+  
 
 export default function AdminDashboard(){
     const router = useRouter();
@@ -44,7 +59,7 @@ export default function AdminDashboard(){
     const currentMonth = new Date().getMonth() + 1;
     const currentYear = new Date().getFullYear();
     const data1 = {
-  labels: ['1', '2', '3', '4', '6', '7','8','9','10','11','12'],
+  labels: ['0','1', '2', '3', '4', '6', '7','8','9','10','11','12'],
   datasets: [
       {
           label: 'Thưởng',
@@ -58,7 +73,7 @@ export default function AdminDashboard(){
 
 
 const data2 = {
-    labels: ['1', '2', '3', '4', '6', '7','8','9','10','11','12'],
+    labels: ['0','1', '2', '3', '4', '6', '7','8','9','10','11','12'],
   datasets: [
       {
           label: 'Phạt',
@@ -69,6 +84,7 @@ const data2 = {
       }
   ]
 };
+
    const getAmountEmployee = async()=>{
     try{
         // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/amount`, {
@@ -158,7 +174,7 @@ const countRewardPunish = async()=>{
             </div>
             <div className={classes.orange_box}>
                 <h5>Tổng lương đã trả trong tháng {currentMonth}</h5>
-                <h2>{totalPayment}</h2>
+                <h2>{ formattedAmount(totalPayment)}</h2>
             </div>
             <div className={classes.yellow_box}>
                 <h5>Số lượng hợp đồng trong tháng {currentMonth} </h5>

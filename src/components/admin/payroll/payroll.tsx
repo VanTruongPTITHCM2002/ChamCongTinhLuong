@@ -42,7 +42,12 @@ interface AdminPayrollPageProps {
     showPay: Payroll[];
 }
 
-
+const formattedAmount = (num:Float32Array)=>{
+   return  num.toLocaleString('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  });
+}
 
 const AdminPayrollPage = () =>{
     const [modal,setModal] = useState(false);
@@ -288,6 +293,7 @@ const AdminPayrollPage = () =>{
       };
     return (
         <div className={classes.article}>
+             <h2 style={{textAlign:"center"}}>Quản lý tính lương</h2>
             <div className={classes.article_option}>
             {num !== -1 ? (
                 <>
@@ -381,9 +387,9 @@ const AdminPayrollPage = () =>{
                <td>{showPayroll[num].punish}</td>
                <td>{showPayroll[num].basicsalary}</td>
                <td>{showPayroll[num].day_work}</td>
-               <td>{showPayroll[num].datecreated}</td>
+               <td>{ showPayroll[num].datecreated}</td>
                
-                <td>{showPayroll[num].totalpayment}</td>
+                <td>{formattedAmount(showPayroll[num].totalpayment)}</td>
                 {/* <td style={{cursor:"pointer"}}>{showPayroll[num].status}</td> */}
                 <td className={showPayroll[num].status === "Đã thanh toán"?classes.statusActive:classes.statusInactive} >
              {showPayroll[num].status}
@@ -407,7 +413,7 @@ const AdminPayrollPage = () =>{
                     <td>{p.name}</td>
                     <td>{p.month}</td>
                     <td>{p.year}</td>
-                    <td>{p.totalpayment}</td>
+                    <td>{ formattedAmount(p.totalpayment)}</td>
                     <td>
                         
                         <button className={classes.article_button_detail} title='Xem chi tiết'

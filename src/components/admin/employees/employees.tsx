@@ -23,6 +23,11 @@ interface Employee {
     status: number | string;
 }
 
+function formatDateString(dateString: string): string {
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  }
+
 export default function AdminEmployeesPage(){
     const router = useRouter();
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
@@ -290,13 +295,15 @@ export default function AdminEmployeesPage(){
             setEmployeesData(employees);
            
          }else{
-            const filterdata = employeesData.filter(
+            const filterdata = employees.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
                   item.firstname.includes(searchTerm)
                   || item.lastname.includes(searchTerm) ||
                   item.email.includes(searchTerm) ||
                   item.gender.includes(searchTerm)
+                  || item.birthdate.includes(searchTerm)
+                  || item.status.toString().includes(searchTerm)
                 
               );
           setEmployeesData(filterdata);
@@ -403,7 +410,7 @@ export default function AdminEmployeesPage(){
                             <td>{employee.firstname}</td>
                             <td>{employee.lastname}</td>
                             <td>{employee.gender}</td> 
-                            <td>{employee.birthdate}</td>
+                            <td>{ formatDateString(employee.birthdate)}</td>
                             <td className={employee.status === 'Đang hoạt động' ? classes.statusActive : classes.statusInactive}>
         {employee.status === 'Đang hoạt động' ? 'Đang hoạt động' : 'Ngưng hoạt động'}
       </td>

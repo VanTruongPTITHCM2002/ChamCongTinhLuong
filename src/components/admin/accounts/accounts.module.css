@@ -126,26 +126,35 @@
 }
 
 .btn_update{
-    width: 50px;
-    height: 30px;
     background-color:  #007BFF;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
+    color: white;
     border: none;
-    margin-right: 5px;
-    padding: 5px 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+ 
+}
+
+.btn_update:hover{
+    background-color:  #1d6cc1;
 }
 
 .btn_reset{
-    width: 50px;
-    height: 30px;
     background-color: #FF4C4C;
-    border-radius: 5px;
-    text-align: center;
+    color: white;
+    border: none;
+    padding: 5px 10px;
     cursor: pointer;
-    border:none;
-    padding: 5px 20px;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+ 
+}
+
+.btn_reset:hover{
+    background-color: #9a2222;
 }
 
 

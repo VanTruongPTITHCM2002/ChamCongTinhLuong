@@ -21,6 +21,7 @@
     width: 95%;
     font-size: 11px;
     border-bottom: 1px solid #fff;
+    margin: 0 5px;
 }
 
 .navbar li a{
@@ -39,7 +40,7 @@
 .navbar li:hover{
     background-color: gray;
     border-radius: 5px;
-    margin: 0 5px;
+   
 }
 
 .active {

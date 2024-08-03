@@ -43,11 +43,11 @@ export default function UserDashboard (){
   const [totalMonth,setTotalMonth] = useState<number[]>([]);
   // http://localhost:8085/api/v1/payroll/getMonthlyEmployee
   const data = {
-    labels: ['1', '2', '3', '4', '5', '6', '7','8','9','10','11','12'],
+    labels: ['Tháng','1', '2', '3', '4', '5', '6', '7','8','9','10','11','12'],
     datasets: [
       {
         label: 'Tiền lương',
-        data: totalMonth,
+        data: totalMonth ,
         fill: false,
         borderColor: 'rgba(75,192,192,1)',
       },
@@ -62,6 +62,7 @@ export default function UserDashboard (){
          }
       })
       setTotalMonth(response.data);
+
  }catch(error){
      errorSwal("Thất bại",'Có lỗi xảy ra!');
  }

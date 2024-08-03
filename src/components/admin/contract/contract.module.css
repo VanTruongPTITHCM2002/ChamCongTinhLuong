@@ -84,6 +84,8 @@
     margin: 0 5px;
     border-radius: 4px;
     cursor: pointer;
+    width: 35px;
+    height: 25px;
 }
 
 .btnSave:hover{
@@ -110,15 +112,15 @@
     margin: 0 5px;
     border-radius: 4px;
     cursor: pointer;
+  
  }
 
  .button_update:hover{
     background-color:  #25609f;
  }
  .button_update_delete button{
-    margin:5px;
-    height: 30px;
-    width: 50px;
+    height: 25px;
+    width: 35px;
  }
 
  .button_delete{

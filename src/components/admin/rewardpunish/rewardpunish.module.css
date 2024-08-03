@@ -83,10 +83,10 @@
     background-color: #F44336;
     color: white;
     border: none;
-    padding: 10px 15px;
-    margin: 0 5px;
-    border-radius: 4px;
     cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
  }
 
 .button_delete:hover{
