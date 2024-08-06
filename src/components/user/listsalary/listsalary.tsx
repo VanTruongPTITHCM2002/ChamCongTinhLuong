@@ -18,6 +18,19 @@ interface ListSalary{
     totalpayment:Float32Array;
     status:string;
 }
+ function formatDate(dateString:string) {
+     const date = new Date(dateString);
+     const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng từ 0-11, cần +1
+     const day = String(date.getDate()).padStart(2, '0');
+     const year = date.getFullYear();
+     return `${day}-${month}-${year}`;
+   }
+   const formattedAmount = (num:Float32Array | number)=>{
+    return  num.toLocaleString('vi-VN', {
+     style: 'currency',
+     currency: 'VND',
+   });
+ }
 export default function UserSalary (){
     const username = localStorage.getItem('username');
     const [listSalary, setListSalary] = useState<ListSalary[]>([]);
@@ -61,10 +74,13 @@ export default function UserSalary (){
             setListSalary(filterSalary);
            
          }else{
-            const filterdata = listSalary.filter(
+            const filterdata = filterSalary.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
                   item.name.includes(searchTerm)
+                  || item.month.toString().includes(searchTerm) ||
+                  item.year.toString().includes(searchTerm)
+                  || item.totalpayment.toString().includes(searchTerm)
               );
           setListSalary(filterdata);
         }
@@ -137,13 +153,13 @@ export default function UserSalary (){
                     <td>{listSalary[num].name}</td>
                     <td>{listSalary[num].month}</td>
                     <td>{listSalary[num].year}</td>
-                    <td>{listSalary[num].reward}</td>
-                    <td>{listSalary[num].punish}</td>
-                    <td>{listSalary[num].basicsalary}</td>
+                    <td>{formattedAmount(listSalary[num].reward)}</td>
+                    <td>{formattedAmount(listSalary[num].punish)}</td>
+                    <td>{formattedAmount(listSalary[num].basicsalary)}</td>
                     <td>{listSalary[num].day_work}</td>
-                    <td>{listSalary[num].datecreated}</td>
-                    <td>{listSalary[num].totalpayment}</td>
-                    <td>{listSalary[num].status}</td>
+                    <td>{formatDate(listSalary[num].datecreated)}</td>
+                    <td>{formattedAmount(listSalary[num].totalpayment)}</td>
+                    <td className={listSalary[num].status === 'Đã thanh toán' ? classes.statusActive : classes.statusInactive}>{listSalary[num].status}</td>
                 </tr>
             ):(
                 listSalary.map((item,index) => (
@@ -152,7 +168,7 @@ export default function UserSalary (){
                       <td>{item.name}</td>
                       <td>{item.month}</td>
                       <td>{item.year}</td>
-                      <td>{item.totalpayment}</td>
+                      <td>{formattedAmount(item.totalpayment)}</td>
                       
                       <td>
                             <button className={classes.btnDetail} onClick={()=>showDetails(index)}><FontAwesomeIcon icon={faEye} /></button>

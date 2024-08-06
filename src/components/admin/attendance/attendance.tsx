@@ -287,7 +287,12 @@ export default function AdminAttendancePage(){
         month: Number(form.get('month') as string),
         year: Number(form.get('year') as string),
     }
-    
+  
+    if(form.get('month') as string === '' || form.get('year') as string=== ''){
+        errorSwal('Thất bại','Không được để trống');
+        return;
+    }
+
     const date = new Date();
     if(workRecord.year > date.getFullYear()){
         Swal.fire({
@@ -362,11 +367,14 @@ export default function AdminAttendancePage(){
             setAttendance(attendaces);
            
          }else{
-            const filterdata = attendance.filter(
+            const filterdata = attendaces.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
                   item.dateattendance?.includes(searchTerm)
-             
+                  || item.checkintime.includes(searchTerm)
+                  || item.checkouttime?.includes(searchTerm)  
+                  || item.attendanceStatusName?.includes(searchTerm)
+                  || item.numberwork?.toString().includes(searchTerm)
                 
               );
           setAttendance(filterdata);
@@ -428,7 +436,10 @@ export default function AdminAttendancePage(){
             numberwork: parseFloat((document.getElementById('numberwork') as HTMLInputElement)?.value ?? '0')
           };
       
-          console.log('Attendance Data:', attendanceData); // Xem dữ liệu trong console
+          if(attendanceData.idemployee.trim() === '' || attendanceData.numberwork.toString().trim() === ''){
+            errorSwal('Thất bại',"Không được bỏ trống");
+            return;
+          }
       
           try {
             const response = await axios.post('http://localhost:8083/api/v1/attendance/admin/add-attendance', attendanceData);

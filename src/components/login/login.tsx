@@ -1,5 +1,5 @@
 'use client'
-
+import { cookies } from 'next/headers'
 import React, { CSSProperties, FormEvent, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import jwt from 'jsonwebtoken'
@@ -57,6 +57,7 @@ export default function LoginPage(){
                   willClose: () => {
                     localStorage.setItem('token', response.data.data.token);
                     localStorage.setItem('username',response.data.data.username);
+                 
                     router.push('/admin/dashboard');
                   }
                 }).then((result) => {

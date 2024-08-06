@@ -1,12 +1,14 @@
 'use client'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classes from './payroll.module.css'
-import { faCalculator, faDeleteLeft, faEye, faMagnifyingGlass, faMoneyBill, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faCalculator, faDeleteLeft, faEye, faFileExcel, faMagnifyingGlass, faMoneyBill, faPen } from '@fortawesome/free-solid-svg-icons'
 import { FormEvent, useEffect, useState } from 'react'
 import Modal from '@/components/modal'
 import axios, { AxiosResponse } from 'axios'
 import Swal from 'sweetalert2'
 import { GetServerSideProps } from 'next'
+import * as XLSX from 'xlsx';
+
 const payrollCustom = {
     width: '50%', // Tùy chỉnh độ rộng của modal
     height: '50%', // Tùy chỉnh chiều cao của modal
@@ -42,12 +44,20 @@ interface AdminPayrollPageProps {
     showPay: Payroll[];
 }
 
-const formattedAmount = (num:Float32Array)=>{
+const formattedAmount = (num:Float32Array | number)=>{
    return  num.toLocaleString('vi-VN', {
     style: 'currency',
     currency: 'VND',
   });
 }
+
+function formatDate(dateString:string) {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng từ 0-11, cần +1
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
 
 const AdminPayrollPage = () =>{
     const [modal,setModal] = useState(false);
@@ -161,6 +171,8 @@ const AdminPayrollPage = () =>{
                     icon:"success"
                 }
             )
+
+
             setShowPayroll([response.data.data,...showPayroll]);
            
 
@@ -291,6 +303,45 @@ const AdminPayrollPage = () =>{
         const term = event.target.value;
         setSearchTerm(term);
       };
+
+      const downloadExcel = ()=>{
+        const processedData = showPayroll.map(item => ({
+            'Mã nhân viên': item.idemployee,
+            'Họ tên': item.name,
+            'Tháng': item.month,
+            'Năm': item.year,
+            'Lương cơ bản': formattedAmount(item.basicsalary),
+            'Số công thực tế': item.day_work.toString(), // Chuyển đổi Float32Array thành chuỗi
+            'Thưởng':formattedAmount(item.reward),
+            'Phạt': formattedAmount(item.punish),
+            'Ngày tính lương': formatDate(item.datecreated),
+            'Tổng lương': formattedAmount(item.totalpayment), // Chuyển đổi Float32Array thành chuỗi
+            'Trạng thái': item.status
+          }));
+      
+          // Chuyển đổi dữ liệu thành worksheet
+          const worksheet = XLSX.utils.json_to_sheet(processedData);
+      
+          // Tạo workbook chứa worksheet
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      
+          // Xuất file Excel
+          const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      
+          // Tạo liên kết tải xuống
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'payroll_report.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+      };
+
+  
     return (
         <div className={classes.article}>
              <h2 style={{textAlign:"center"}}>Quản lý tính lương</h2>
@@ -335,6 +386,14 @@ const AdminPayrollPage = () =>{
                 </div>
 
                 <div className={classes.article_option_button}>
+
+                        <button className={classes.downLoadExcel} onClick={downloadExcel} title='Xuát file excel'><FontAwesomeIcon icon={faFileExcel}
+                          style={{width:"20px",
+                            height:"15px",
+                         
+                            }}
+                        /></button>
+
                     <button className={classes.article_option_button_calsalary}
                         onClick={showModalAddSalary} title="Tính lương"
                     ><FontAwesomeIcon icon={faCalculator} 
@@ -383,11 +442,11 @@ const AdminPayrollPage = () =>{
                 <td>{showPayroll[num].name}</td>
                 <td>{showPayroll[num].month}</td>
                 <td>{showPayroll[num].year}</td>
-               <td>{showPayroll[num].reward}</td>
-               <td>{showPayroll[num].punish}</td>
-               <td>{showPayroll[num].basicsalary}</td>
+               <td>{formattedAmount (showPayroll[num].reward)}</td>
+               <td>{formattedAmount(showPayroll[num].punish)}</td>
+               <td>{formattedAmount(showPayroll[num].basicsalary)}</td>
                <td>{showPayroll[num].day_work}</td>
-               <td>{ showPayroll[num].datecreated}</td>
+               <td>{formatDate(showPayroll[num].datecreated)}</td>
                
                 <td>{formattedAmount(showPayroll[num].totalpayment)}</td>
                 {/* <td style={{cursor:"pointer"}}>{showPayroll[num].status}</td> */}

@@ -32,24 +32,46 @@ import Swal from 'sweetalert2';
     return hours * 60 + minutes;
 }
 
+
+
 function calculateWorkHours(startTime: string, endTime: string): number {
     const startMinutes = convertToMinutes(startTime);
     const endMinutes = convertToMinutes(endTime);
+   
+    const gracePeriodStartMinutes = convertToMinutes('08:15');
+   
+    const gracePeriodEndMinutes = convertToMinutes('16:45');
 
-    const totalMinutes = endMinutes - startMinutes;
-    const totalHours = totalMinutes / 60;
+    // Tính toán thời gian trễ và về sớm
+    let lateMinutes = 0;
+    let earlyLeaveMinutes = 0;
 
-    let totalDays = 0;
-    if (totalHours >= 8) totalDays = 1;
-    else if (totalHours >= 6) totalDays = 0.75;
-    else if (totalHours >= 4) totalDays = 0.5;
-    else if (totalHours >= 2) totalDays = 0.25;
-    else if (totalHours === 1) totalDays = 0.1;
-    else (totalHours < 1)
-     {
-        totalDays = 0;
+    if (startMinutes > gracePeriodStartMinutes) {
+        lateMinutes = startMinutes - gracePeriodStartMinutes;
     }
-    return totalDays;
+
+    if (endMinutes < gracePeriodEndMinutes) {
+        earlyLeaveMinutes = gracePeriodEndMinutes - endMinutes;
+    }
+
+    console.log (endTime + ' ||' + endMinutes +  ' ' + gracePeriodEndMinutes + ' = ' + earlyLeaveMinutes)
+    // const totalMinutes = endMinutes - startMinutes;
+    // const totalHours = totalMinutes / 60;
+    // console.log(  totalMinutes+' '+ totalHours)
+    // let totalDays = 0;
+    // if (totalHours >= 8) totalDays = 1;
+    // else if (totalHours >= 6) totalDays = 0.75;
+    // else if (totalHours >= 4) totalDays = 0.5;
+    // else if (totalHours >= 2) totalDays = 0.25;
+    // else if (totalHours === 1) totalDays = 0.1;
+    // else (totalHours < 1)
+    //  {
+    //     totalDays = 0;
+    // }
+   
+    // return totalDays - ((lateMinutes + earlyLeaveMinutes)/480);
+    return Number((1 - ((lateMinutes + earlyLeaveMinutes)/480)).toFixed(3)) > 0 ? Number((1 - ((lateMinutes + earlyLeaveMinutes)/480)).toFixed(3)):0
+    // return totalDays;
 }
 
 function compareTimes(time1: string, time2: string): number {
@@ -61,7 +83,13 @@ function calculateMinutes(a:string,b:string) : number{
   const endMinutes = convertToMinutes(b);
   return (endMinutes - startMinutes) / 480;
 }
-
+ function formatDate(dateString:string) {
+     const date = new Date(dateString);
+     const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng từ 0-11, cần +1
+     const day = String(date.getDate()).padStart(2, '0');
+     const year = date.getFullYear();
+     return `${day}-${month}-${year}`;
+   }
 
 export default function UserAttendance(){
     const username = localStorage.getItem('username');
@@ -120,6 +148,7 @@ export default function UserAttendance(){
         dateattendance: today,
         // startime: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
         checkintime:new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+        // checkintime:"10:30",
         checkouttime: '',
         status: '',
         numberwork: 0,
@@ -145,6 +174,8 @@ export default function UserAttendance(){
       }catch(error:any){
           errorSwal('Thất bại',`${error.response.data.message}`);
       }
+      // setCurrentCheckIn(newEntry);
+      // setAttendance([newEntry,...attendance]);
         
      
     };
@@ -181,10 +212,12 @@ export default function UserAttendance(){
         }
         
 
+        let checkoutt = "16:00";
 
         const updatedEntry: Attendance = {
           ...currentCheckIn,
           checkouttime: endTime,
+          // checkouttime:checkoutt,
           status:statusAttendance,
           attendanceStatusName:statusAttendance, // Hoặc tính toán trạng thái khác
           numberwork: calculateWorkHours(currentCheckIn.checkintime,endTime),
@@ -211,7 +244,10 @@ export default function UserAttendance(){
             errorSwal('Thất bại',`${error.response.data.message}`);
         }
   
-        
+        // const updatedData = attendance.map((item) =>
+        //               item.idemployee === currentCheckIn.idemployee && item.dateattendance === currentCheckIn.dateattendance ? updatedEntry : item
+        //             );
+        //             setAttendance(updatedData);
       }
     };
   
@@ -374,7 +410,7 @@ export default function UserAttendance(){
                     </td>
                   )}
                   <td>{item.idemployee}</td>
-                  <td>{item.dateattendance}</td>
+                  <td>{formatDate (item.dateattendance)}</td>
                   <td>{item.checkintime}</td>
                   <td>{item.checkouttime}</td>
                   <td>{item.attendanceStatusName}</td>

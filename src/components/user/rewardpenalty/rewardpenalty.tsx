@@ -13,6 +13,19 @@ interface RewardPenalty{
     setupdate:string;
     status?:string;
 }
+function formatDate(dateString:string) {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng từ 0-11, cần +1
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+  const formattedAmount = (num:Float32Array | number)=>{
+   return  num.toLocaleString('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  });
+}
 export default function UserRewardPenalty(){
     const username = localStorage.getItem('username');
     const [rewardpenalty,setRewardPenalty] = useState<RewardPenalty[]>([]);
@@ -51,10 +64,13 @@ export default function UserRewardPenalty(){
             setRewardPenalty(rewpen);
            
          }else{
-            const filterdata = rewardpenalty.filter(
+            const filterdata = rewpen.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
-                  item.type.includes(searchTerm)
+                  item.type.includes(searchTerm) ||
+                  item.cash.toString().includes(searchTerm)
+                  || item.reason.includes(searchTerm)
+                  || item.setupdate.includes(searchTerm)
               );
           setRewardPenalty(filterdata);
         }
@@ -87,9 +103,9 @@ export default function UserRewardPenalty(){
                                 <tr key={index}>
                                     <td>{r.idemployee}</td>
                                     <td>{r.type}</td>
-                                    <td>{r.cash}</td>
+                                    <td>{formattedAmount(r.cash)}</td>
                                     <td>{r.reason}</td>
-                                    <td>{r.setupdate}</td>
+                                    <td>{formatDate(r.setupdate)}</td>
                                 </tr>
                             ))}
                            

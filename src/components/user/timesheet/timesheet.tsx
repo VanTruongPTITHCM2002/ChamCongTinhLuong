@@ -11,7 +11,13 @@ interface WorkScheduleDetail{
     startime:string;
     endtime:string;
 }
-
+ function formatDate(dateString:string) {
+     const date = new Date(dateString);
+     const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng từ 0-11, cần +1
+     const day = String(date.getDate()).padStart(2, '0');
+     const year = date.getFullYear();
+     return `${day}-${month}-${year}`;
+   }
 export default function UserTimeSheet(){
    const username = localStorage.getItem('username');
    const [showWorkScheduleDetail,setShowWorkScheduleDetail] = useState<WorkScheduleDetail[]>([]);
@@ -54,7 +60,7 @@ export default function UserTimeSheet(){
                             <tr key={index}>
                                 <td>{s.idemployee}</td>
                                 <td>{s.name}</td>
-                                <td>{s.workdate}</td>
+                                <td>{formatDate(s.workdate)}</td>
                                 <td>{s.startime}</td>
                                 <td>{s.endtime}</td>
                             </tr>

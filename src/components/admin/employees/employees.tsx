@@ -30,6 +30,7 @@ function formatDateString(dateString: string): string {
 
 export default function AdminEmployeesPage(){
     const router = useRouter();
+   
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
     const [employees,setEmployees] = useState<Employee[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -99,6 +100,11 @@ export default function AdminEmployeesPage(){
     };
 
     
+    if(!localStorage.getItem('username') && !localStorage.getItem('token')){
+        router.push('/login');
+        return null;
+    }
+
     const handleAddEmployee = async (event:FormEvent) =>{
         event.preventDefault();
         const formElement = document.getElementById('employeeForm') as HTMLFormElement;

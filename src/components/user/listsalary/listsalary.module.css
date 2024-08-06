@@ -81,10 +81,7 @@
 
 
 
-.attendance_table td {
 
-    color: #333;
-}
 
   .pagination {
     text-align: center;
@@ -107,5 +104,15 @@
   
   .pagination .active {
     background-color: #0056b3;
+    font-weight: bold;
+  }
+
+  .statusActive {
+    color: rgb(30, 194, 30);
+    font-weight: bold;
+  }
+  
+  .statusInactive {
+    color: red;
     font-weight: bold;
   }

@@ -14,6 +14,19 @@ interface Contract{
     endate:string;
     status:string;
 }
+function formatDate(dateString:string) {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng từ 0-11, cần +1
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+  const formattedAmount = (num:Float32Array | number)=>{
+   return  num.toLocaleString('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  });
+}
 export default function UserContract (){
     const username = localStorage.getItem('username');
     const [contracts,setContracts] = useState<Contract[]>([]); 
@@ -54,10 +67,14 @@ export default function UserContract (){
               setContracts(contractsTwo);
              
            }else{
-              const filterdata = contracts.filter(
+              const filterdata = contractsTwo.filter(
                   (item) =>
                     item.idemployee.includes(searchTerm) ||
-                    item.startdate.includes(searchTerm)
+                    item.startdate.includes(searchTerm) ||
+                    item.basicsalary.toString().includes(searchTerm)
+                    || item.endate.toString().includes(searchTerm)
+                    || item.status.includes(searchTerm)
+                    || item.workingdays.toString().includes(searchTerm)
                 );
             setContracts(filterdata);
           }
@@ -90,10 +107,10 @@ export default function UserContract (){
                         {contracts.map((contract,index)=>(
                                  <tr key={index}>
                                  <td>{contract.idemployee}</td>
-                                 <td>{contract.basicsalary}</td>
+                                 <td>{formattedAmount(contract.basicsalary)}</td>
                                  <td>{contract.workingdays}</td>
-                                 <td>{contract.startdate}</td>
-                                 <td>{contract.endate}</td>
+                                 <td>{formatDate(contract.startdate)}</td>
+                                 <td>{formatDate(contract.endate)}</td>
                                  <td className={contract.status === 'Còn hợp đồng'?classes.statusActive:classes.statusInactive}>{contract.status}</td>
                              </tr>
                         ))};

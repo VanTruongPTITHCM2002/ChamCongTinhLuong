@@ -223,6 +223,21 @@ background-color:#fff;      }
     cursor: pointer;
   }
 
+  .downLoadExcel{
+    background-color: yellowgreen;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50px;
+    height: 30px;
+  }
+
+  .downLoadExcel:hover{
+    background-color: rgb(105, 145, 26);
+  }
+
   .btnCancel:hover{
     background-color: rgb(146, 16, 42);
   }

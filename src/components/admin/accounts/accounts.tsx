@@ -6,6 +6,7 @@ import { error } from 'console';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faPen, faRotateLeft, faSave, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { useRouter } from 'next/navigation';
 
 interface Account{
     username:string,
@@ -15,6 +16,7 @@ interface Account{
 
 
 export default function AdminAccountsPage(){
+    const router = useRouter();
     const [isUpdate,setIsUpdate] = useState(false);
     const [accountData,setAccountData] = useState<Account[]>([]);
     const [accounts,setAccounts] = useState<Account[]>([]);
@@ -25,6 +27,13 @@ export default function AdminAccountsPage(){
     const [tempStatus,setTempStatus] = useState('');
     const [originStatus,setOriginStatus] = useState('');
     const token = localStorage.getItem('token');
+
+    if(!localStorage.getItem('username') && !token){
+        router.push('/login');
+        return null;
+    }
+
+
     const getAccounts = async ()=>{
         axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account`,{
             headers: {
@@ -45,10 +54,13 @@ export default function AdminAccountsPage(){
         });
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(()=>{
         getAccounts();
     },[]);
 
+
+  
     const totalPages = Math.ceil(accountData.length / itemsPerPage);
     
     const handlePageChange = (pageNumber:number) => {

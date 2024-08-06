@@ -8,6 +8,7 @@ import axios, { AxiosResponse } from 'axios';
 import Modal from '@/components/modal';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
+import { errorSwal } from '@/components/user/custom/sweetalert';
 interface Contract{
     idemployee:string;
     basicsalary:number;
@@ -104,8 +105,11 @@ export default function AdminContract(){
             console.error('Form element not found');
             return;
         }
+        
+
     
         const form = new FormData(formElement);
+      
         const contract:Contract ={
             idemployee:form.get('manv') as string,
             basicsalary: Number(form.get('basic') as string),
@@ -114,6 +118,13 @@ export default function AdminContract(){
             endate: form.get('endate') as string,
         
         } 
+        if (contract.basicsalary=== null || contract.basicsalary.toString().trim() === "" || 
+    contract.workingdays === null || contract.workingdays.toString().trim() === "" || 
+    contract.startdate === null || contract.startdate.trim() === "" || 
+    contract.endate === null || contract.endate.trim() === "") {
+    errorSwal('Thất bại', 'Vui lòng không bỏ trống');
+    return;
+}
     const startdateDate = new Date(contract.startdate);
     const endateDate = new Date(contract.endate);
 
