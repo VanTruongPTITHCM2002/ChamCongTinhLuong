@@ -22,12 +22,12 @@ export default function AdminAccountsPage(){
     const [accounts,setAccounts] = useState<Account[]>([]);
     const [isNumber,setIsNumber] = useState<number>(-1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(8);
     const [searchTerm, setSearchTerm] = useState('');
     const [tempStatus,setTempStatus] = useState('');
     const [originStatus,setOriginStatus] = useState('');
     const token = localStorage.getItem('token');
-
+ ;
     if(!localStorage.getItem('username') && !token){
         router.push('/login');
         return null;
@@ -68,6 +68,7 @@ export default function AdminAccountsPage(){
     };
     
     const handleUpdateAccountStatus = (index:number)=>{
+        console.log(index);
         setIsNumber(index);
         setIsUpdate(true);
     }
@@ -293,7 +294,7 @@ export default function AdminAccountsPage(){
                     </div>
                 ) : (
                     <div className={classes.btn}>
-                        <button className={classes.btn_update} onClick={() => handleUpdateAccountStatus(index)}>
+                        <button className={classes.btn_update} onClick={() => handleUpdateAccountStatus((currentPage - 1) * itemsPerPage + index)}>
                             <FontAwesomeIcon icon={faPen} style={{ marginRight: "5px" }} />
                         </button>
                         <button className={classes.btn_reset} onClick={() => handleResetPasswod(account.username)}>

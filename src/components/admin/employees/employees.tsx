@@ -30,15 +30,21 @@ function formatDateString(dateString: string): string {
 
 export default function AdminEmployeesPage(){
     const router = useRouter();
-   
+    const token = localStorage.getItem('token')
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
     const [employees,setEmployees] = useState<Employee[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(8);
     const [searchTerm, setSearchTerm] = useState('');
     useEffect(()=>{
          
-        axios.get('http://localhost:8080/api/v1/employee')
+        axios.get( `${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+            }
+        )
         .then(response => {
             setEmployeesData(response.data.data);
             setEmployees(response.data.data);
@@ -92,7 +98,11 @@ export default function AdminEmployeesPage(){
 
     const fetchEmployeeId = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/v1/employee/generateId');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/generateId`,  {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+            });
             setEmployeeId(response.data.data);
         } catch (error) {
             console.error('Error fetching employee ID:', error);
@@ -151,7 +161,13 @@ export default function AdminEmployeesPage(){
         };
     
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/employee', employee);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee`, employee,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                      }
+                }
+            );
             console.log('Response:', response.data.message);
            
                 if(response.data.status === 201){
@@ -161,7 +177,7 @@ export default function AdminEmployeesPage(){
                         icon: "success"
                       });
                       setEmployeesData(prevEmployees => [...prevEmployees, employee]);
-                      
+                      fetchEmployeeId();
             }
          //   alert("Thêm nhân viên thành công");
         } catch (error) {
@@ -195,7 +211,13 @@ export default function AdminEmployeesPage(){
         };
         const id = employee.idemployee;
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/employee/${id}`, employee);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${id}`, employee
+                ,  {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                      }
+                }
+            );
             if(response.data.status === 200){
                 Swal.fire({
                     title: "Thành công",
