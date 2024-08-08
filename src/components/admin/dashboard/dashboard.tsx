@@ -92,7 +92,13 @@ const data2 = {
         //       Authorization: `Bearer ${token}`
         //     }
         //   });
-  const response = await axios.get(`http://localhost:8080/api/v1/employee/amount`)
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/amount`,
+     {
+      headers: {
+          Authorization: `Bearer ${token}`
+        }
+  }
+  )
 
         setAmountEmployee(response.data.data);
     }catch(error){

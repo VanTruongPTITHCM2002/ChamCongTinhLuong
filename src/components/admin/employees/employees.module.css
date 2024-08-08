@@ -169,6 +169,23 @@ background-color:#fff;      }
 .btn_update:hover {
     background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
 }
+
+.btn_delete{
+    background-color: crimson; /* Màu xanh lam cho nút chi tiết */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.btn_delete:hover{
+    background-color: rgb(164, 23, 51); /* Màu xanh lam cho nút chi tiết */
+}
+
+
 .form_update{
     font-size:12px;
 }

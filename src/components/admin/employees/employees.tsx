@@ -1,12 +1,12 @@
 'use client'
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import classes from './employees.module.css'
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/modal';
 import Swal from 'sweetalert2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faInfoCircle, faPen, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faInfoCircle, faPen, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { errorSwal } from '@/components/user/custom/sweetalert';
 
 interface Employee {
@@ -36,6 +36,8 @@ export default function AdminEmployeesPage(){
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
     const [searchTerm, setSearchTerm] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
+    const initialInputValue = useRef<string>('');
     useEffect(()=>{
          
         axios.get( `${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee`,
@@ -313,6 +315,55 @@ export default function AdminEmployeesPage(){
         
         
     };
+
+    const handleDeleteClick = async(employee:Employee)=>{
+        Swal.fire({
+            title: "Bạn có chắc chắn muốn xóa nhân viên này?",
+            text: "Bạn sẽ không thể khôi phục lại dữ liệu đã xóa",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Có",
+            cancelButtonText:"Hủy",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+               
+                try {
+                    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${employee.idemployee}`
+                        , {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                              }
+                        }
+                    );
+                    if(response.data.status === 200){
+                        Swal.fire({
+                            title: "Thành công",
+                            text: `${response.data.message}`,
+                            icon: "success"
+                          });
+        
+                          setEmployeesData(prevEmployees => {
+                            // Loại bỏ nhân viên với idemployee tương ứng
+                            const updatedEmployees = prevEmployees.filter(emp => emp.idemployee !== employee.idemployee);
+                            return updatedEmployees;
+                        });
+                        return;
+                    }
+        
+                    if(response.data.status === 400){
+                        errorSwal('Thất bại',`${response.data.message}`);
+                        return;
+                    }
+                    
+                } catch (error) {
+                    console.error('Error submitting employee data:', error);
+                }
+            }
+          });
+       
+    }
     const currentData = employeesData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
@@ -347,24 +398,30 @@ export default function AdminEmployeesPage(){
   
       const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const value = e.target.value;
-          const regex = /^[a-zA-Z0-9\p{L}\p{M}\s]+$/u;
-            if(value.trim() ===''){
+          const regex = /^[a-zA-Z0-9\p{L}\p{M}]+(?:\s[a-zA-Z0-9\p{L}\p{M}]+)*$/u;
+          const normalizedValue = value.trim();
+
+            if(normalizedValue ===''){
+                errorSwal('Lỗi','Không được để khoảng trắng')
+               
                 return;
             }
-            if (!regex.test(value)) {
-                errorSwal('Lỗi','Tên chỉ được chứa các ký tự [a-z], [A-Z], [0-9]');
+            if (!regex.test(normalizedValue)) {
+                errorSwal('Lỗi','Tên chỉ được chứa các ký tự chữ cái hoặc số!');
+                return;
             } 
+          
         
       };
       const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        const regex = /^[a-zA-Z0-9\p{L}\p{M}\s,/]+$/u;
+        const regex = /^[a-zA-Z0-9\p{L}\p{M}\s,./]+$/u;
 
           if(value.trim() ===''){
               return;
           }
           if (!regex.test(value)) {
-              errorSwal('Lỗi','Tên không chứa kí tự đặc biệt');
+              errorSwal('Lỗi','Vui lòng không nhập địa chỉ chứa kí tự đặc biệt ngoài /');
           } 
       
     };
@@ -457,6 +514,8 @@ export default function AdminEmployeesPage(){
                                     <button className={classes.btn_detail} onClick={() => handleDetailClick(employee)}>
                                     <FontAwesomeIcon icon={faInfoCircle} />
                                 </button> {/* <a onClick={() => handleDeleteEmployee(employee.idemployee)}>Xóa</a> */}
+
+                                <button className = {classes.btn_delete} onClick={()=>handleDeleteClick(employee)} ><FontAwesomeIcon icon={faTrash}/></button>
                                 </div>
                             </td>
                         </tr>
@@ -549,7 +608,7 @@ export default function AdminEmployeesPage(){
                             </div>
                             <div className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
-                                <input name="firstname" type="text" required
+                                <input name="firstname"   ref={inputRef} type="text" required
                               
                                 onChange={handleChange}
                              />
@@ -557,7 +616,7 @@ export default function AdminEmployeesPage(){
                             </div>
                             <div  className={classes.formGroup}>
                                 <label>Tên nhân viên:</label>
-                                <input name="lastname" type="text" required
+                                <input name="lastname" ref={inputRef} type="text" required
                                  onChange={handleChange}
                                 />
                             </div>

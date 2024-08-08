@@ -37,6 +37,7 @@ export default function Header(){
   
     // Lấy email từ payload
     const email = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
     const defaultEmployee: Employee = {
       idemployee: '',
       firstname: '',
@@ -59,7 +60,13 @@ export default function Header(){
     }
     const getEmployeeById = async () => {
       try {
-          const response = await axios.get(`http://localhost:8080/api/v1/employee/${email}`);
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${email}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+            }
+          );
           if (response.status === 200) {
               // successSwal("Thành công",`${response.data.message}`);
               setAdmin(response.data.data);

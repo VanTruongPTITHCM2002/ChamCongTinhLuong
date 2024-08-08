@@ -285,19 +285,19 @@ export default function AdminAccountsPage(){
             <td>
                 {isUpdate ? (
                     <div className={classes.btn}>
-                        <button className={classes.btn_check} onClick={() => handleUpdateAccountStatusSave(account)}>
+                        <button className={classes.btn_check} title='Đồng ý' onClick={() => handleUpdateAccountStatusSave(account)}>
                             <FontAwesomeIcon icon={faCheck} style={{ color: '#28a745' }} />
                         </button>
-                        <button className={classes.btn_time} onClick={() => handleUpdateAccountStatusSave(account, -1)}>
+                        <button className={classes.btn_time} title='Hủy' onClick={() => handleUpdateAccountStatusSave(account, -1)}>
                             <FontAwesomeIcon icon={faTimes} style={{ color: '#dc3545' }} />
                         </button>
                     </div>
                 ) : (
                     <div className={classes.btn}>
-                        <button className={classes.btn_update} onClick={() => handleUpdateAccountStatus((currentPage - 1) * itemsPerPage + index)}>
+                        <button className={classes.btn_update} title='Sửa trạng thái' onClick={() => handleUpdateAccountStatus((currentPage - 1) * itemsPerPage + index)}>
                             <FontAwesomeIcon icon={faPen} style={{ marginRight: "5px" }} />
                         </button>
-                        <button className={classes.btn_reset} onClick={() => handleResetPasswod(account.username)}>
+                        <button className={classes.btn_reset} title='Reset mật khẩu' onClick={() => handleResetPasswod(account.username)}>
                             <FontAwesomeIcon icon={faRotateLeft} style={{ marginRight: "5px" }} />
                         </button>
                     </div>
