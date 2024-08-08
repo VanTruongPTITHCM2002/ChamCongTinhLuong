@@ -1,5 +1,5 @@
 'use client'
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import classes from './workschedule.module.css'
 import {format,addWeeks, subWeeks,startOfWeek,endOfWeek, set} from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -8,8 +8,10 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faCircleInfo, faCirclePlus, faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faCircle, faCircleInfo, faCirclePlus, faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { error } from 'console';
+import moment from 'moment'
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { errorAlert, errorSwal, successSwal } from '@/components/user/custom/sweetalert';
 interface IFEmployee{
     id?:string;
@@ -38,6 +40,16 @@ interface workDate{
     date: string;
 }
 
+
+const localizer = momentLocalizer(moment)
+const events = [
+    { date: '2024-08-30', title: 'Impressive Event' },
+    { date: '2024-08-01', title: 'Diễn kịch' },
+    { date: '2024-08-03', title: 'TOYOTA Event' },
+    // Add more events as needed
+  ];
+
+  
 export default function WorkSchedule(){
    
     const dateRef = useRef<HTMLInputElement>(null);
@@ -46,6 +58,7 @@ export default function WorkSchedule(){
     const [showModal, setShowModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState<string>('');
     const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
+    const [timeidemployee,setTimeIdemployee] = useState<IFEmployee[]>([]);
     const [workEmoloyee,setWorkEmployee] = useState<newIFEMployee[]>([]);
     const [selectedEmployee, setSelectedEmployee] = useState<string>('');
     const [employeeDetails, setEmployeeDetails] = useState<IFEmployee | null>(null);
@@ -84,6 +97,19 @@ export default function WorkSchedule(){
         setIsSelected(true)
   }
 
+  const getAllWorkSchedule = async()=>{
+        try{
+            const response = await axios.get('http://localhost:8084/api/v1/workscheduledetail');
+           
+            setTimeIdemployee(response.data.data);
+        }catch{
+
+        }
+  }
+
+  useEffect(()=>{
+        getAllWorkSchedule()
+  },[])
   const handleDetailWorkSchedule = async  (dayOffset: number) => {
   
     
@@ -128,6 +154,35 @@ export default function WorkSchedule(){
     }
    
   };
+
+  const generateCalendarHTML = () => {
+    const calendarHTML = [];
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    // Get the first day of the month
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+
+    // Get the number of days in the month
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    // Generate the days of the month
+    for (let i = 0; i < firstDay; i++) {
+      calendarHTML.push(`<div class="${classes.calendar_day}"></div>`);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dayEvents = timeidemployee.filter(event => event.workdate === dateStr);
+      const eventHTML = dayEvents.map(e => `<div class="${classes.calendar_event}">${e.idemployee}</div>`).join('');
+      calendarHTML.push(`<div class="${classes.calendar_day}">${day}${eventHTML}</div>`);
+    }
+
+    return calendarHTML.join('');
+  };
+
+
 
   const handelDeleteWorkSchedule = async(index:number)=>{
     const currentDay = startOfWeekDate.getDay(); // Ngày hiện tại trong tuần (0: Chủ nhật, 1: Thứ hai, ..., 6: Thứ bảy)
@@ -372,6 +427,33 @@ const fetchEmployeeDetails = async (id: string) => {
     
 };
 
+
+const showCalendarAlert = () => {
+    Swal.fire({
+      title: `<strong>Lịch làm việc tháng ${(new Date().getMonth() + 1) + '-' + (new Date().getFullYear())}</strong>`,
+      html: `
+        <div style="display: flex; justify-content: center;">
+          <div style="width: 90%;">
+            <div class="${classes.calendar_header}">
+              <div>Chủ nhật</div><div>Thứ hai</div><div>Thứ 3</div><div>Thứ 4</div><div>Thứ 5</div><div>Thứ 6</div><div>Thứ 7</div>
+            </div>
+            <div class="${classes.calendar_body}">
+              ${generateCalendarHTML()}
+            </div>
+          </div>
+        </div>
+      `,
+      width: '80%',
+      padding: '1em',
+      background: '#f9f9f9',
+      confirmButtonColor: '#007bff',
+      customClass: {
+        popup: 'customSwalPopup',
+        title: 'customSwalTitle',
+        htmlContainer: 'customSwalHtml',
+      },
+    });
+  };
     return (
         <div className={classes.article}>
            
@@ -380,7 +462,11 @@ const fetchEmployeeDetails = async (id: string) => {
                 <button className= {classes.btn_prev} onClick={handlePrevDay}>Trước</button>
                 <span>Tuần: {format(startOfWeekDate, 'dd/MM/yyyy', { locale: vi })} - {format(endOfWeekDate, 'dd/MM/yyyy', { locale: vi })}</span>
                 <button className={classes.btn_next} onClick={handleNextDay}>Sau</button>
-               
+
+                <span style={{float:"right"}}>
+                    <button className={classes.btnCalendar} title='Lịch làm việc' onClick={showCalendarAlert}><FontAwesomeIcon icon={faCalendar} /></button>
+
+                </span>
             </div>
             
             <table>

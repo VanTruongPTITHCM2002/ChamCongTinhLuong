@@ -242,7 +242,13 @@ export default function Header(){
                       };
                       
                       try {
-                          const response = await axios.put(`http://localhost:8080/api/v1/employee/${updatedEmployee.idemployee}`, updatedEmployee);
+                          const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${updatedEmployee.idemployee}`, updatedEmployee,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`
+                                  }
+                            }
+                          );
                           if (response.status === 200) {
                               Swal.fire('Thành công', `${response.data.message}`, 'success');
                               setAdmin(updatedEmployee);
@@ -261,11 +267,17 @@ export default function Header(){
 
     return (
         <div className={classes.header}>
+            <div>
+             <h3>Ứng dụng chấm công và tính lương công ty Nextjs</h3>
+            </div>
+            <div className={classes.option_title}>
             <h5>Xin chào, {email}</h5>
             {/* <img src="/images/download.jpg" alt="Avatar" className={classes.avatar}></img> */}
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"
             onClick={toggleMenu}
             />
+            </div>
+           
         {/* <button type="submit" className={classes.btn_logout} onClick={handleLogout}>Đăng xuất</button> */}
         {isMenuVisible && (
         <ul className={classes.dropdownMenu}>

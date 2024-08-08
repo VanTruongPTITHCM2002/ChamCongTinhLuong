@@ -150,7 +150,7 @@ export default function UserAttendance(){
         checkintime:new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
         // checkintime:"10:30",
         checkouttime: '',
-        status: '',
+        status: compareTimes(new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }), "08:15") > 0 ? 'Đi trễ': 'Đi làm đầy đủ',
         numberwork: 0,
         // workhours: 0
       };
@@ -181,6 +181,8 @@ export default function UserAttendance(){
     };
   
     const handleCheckOut = async () => {
+    
+      setCurrentCheckIn(attendance.find(item => item.checkouttime === '') ?? null);
       if (currentCheckIn) {
         const today = new Date().toISOString().slice(0, 10);
         const hasCheckedOut = attendance.some((item) =>

@@ -8,6 +8,9 @@ import axios, { AxiosResponse } from 'axios'
 import Swal from 'sweetalert2'
 import { GetServerSideProps } from 'next'
 import * as XLSX from 'xlsx';
+import { error } from 'console'
+import { successSwal } from '@/components/user/custom/sweetalert'
+import { randomUUID } from 'crypto'
 
 const payrollCustom = {
     width: '50%', // Tùy chỉnh độ rộng của modal
@@ -221,6 +224,21 @@ const AdminPayrollPage = () =>{
     }
   
     const updateStatus = async (index:number)=>{
+        const paymentResponse = await fetch('/api/payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ amount: showPayroll[index].totalpayment, orderId: 'asdasdadccaca'}),
+          });
+
+          if (paymentResponse.ok) {
+            const paymentUrl = await paymentResponse.json();
+            window.location.href = paymentUrl; // Chuyển hướng đến URL thanh toán của VNPAY
+           
+          } else {
+            alert('Có lỗi xảy ra khi tạo đơn hàng!');
+          }
         if(showPayroll[index].status === 'Chưa thanh toán'){
             showPayroll[index].status = 'Đã thanh toán';
             const salary:SalaryRequest ={
@@ -241,6 +259,7 @@ const AdminPayrollPage = () =>{
                         icon:"success"
                     }
                 )
+            
                 setShowDetail(false);
             }
             

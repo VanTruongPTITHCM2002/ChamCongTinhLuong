@@ -3,10 +3,15 @@
    color:#fff;
    padding:20px;
    display: flex;
-   justify-content: flex-end;
+   justify-content: space-between;
    align-items: center;
    width: 100%;
-   
+
+}
+
+.option_title{
+  display: flex;
+  align-items: center;
 }
 /* #00263d */
 .header .btn_logout{
@@ -24,6 +29,7 @@
    border-radius: 50%;
    margin-right: 10px;
    position: relative;
+   cursor: pointer;
  }
 
  .dropdownMenu {
@@ -48,6 +54,7 @@
     position: absolute;
     right:5px;
     top:-30px;
+    cursor: pointer;
 }
 
 .dropdownMenu::after{
@@ -58,6 +65,7 @@
     top:-16px;
     width:90px;
     height: 20px;
+   
 }
  
  .dropdownMenu li {
