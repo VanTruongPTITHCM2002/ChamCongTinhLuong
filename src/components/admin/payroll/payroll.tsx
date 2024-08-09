@@ -9,7 +9,7 @@ import Swal from 'sweetalert2'
 import { GetServerSideProps } from 'next'
 import * as XLSX from 'xlsx';
 import { error } from 'console'
-import { successSwal } from '@/components/user/custom/sweetalert'
+import { errorSwal, successSwal } from '@/components/user/custom/sweetalert'
 import { randomUUID } from 'crypto'
 
 const payrollCustom = {
@@ -133,7 +133,10 @@ const AdminPayrollPage = () =>{
             datecreated: form.get('date') as string,
             status: form.get('status') as string
         }
-        
+      if((form.get('month') as string).trim() === '' || (form.get('year') as string).trim() === ''){
+            errorSwal('Thất bại','Không được bỏ trống');
+            return;
+      }
         const date = new Date();
         if(salary.year > date.getFullYear()){
             Swal.fire({

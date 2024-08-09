@@ -38,8 +38,8 @@ export default function UserContract (){
         try{
             const response = await axios.get(`http://localhost:8087/api/v1/contract/${username}`);
             if(response.status === 200){
-                setContracts(response.data.data);
-                setContractsTwo(response.data.data);
+                setContracts([...response.data.data].reverse());
+                setContractsTwo([...response.data.data].reverse());
           }else{
                 errorSwal('Thất bại',`${response.data.message}`);
             }

@@ -35,7 +35,11 @@ export default function UserHeader(){
     }
     return (
         <div className={classes.header}>
-            <h5>Xin chào, {email}</h5>
+          <div>
+             <h3>Ứng dụng chấm công và tính lương dành cho nhân viên</h3>
+          </div>
+           <div className={classes.option_title}>
+           <h5>Xin chào, {email}</h5>
             {/* <img src="/images/download.jpg" alt="Avatar" className={classes.avatar}></img> */}
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"
             onClick={toggleMenu}
@@ -47,6 +51,9 @@ export default function UserHeader(){
           <li onClick={handleLogout}>Đăng xuất</li>
         </ul>
       )}
+           </div>
+
+            
 
         
      

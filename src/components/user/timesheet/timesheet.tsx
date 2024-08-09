@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import classes from './timesheet.module.css'
 import axios from "axios";
 import { errorSwal } from "../custom/sweetalert";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 interface WorkScheduleDetail{
     idemployee:string;
@@ -21,11 +23,14 @@ interface WorkScheduleDetail{
 export default function UserTimeSheet(){
    const username = localStorage.getItem('username');
    const [showWorkScheduleDetail,setShowWorkScheduleDetail] = useState<WorkScheduleDetail[]>([]);
+   const [workscheduledetail,setWorkscheduledetail] = useState<WorkScheduleDetail[]>([]);
+   const [searchTerm, setSearchTerm] = useState('');
    const getWorkScheduleDetailById = async()=>{
         try{
             const res = await axios.get(`http://localhost:8084/api/v1/workscheduledetail/${username}`);
             if(res.status === 200){
-                setShowWorkScheduleDetail(res.data.data);
+                setShowWorkScheduleDetail([...res.data.data].reverse());
+                setWorkscheduledetail([...res.data.data].reverse())
             } 
         }catch(error:any){
             errorSwal('Thất bại',"Có lỗi xảy ra");
@@ -36,14 +41,51 @@ export default function UserTimeSheet(){
    useEffect(()=>{
         getWorkScheduleDetailById();
    },[])
+   const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+  };
 
+  const searchTimeSheet = ()=>{
+   
+     if(searchTerm === ''){
+        setShowWorkScheduleDetail(workscheduledetail);
+       
+     }else{
+        const filterdata = workscheduledetail.filter(
+            (item) =>
+              item.idemployee.includes(searchTerm) ||
+              item.name.includes(searchTerm)
+              || item.endtime.toString().includes(searchTerm) ||
+              item.startime.toString().includes(searchTerm)
+              || item.workdate.toString().includes(searchTerm)
+          );
+      setShowWorkScheduleDetail(filterdata);
+    }
+  }
     return (
         <div className={classes.main_container}>
             <div className={classes.timeSheetTitle}>
                 <h2>Danh sách lịch làm việc của nhân viên {username}</h2>
             </div>
           
+            <div>
 
+                
+            <input
+                        type="text"
+                        placeholder="Tìm kiếm..."
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        style={{ marginBottom: '10px' }}
+                    />
+
+                    <button className={classes.btnSearch} onClick={searchTimeSheet}>
+                        <FontAwesomeIcon icon={faSearch} style={
+                            { marginRight: "5px" }
+                        } />
+                   </button>
+            </div>
 
             <table className={classes.work_schedule}>
             <thead>

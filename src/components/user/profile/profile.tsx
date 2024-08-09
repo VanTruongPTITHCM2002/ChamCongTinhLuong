@@ -18,13 +18,18 @@ interface Employee {
     status: number | string;
 }
 export default function UserProfile() {
+    const token = localStorage.getItem('token');
     const [personal, setPersonal] = useState<Employee>();
     const [isShowUpdate, setIsShowUpdate] = useState(false);
     const username = localStorage.getItem('username');
     const router = useRouter();
     const getEmployeeById = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/employee/${username}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+            });
             if (response.status === 200) {
                 // successSwal("Thành công",`${response.data.message}`);
                 setPersonal(response.data.data);
@@ -70,7 +75,13 @@ export default function UserProfile() {
         };
         const id = employee.idemployee;
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/employee/${id}`, employee);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${id}`, employee
+                , {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                      }
+                }
+            );
             if(response.data.status === 200){
               successSwal('Thành công',`${response.data.message}`);
               router.refresh();

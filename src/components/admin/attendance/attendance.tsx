@@ -43,7 +43,15 @@ interface WorkRecord{
     year: number;
     day_work?:Float32Array;
 }
+function formatDateString(dateString: string | undefined): string {
+ 
+    if (!dateString) {
+        return ''; // Trả về một chuỗi rỗng nếu dateString là undefined
+    }
 
+    const [year, month, day] = dateString.split('-');
+    return `${day}-${month}-${year}`;
+  }
 export default function AdminAttendancePage(){
 
     const [isUpdate,setIsUpdate]= useState(false);
@@ -111,8 +119,8 @@ export default function AdminAttendancePage(){
     const fetchAttendance = async () => {
         try {
             const response = await axios.get('http://localhost:8083/api/v1/attendance');
-            setAttendance(response.data.data);
-            setAttendances(response.data.data);
+            setAttendance([...response.data.data].reverse());
+            setAttendances([...response.data.data].reverse());
         } catch (error) {
             console.error('Error fetching employee ID:', error);
            
@@ -143,7 +151,7 @@ export default function AdminAttendancePage(){
         try{
             const response = await axios.get('http://localhost:8083/api/v1/workrecord');
             if(response.status === 200){
-                setWorkRecordList(response.data.data);
+                setWorkRecordList([...response.data.data].reverse());
             }
         }catch(error){
             alert("xảy ra lỗi trong quá trình call API");
@@ -614,7 +622,7 @@ export default function AdminAttendancePage(){
                     attedance_explain.map((e,index)=>(
                         <tr key={index}>
                         <td>{e.idemployee}</td>
-                        <td>{e.date}</td>
+                        <td>{formatDateString(e.date)}</td>
                         <td>{e.checkintime}</td>
                         <td>{e.checkoutime}</td>
                         <td>
@@ -707,7 +715,7 @@ export default function AdminAttendancePage(){
                         currentData.map((attend,index) => (
                             <tr key={index}>
                                 <td>{attend.idemployee}</td>
-                                <td>{attend.dateattendance}</td>
+                                <td>{formatDateString(attend.dateattendance)}</td>
                                 <td>{attend.checkintime}</td>
                         <td>{attend.checkouttime}</td>
                         <td>{attend.attendanceStatusName}</td>

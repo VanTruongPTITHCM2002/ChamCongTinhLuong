@@ -3,10 +3,15 @@
    color:#fff;
    padding:20px;
    display: flex;
-   justify-content: flex-end;
+   justify-content: space-between;
    align-items: center;
    width: 100%;
    
+}
+
+.option_title{
+  display: flex;
+  align-items: center;
 }
 /* #00263d */
 .header .btn_logout{

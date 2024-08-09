@@ -126,6 +126,10 @@ export default function AdminRewardPunishPage(){
             setupdate: formatDateToAPI(form.get('date') as string),
             status: "Tồn tại"
         }
+        if((form.get('cash') as string).trim()==='' || (form.get('reason') as string).trim()===''){
+            errorSwal('Thất bại','Không được bỏ trống');
+            return;
+        }
         try{
             const response =  await axios.post("http://localhost:8086/api/v1/rewardpunish",rewardPunish);
             if(response.status === 201){

@@ -54,8 +54,8 @@ export default function AdminContract(){
         try{
             const response =  await axios.get("http://localhost:8087/api/v1/contract");
             if(response.status === 200){
-                setShowContract(response.data.data);
-                setContracts(response.data.data);
+                setShowContract([...response.data.data].reverse());
+                setContracts([...response.data.data].reverse());
             }
         }catch(error){
             console.error('Xảy ra lỗi trong quá trình tải dữ liệu')
