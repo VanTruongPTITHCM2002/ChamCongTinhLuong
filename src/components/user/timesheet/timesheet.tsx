@@ -22,12 +22,17 @@ interface WorkScheduleDetail{
    }
 export default function UserTimeSheet(){
    const username = localStorage.getItem('username');
+   const token = localStorage.getItem('token')
    const [showWorkScheduleDetail,setShowWorkScheduleDetail] = useState<WorkScheduleDetail[]>([]);
    const [workscheduledetail,setWorkscheduledetail] = useState<WorkScheduleDetail[]>([]);
    const [searchTerm, setSearchTerm] = useState('');
    const getWorkScheduleDetailById = async()=>{
         try{
-            const res = await axios.get(`http://localhost:8084/api/v1/workscheduledetail/${username}`);
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workscheduledetail/${username}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(res.status === 200){
                 setShowWorkScheduleDetail([...res.data.data].reverse());
                 setWorkscheduledetail([...res.data.data].reverse())

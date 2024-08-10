@@ -53,7 +53,7 @@ function formatDateString(dateString: string | undefined): string {
     return `${day}-${month}-${year}`;
   }
 export default function AdminAttendancePage(){
-
+    const token =localStorage.getItem('token')
     const [isUpdate,setIsUpdate]= useState(false);
     const [workRecord,setWorkRecord] = useState(false);
     const [attendanceExplain,setAttendanceExplain] = useState(false);
@@ -92,7 +92,12 @@ export default function AdminAttendancePage(){
       ];
       const fetchPayroll = async () => {
         try {
-            const response = await axios.get('http://localhost:8085/api/v1/payroll');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+
+            });
             setShowPayroll(response.data.data);
             
         } catch (error) {
@@ -118,7 +123,12 @@ export default function AdminAttendancePage(){
     
     const fetchAttendance = async () => {
         try {
-            const response = await axios.get('http://localhost:8083/api/v1/attendance');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+
+            });
             setAttendance([...response.data.data].reverse());
             setAttendances([...response.data.data].reverse());
         } catch (error) {
@@ -137,7 +147,12 @@ export default function AdminAttendancePage(){
       );
     const getIDemployee = async ()=>{
         try {
-            const response = await axios.get('http://localhost:8083/api/v1/workrecord/getid');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workrecord/getid`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            }
+);
             console.log(response.data);
             setIdEmployee(response.data);
         
@@ -149,7 +164,12 @@ export default function AdminAttendancePage(){
   
     const handleClickWorkRecord = async()=>{
         try{
-            const response = await axios.get('http://localhost:8083/api/v1/workrecord');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workrecord`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            }
+);
             if(response.status === 200){
                 setWorkRecordList([...response.data.data].reverse());
             }
@@ -171,7 +191,11 @@ export default function AdminAttendancePage(){
 
     const handleCliCkAttendanceExplain = async ()=>{
         try{
-            const response = await axios.get('http://localhost:8083/api/v1/attendance_explain');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance_explain`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 200){
                 setAttendance_Explain(response.data.data);
             }
@@ -233,7 +257,11 @@ export default function AdminAttendancePage(){
             numberwork:inputRefs.current[index]?.numberwork?.value || attendance[index].numberwork ||0
           };
         try{
-            const response = await axios.put('http://localhost:8083/api/v1/attendance/admin',updatedAttendance);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance/admin`,updatedAttendance,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 200){
                 successSwal('Thành công',response.data.message);
                 setAttendance((prevAttendance) => {
@@ -263,12 +291,21 @@ export default function AdminAttendancePage(){
         } 
         try {
             if(str === 'workrecord'){
-                const response = await axios.post('http://localhost:8083/api/v1/workrecord/filter', filter
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workrecord/filter`, filter,{
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                      }
+                }
+    
                 );
               
                 setWorkRecordList(response.data.data);
             }else if(str === 'attedance_explain'){
-                const response = await axios.post('http://localhost:8083/api/v1/attendance_explain/filter', filter
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance_explain/filter`, filter,{
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                      }
+                }
                 );
                 setAttendance_Explain(response.data.data);
             }
@@ -321,7 +358,11 @@ export default function AdminAttendancePage(){
     }
 
     try {
-        const response = await axios.post('http://localhost:8083/api/v1/workrecord', workRecord);
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workrecord`, workRecord,{
+            headers: {
+                Authorization: `Bearer ${token}`  
+              }
+        });
         console.log('Response:', response.data.message);
         if(response.status === 400){
            errorSwal('Thất bại',response.data.message)
@@ -352,7 +393,11 @@ export default function AdminAttendancePage(){
             status: inputRefs.current[index]?.status?.value || attendance[index].status,
           };
         try{
-            const response = await axios.put('http://localhost:8083/api/v1/attendance_explain',updatedAttendanceExplain);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance_explain`,updatedAttendanceExplain,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 200){
            successSwal('Thành công',response.data.message)
                 setAttendance_Explain((prevAttendanceExplain) => {
@@ -450,13 +495,22 @@ export default function AdminAttendancePage(){
           }
       
           try {
-            const response = await axios.post('http://localhost:8083/api/v1/attendance/admin/add-attendance', attendanceData);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance/admin/add-attendance`, attendanceData,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             
             if (response.status === 201) {
               Swal.fire('Thành công', response.data.message, 'success');
             }
             if(response.data.status === 404){
                 errorSwal('Thất bại',response.data.message)
+                return;
+            }
+            if(response.data.status === 400){
+                errorSwal('Thất bại',response.data.message)
+                return;
             }
           } catch (error: any) {
             Swal.fire('Thất bại', error.response?.data?.message || 'Đã có lỗi xảy ra', 'error');

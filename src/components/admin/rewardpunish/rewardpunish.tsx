@@ -31,6 +31,7 @@ const formattedAmount = (num:Float32Array | number)=>{
     return `${day}-${month}-${year}`;
   }
 export default function AdminRewardPunishPage(){
+    const token = localStorage.getItem('token');
     const[showRewardPunish,setShowRewardPunish] = useState<RewardPunish[]>([]);
     const[rewardPunish,setRewardPunish] = useState<RewardPunish[]>([]);
     const [modal,setModal] = useState(false);
@@ -48,7 +49,11 @@ export default function AdminRewardPunishPage(){
     const [showPayroll,setShowPayroll] = useState<Payroll[]>([]);
     const fetchPayroll = async () => {
         try {
-            const response = await axios.get('http://localhost:8085/api/v1/payroll');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             setShowPayroll(response.data.data);
         } catch (error) {
             console.error('Error fetching payroll data:', error);
@@ -58,7 +63,11 @@ export default function AdminRewardPunishPage(){
    
     const getAll = async ()=>{
         try{
-            const response =  await axios.get("http://localhost:8086/api/v1/rewardpunish");
+            const response =  await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/rewardpunish`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 200){
                 setShowRewardPunish(response.data.data);
                 setRewardPunish(response.data.data);
@@ -69,7 +78,12 @@ export default function AdminRewardPunishPage(){
     }
     const getIDemployee = async ()=>{
         try {
-            const response = await axios.get('http://localhost:8085/api/v1/payroll/getidemployee');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/getidemployee`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            }
+);
             console.log(response.data);
             setIdEmployee(response.data);
         
@@ -131,7 +145,11 @@ export default function AdminRewardPunishPage(){
             return;
         }
         try{
-            const response =  await axios.post("http://localhost:8086/api/v1/rewardpunish",rewardPunish);
+            const response =  await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/rewardpunish`,rewardPunish,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 201){
                Swal.fire({
                     title:"Thành công",
@@ -165,8 +183,12 @@ export default function AdminRewardPunishPage(){
              
         try{
             rewardPunish.status = "Đã xóa";
-            const response =  await axios.delete("http://localhost:8086/api/v1/rewardpunish",{
+            const response =  await axios.delete(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/rewardpunish`,{
                 data: rewardPunish,
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+
             });
             if(response.status === 200){
                Swal.fire({

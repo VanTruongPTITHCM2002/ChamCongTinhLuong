@@ -51,7 +51,7 @@ const events = [
 
   
 export default function WorkSchedule(){
-   
+   const token = localStorage.getItem('token');
     const dateRef = useRef<HTMLInputElement>(null);
     const [date,setDate] = useState(new Date());    
     const [isSelected, setIsSelected] = useState(false);
@@ -80,9 +80,12 @@ export default function WorkSchedule(){
         return;
     }
     try {
-        const response = await axios.get('http://localhost:8084/api/v1/workschedule/getidemp',{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule/getidemp`,{
             params:{
                 date:selectedDate.replace(/-/g, '/')
+            },
+            headers: {
+                Authorization: `Bearer ${token}`  // Thêm token vào header
             }
         });
        
@@ -99,7 +102,13 @@ export default function WorkSchedule(){
 
   const getAllWorkSchedule = async()=>{
         try{
-            const response = await axios.get('http://localhost:8084/api/v1/workscheduledetail');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workscheduledetail`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                      }
+                }
+            );
            
             setTimeIdemployee(response.data.data);
         }catch{
@@ -130,8 +139,13 @@ export default function WorkSchedule(){
         date:formattedDate
     }
     try {
-        const response = await axios.post('http://localhost:8084/api/v1/workschedule/workdate', {
-            date:formattedDate}
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule/workdate`, {
+            date:formattedDate},{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+
+            }
         
         );
         console.log('Response:', response.data);
@@ -203,10 +217,14 @@ export default function WorkSchedule(){
     }
 
     try {
-        const response = await axios.delete('http://localhost:8084/api/v1/workschedule', 
+        const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule`, 
             
             { params:{
-                date:formattedDate.replace(/-/g, '/')}
+                date:formattedDate.replace(/-/g, '/')},
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+
             }
             );
        
@@ -249,7 +267,12 @@ const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) =
 };
 const fetchEmployeeDetails = async (id: string) => {
     try {
-      const response = await axios.get<IFEmployee>(`http://localhost:8084/api/v1/workschedule/${id}`);
+      const response = await axios.get<IFEmployee>(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule/${id}`,{
+        headers: {
+            Authorization: `Bearer ${token}`  
+          }
+
+      });
       setEmployeeDetails(response.data);
       console.log(response.data);
     } catch (error) {
@@ -303,7 +326,12 @@ const fetchEmployeeDetails = async (id: string) => {
 
     
     try {
-        const response = await axios.post('http://localhost:8084/api/v1/workschedule', workschedule);
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule`, workschedule,{
+            headers: {
+                Authorization: `Bearer ${token}`  
+              }
+
+        });
         console.log('Response:', response.data.message);
         if(response.status === 400){
             errorSwal('Thất bại',response.data.message)
@@ -350,7 +378,12 @@ const fetchEmployeeDetails = async (id: string) => {
     }
 
     try {
-        const response = await axios.post('http://localhost:8084/api/v1/workschedule/workschedulemployee', ifemployee);
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule/workschedulemployee`, ifemployee,{
+            headers: {
+                Authorization: `Bearer ${token}`  
+              }
+
+        });
         console.log('Response:', response.data.message);
         if(response.status === 400){
             errorSwal('Thất bại',response.data.message)
@@ -405,10 +438,14 @@ const fetchEmployeeDetails = async (id: string) => {
     if (result.isConfirmed) {
         // Thực hiện hành động xóa tại đây
         try{
-            const response = await axios.delete("http://localhost:8084/api/v1/workscheduledetail",
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workscheduledetail`,
                 { params:{
                     idemployee:idemployee,
-                    date:date.replace(/-/g, '/')}
+                    date:date.replace(/-/g, '/')},
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                      }
+    
                 }
             )
             if(response.data.status === 200){

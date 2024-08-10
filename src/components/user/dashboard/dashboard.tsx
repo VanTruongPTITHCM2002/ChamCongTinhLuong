@@ -74,6 +74,7 @@ const options: ChartOptions<'line'> = {
 export default function UserDashboard (){
   
   const username = localStorage.getItem('username');
+  const token = localStorage.getItem('token');
   const currentYear = new Date().getFullYear();
   const [totalMonth,setTotalMonth] = useState<number[]>([]);
   // http://localhost:8085/api/v1/payroll/getMonthlyEmployee
@@ -90,11 +91,14 @@ export default function UserDashboard (){
   };
   const getMonthly = async()=>{
     try{
-      const response = await axios.get(`http://localhost:8085/api/v1/payroll/getMonthlyEmployee`,{
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/getMonthlyEmployee`,{
          params:{
              idemployee:username,
              year:currentYear
-         }
+         },headers: {
+          Authorization: `Bearer ${token}`  
+        }
+
       })
       setTotalMonth(response.data);
 

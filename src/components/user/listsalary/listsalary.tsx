@@ -33,6 +33,7 @@ interface ListSalary{
  }
 export default function UserSalary (){
     const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
     const [listSalary, setListSalary] = useState<ListSalary[]>([]);
     const [filterSalary, setFilterSalary] = useState<ListSalary[]>([]);
     const [isShowDetail,setIsShowDetail] = useState(false);
@@ -43,7 +44,11 @@ export default function UserSalary (){
     
       const getListSalary = async ()=>{
             try{
-                const response = await axios.get(`http://localhost:8085/api/v1/payroll/${username}`);
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/${username}`,{
+                  headers: {
+                      Authorization: `Bearer ${token}`  
+                    }
+              });
                 if(response.status === 200){
                     setListSalary(response.data.data);
                     setFilterSalary(response.data.data);

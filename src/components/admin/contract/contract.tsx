@@ -32,7 +32,7 @@ const formattedAmount = (num:Float32Array | number)=>{
     return `${day}-${month}-${year}`;
   }
 export default function AdminContract(){
-
+    const token = localStorage.getItem('token')
     const [showContract,setShowContract] = useState<Contract[]>([]);
     const [contracts,setContracts] = useState<Contract[]>([]);
     const [modal,setModal] = useState(false);
@@ -52,7 +52,11 @@ export default function AdminContract(){
     const [isUpdate,setIsUpdate] = useState(false);
     const getAll = async ()=>{
         try{
-            const response =  await axios.get("http://localhost:8087/api/v1/contract");
+            const response =  await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/contract`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 200){
                 setShowContract([...response.data.data].reverse());
                 setContracts([...response.data.data].reverse());
@@ -63,7 +67,12 @@ export default function AdminContract(){
     }
     const getIDemployee = async ()=>{
         try {
-            const response = await axios.get('http://localhost:8085/api/v1/payroll/getidemployee');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/getidemployee`,
+                {
+                                headers: {
+                                    Authorization: `Bearer ${token}`  
+                                  }
+                            });
             console.log(response.data);
             setIdEmployee(response.data);
         
@@ -140,7 +149,11 @@ export default function AdminContract(){
         return;
     }
         try{
-            const response =  await axios.post("http://localhost:8087/api/v1/contract",contract);
+            const response =  await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/contract`,contract,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 201){
                Swal.fire({
                     title:"Thành công",
@@ -211,7 +224,11 @@ export default function AdminContract(){
                 }
             };
             try {
-                const response = await axios.put("http://localhost:8087/api/v1/contract", data);
+                const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/contract`, data,{
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                      }
+                });
                 if (response.status === 200) {
                     Swal.fire({
                         title: "Thành công",

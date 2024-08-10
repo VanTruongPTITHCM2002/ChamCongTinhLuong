@@ -63,6 +63,7 @@ function formatDate(dateString:string) {
   }
 
 const AdminPayrollPage = () =>{
+    const token = localStorage.getItem('token');
     const [modal,setModal] = useState(false);
     const [showDetail,setShowDetail] = useState(false);
     const [num,setNum] = useState<number>(-1);
@@ -79,7 +80,11 @@ const AdminPayrollPage = () =>{
     useEffect(() => {
         const fetchPayroll = async () => {
             try {
-                const response = await axios.get('http://localhost:8085/api/v1/payroll');
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,{
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                      }
+                });
                 setShowPayroll(response.data.data);
                 setShowPay(response.data.data);
             } catch (error) {
@@ -107,7 +112,11 @@ const AdminPayrollPage = () =>{
 
     const getIDemployee = async ()=>{
         try {
-            const response = await axios.get('http://localhost:8085/api/v1/payroll/getidemployee');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/getidemployee`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             console.log(response.data);
             setIdEmployee(response.data);
         
@@ -157,7 +166,11 @@ const AdminPayrollPage = () =>{
         }
     
         try {
-            const response = await axios.post('http://localhost:8085/api/v1/payroll', salary);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`, salary,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             console.log('Response:', response.data.message);
             if(response.status === 400){
                 Swal.fire(
@@ -227,6 +240,10 @@ const AdminPayrollPage = () =>{
     }
   
     const updateStatus = async (index:number)=>{
+        if(showPayroll[index].status === 'Đã thanh toán'){
+            errorSwal('Thất bại','Nhân viên đã được tính lương');
+            return;
+        }
         const paymentResponse = await fetch('/api/payment', {
             method: 'POST',
             headers: {
@@ -253,7 +270,11 @@ const AdminPayrollPage = () =>{
             }
             
             try {
-                const response = await axios.put('http://localhost:8085/api/v1/payroll',salary);
+                const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,salary,{
+                    headers: {
+                        Authorization: `Bearer ${token}`  
+                      }
+                });
                 if(response.status === 200){
                 Swal.fire(
                     {
@@ -276,9 +297,19 @@ const AdminPayrollPage = () =>{
         try {
             let response:AxiosResponse<any, any>
             if(searchId.trim() === ''){
-              response = await axios.get("http://localhost:8085/api/v1/payroll");
+              response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,
+                {
+                                headers: {
+                                    Authorization: `Bearer ${token}`  
+                                  }
+                            });
             }else{
-             response = await axios.get(`http://localhost:8085/api/v1/payroll/${searchId}`);
+             response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/${searchId}`,
+                {
+                                headers: {
+                                    Authorization: `Bearer ${token}`  
+                                  }
+                            });
             }
             if(response.status === 200){
             
@@ -309,7 +340,7 @@ const AdminPayrollPage = () =>{
             setShowPayroll(showPay);
            
          }else{
-            const filterdata = showPayroll.filter(
+            const filterdata = showPay.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
                   item.month === Number(searchTerm)

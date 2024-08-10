@@ -93,6 +93,7 @@ function calculateMinutes(a:string,b:string) : number{
 
 export default function UserAttendance(){
     const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
     const [isExplain, setIsExplain] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [attendance,setAttendance] = useState<Attendance[]>([]);
@@ -103,7 +104,12 @@ export default function UserAttendance(){
     const [isReasonTableVisible, setIsReasonTableVisible] = useState(false);
     const getAllAttendance = async()=>{
         try{
-            const response  = await axios(`http://localhost:8083/api/v1/attendance/${username}`);
+            const response  = await axios(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance/${username}`,
+              {
+                              headers: {
+                                  Authorization: `Bearer ${token}`  
+                                }
+                          });
             if(response.status === 200){
                 setAttendance(response.data.data.reverse());
             }
@@ -114,7 +120,11 @@ export default function UserAttendance(){
 
     const getAttendanceExplain = async()=>{
       try{
-        const response  = await axios.get(`http://localhost:8083/api/v1/attendance_explain/${username}`);
+        const response  = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance_explain/${username}`,    {
+          headers: {
+              Authorization: `Bearer ${token}`  
+            }
+      });
         if(response.status === 200){
             setAttendance_Explain(response.data.data.reverse());
         }
@@ -159,7 +169,11 @@ export default function UserAttendance(){
             return;
         }
         try{
-          const response = await axios.post('http://localhost:8083/api/v1/attendance',newEntry);
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance`,newEntry,{
+            headers: {
+                Authorization: `Bearer ${token}`  
+              }
+        });
           if(response.status === 201){
               
             setCurrentCheckIn(newEntry);
@@ -228,7 +242,11 @@ export default function UserAttendance(){
 
 
         try{
-            const response = await axios.put('http://localhost:8083/api/v1/attendance',updatedEntry);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance`,updatedEntry,{
+              headers: {
+                  Authorization: `Bearer ${token}`  
+                }
+          });
             if(response.status === 200){
                 const updatedData = attendance.map((item) =>
                     item.idemployee === currentCheckIn.idemployee && item.dateattendance === currentCheckIn.dateattendance ? updatedEntry : item
@@ -321,7 +339,11 @@ export default function UserAttendance(){
           return;
        }
         try{
-          const response = await axios.post('http://localhost:8083/api/v1/attendance_explain',selectedRow);
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance_explain`,selectedRow,{
+            headers: {
+                Authorization: `Bearer ${token}`  
+              }
+        });
           if(response.status === 201){
             successSwal("Thành công",`${response.data.message}`);
             setSelectedRowIndex(null);

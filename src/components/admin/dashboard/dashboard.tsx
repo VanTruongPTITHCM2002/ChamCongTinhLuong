@@ -108,10 +108,12 @@ const data2 = {
 
    const getToTalPaymentByYearAndMonth =async()=>{
         try{
-             const response = await axios.get(`http://localhost:8085/api/v1/payroll/totalPayment`,{
+             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/totalPayment`,{
                 params:{
                     month:currentMonth,
                     year:currentYear
+                }, headers: {
+                  Authorization: `Bearer ${token}`  
                 }
              })
              setTotalPayment(response.data);
@@ -122,11 +124,14 @@ const data2 = {
 
    const countContractByMonthAndYear =async()=>{
     try{
-         const response = await axios.get(`http://localhost:8087/api/v1/contract/countContract`,{
+         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/contract/countContract`,{
             params:{
                 month:currentMonth,
                 year:currentYear
+            },headers: {
+              Authorization: `Bearer ${token}`  
             }
+
          })
          setCounContract(response.data);
     }catch(error){
@@ -135,10 +140,12 @@ const data2 = {
 }
 const countDateAttendance = async()=>{
     try{
-        const response = await axios.get(`http://localhost:8083/api/v1/attendance/countDate`,{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance/countDate`,{
            params:{
              date:formattedDate.replace(/-/g, '/')
-           }
+           },  headers: {
+            Authorization: `Bearer ${token}`  
+          }
         })
         setCountAttendance(response.data);
    }catch(error){
@@ -147,10 +154,13 @@ const countDateAttendance = async()=>{
 }
 const countRewardPunish = async()=>{
     try{
-        const response = await axios.get(`http://localhost:8086/api/v1/rewardpunish/countRewardPunish`,{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/rewardpunish/countRewardPunish`,{
            params:{
              year:currentYear
-           }
+           }, headers: {
+            Authorization: `Bearer ${token}`  
+          }
+
         })
 
         setArrReward(response.data[0]);

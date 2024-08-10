@@ -29,6 +29,7 @@ function formatDate(dateString:string) {
 }
 export default function UserContract (){
     const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
     const [contracts,setContracts] = useState<Contract[]>([]); 
     const [contractsTwo,setContractsTwo] = useState<Contract[]>([]); 
     const [searchTerm, setSearchTerm] = useState('');
@@ -36,7 +37,11 @@ export default function UserContract (){
     const [itemsPerPage] = useState(5);
     const getContractById = async ()=>{
         try{
-            const response = await axios.get(`http://localhost:8087/api/v1/contract/${username}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/contract/${username}`,{
+              headers: {
+                  Authorization: `Bearer ${token}`  
+                }
+          });
             if(response.status === 200){
                 setContracts([...response.data.data].reverse());
                 setContractsTwo([...response.data.data].reverse());

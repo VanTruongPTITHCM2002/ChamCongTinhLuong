@@ -28,6 +28,7 @@ function formatDate(dateString:string) {
 }
 export default function UserRewardPenalty(){
     const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
     const [rewardpenalty,setRewardPenalty] = useState<RewardPenalty[]>([]);
     const [rewpen,setRewpen] = useState<RewardPenalty[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -35,7 +36,11 @@ export default function UserRewardPenalty(){
     const [itemsPerPage] = useState(5);
     const getRewardPenalty = async ()=>{
         try{
-            const response = await axios.get(`http://localhost:8086/api/v1/rewardpunish/${username}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/rewardpunish/${username}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            });
             if(response.status === 200){
                 setRewardPenalty(response.data.data);
                 setRewpen(response.data.data);
