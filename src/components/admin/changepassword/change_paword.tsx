@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
+import { errorSwal } from '@/components/user/custom/sweetalert';
 export default function AdminChangePassword(){
     
     const router = useRouter();
@@ -23,6 +24,12 @@ export default function AdminChangePassword(){
             newpassword:newpassword
 
         }
+
+        if(data.username === '' || data.newpassword === '' || data.oldpassword === ''){
+            errorSwal('Thất bại','Không được bỏ trống');
+            return;
+        }
+
         if(newpassword !== renewpassword){
           Swal.fire({
             title:"Thất bại",
@@ -52,7 +59,7 @@ export default function AdminChangePassword(){
         }catch(error:any){
             Swal.fire({
                 title:"Thất bại",
-                text:`${error.response.message}`,
+                text:`${error.response.data.message}`,
                 icon:'error'
             })
         }

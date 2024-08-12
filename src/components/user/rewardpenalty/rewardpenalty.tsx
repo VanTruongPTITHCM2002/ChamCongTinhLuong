@@ -107,7 +107,7 @@ export default function UserRewardPenalty(){
                             {rewardpenalty.map((r,index)=>(
                                 <tr key={index}>
                                     <td>{r.idemployee}</td>
-                                    <td>{r.type}</td>
+                                    <td className={r.type === 'Phạt'? classes.statusInactive:classes.statusActive}>{r.type}</td>
                                     <td>{formattedAmount(r.cash)}</td>
                                     <td>{r.reason}</td>
                                     <td>{formatDate(r.setupdate)}</td>

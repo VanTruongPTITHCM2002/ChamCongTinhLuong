@@ -396,24 +396,52 @@ export default function AdminEmployeesPage(){
 
     
   
-      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>,str?:string) => {
           const value = e.target.value;
           const regex = /^[a-zA-Z0-9\p{L}\p{M}]+(?:\s[a-zA-Z0-9\p{L}\p{M}]+)*$/u;
           const normalizedValue = value.trim();
 
             if(normalizedValue ===''){
                 errorSwal('Lỗi','Không được để khoảng trắng')
-               
+                e.target.value = e.target.value.trim();
                 return;
             }
             if (!regex.test(normalizedValue)) {
                 errorSwal('Lỗi','Tên chỉ được chứa các ký tự chữ cái hoặc số!');
+                if(str != undefined){
+                    e.target.value = str;
+                    e.target.focus();
+                    return;
+                }
+                e.target.value = '';
                 return;
             } 
           
         
       };
-      const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+      const handleBirthdateChange = (e: React.ChangeEvent<HTMLInputElement>, prevValue ?:string) => {
+        e.preventDefault();
+        const birthdate = new Date(e.target.value);
+        const today = new Date();
+        
+        const age = today.getFullYear() - birthdate.getFullYear();
+        const monthDiff = today.getMonth() - birthdate.getMonth();
+        const dayDiff = today.getDate() - birthdate.getDate();
+
+        // Kiểm tra nếu chưa đủ 18 tuổi
+        if (age < 18 || (age === 18 && monthDiff < 0) || (age === 18 && monthDiff === 0 && dayDiff < 0)) {
+            
+            errorSwal('Thất bại','Bạn phải đủ 18 tuổi để đăng ký.');
+            if(prevValue != undefined){
+                e.target.value = prevValue;
+                e.target.focus();
+                return;
+            }
+            e.target.value = ''; // Reset lại giá trị của input
+        }
+    };
+      const handleAddress = (e: React.ChangeEvent<HTMLInputElement>,address?:string) => {
         const value = e.target.value;
         const regex = /^[a-zA-Z0-9\p{L}\p{M}\s,./]+$/u;
 
@@ -421,25 +449,82 @@ export default function AdminEmployeesPage(){
               return;
           }
           if (!regex.test(value)) {
+            
               errorSwal('Lỗi','Vui lòng không nhập địa chỉ chứa kí tự đặc biệt ngoài /');
+              if(address != undefined){
+                e.target.value = address;
+                e.target.focus();
+                return;
+            }
           } 
       
     };
-      const checkNumber =(e: React.ChangeEvent<HTMLInputElement>) => {
+      const checkNumber =(e: React.ChangeEvent<HTMLInputElement>,phone?:string) => {
 
-        const value = e.target.value;
+        let value = e.target.value;
         const regex = /^[0-9]+$/
         if(value.trim() ===''){
             return;
         }
-       
+
+        if(value.length > 11)
+       {
+            errorSwal('Lỗi','Không nhập quá 11 số');
+            if(phone != undefined){
+                e.target.value = phone;
+                e.target.focus();
+                return;
+            }
+            value = value.slice(0, 11);
+            e.target.value = value;
+          
+       }
         if(!regex.test(value)){
         
             errorSwal('Lỗi','Không được nhập chữ');
+            if(phone != undefined){
+                e.target.value = phone;
+                e.target.focus();
+                return;
+            }
+            e.target.value = '';
         }
        
       }
   
+      const checkCMND = (e: React.ChangeEvent<HTMLInputElement>,cmnd?:string)=>{
+        let value = e.target.value;
+        const regex = /^[0-9]+$/
+        if(value.trim() ===''){
+            return;
+        }
+
+        if(value.length > 12)
+       {
+            errorSwal('Lỗi','Không nhập quá 12 số');
+
+            if(cmnd != undefined){
+                e.target.value = cmnd;
+                e.target.focus();
+                return;
+            }
+
+            value = value.slice(0, 12);
+            e.target.value = value;
+          
+       }
+        if(!regex.test(value)){
+        
+            errorSwal('Lỗi','Không được nhập chữ');
+            if(cmnd != undefined){
+                e.target.value = cmnd;
+                e.target.focus();
+                return;
+            }
+            e.target.value = '';
+        }
+       
+      }
       
     return (
         <div className={classes.article}>
@@ -458,7 +543,7 @@ export default function AdminEmployeesPage(){
                 </div>
             
 
-                        <button className={classes.btn_add_emp} onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
+                        <button className={classes.btn_add_emp} title='Thêm nhân viên' onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
                 width: "12px",
                 height: "12px",
                 overflow: "visible",
@@ -508,14 +593,14 @@ export default function AdminEmployeesPage(){
                             
                             <td>
                                 <div className={classes.btn}>
-                                    <button className={classes.btn_update} onClick={() => handleUpdateClick(employee)}><FontAwesomeIcon icon={faPen}/></button>
+                                    <button className={classes.btn_update} title = 'Sửa nhân viên' onClick={() => handleUpdateClick(employee)}><FontAwesomeIcon icon={faPen}/></button>
                                    
                                    
-                                    <button className={classes.btn_detail} onClick={() => handleDetailClick(employee)}>
+                                    <button className={classes.btn_detail} title='Chi tiết nhân viên' onClick={() => handleDetailClick(employee)}>
                                     <FontAwesomeIcon icon={faInfoCircle} />
                                 </button> {/* <a onClick={() => handleDeleteEmployee(employee.idemployee)}>Xóa</a> */}
 
-                                <button className = {classes.btn_delete} onClick={()=>handleDeleteClick(employee)} ><FontAwesomeIcon icon={faTrash}/></button>
+                                <button className = {classes.btn_delete} title='Xóa nhân viên (Chỉ xóa khi nhân viên đó chưa từng có hợp đồng)' onClick={()=>handleDeleteClick(employee)} ><FontAwesomeIcon icon={faTrash}/></button>
                                 </div>
                             </td>
                         </tr>
@@ -536,12 +621,12 @@ export default function AdminEmployeesPage(){
                             <div  className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
                                 <input name="firstname" type="text" required defaultValue={selectedEmployee.firstname}
-                                onChange={handleChange}/>
+                                onChange={(e)=>handleChange(e,selectedEmployee.firstname)}/>
                             </div>
                             <div  className={classes.formGroup}>
                                 <label>Tên nhân viên:</label>
                                 <input name="lastname" type="text" required defaultValue={selectedEmployee.lastname}
-                                onChange={handleChange}/>
+                                onChange={(e)=>handleChange(e,selectedEmployee.lastname)}/>
                             </div>
                             
                                 <div className={classes.formGroup}>
@@ -554,18 +639,20 @@ export default function AdminEmployeesPage(){
                                 <div className={classes.formGroup}>
                                     <label htmlFor="address">Địa Chỉ:</label>
                                     <input type="text" id="address" name="address" required defaultValue={selectedEmployee.address}
-                                    onChange={handleAddress}
+                                    onChange={(e)=>handleAddress(e,selectedEmployee.address)}
                                     />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="phonenumber">Số Điện Thoại:</label>
                                     <input type="text" id="phonenumber" name="phonenumber" required defaultValue={selectedEmployee.phonenumber}
-                                    onChange={checkNumber}
+                                    onChange={(e)=>checkNumber(e,selectedEmployee.phonenumber)}
                                     />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="cmnd">CMND:</label>
-                                    <input type="text" id="cmnd" name="cmnd" required defaultValue={selectedEmployee.cmnd}/>
+                                    <input type="text" id="cmnd" name="cmnd" required defaultValue={selectedEmployee.cmnd}
+                                    onChange={(e)=>checkCMND(e,selectedEmployee.cmnd)}
+                                    />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="email">Email:</label>
@@ -573,7 +660,9 @@ export default function AdminEmployeesPage(){
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="birthdate">Ngày sinh:</label>
-                                    <input type="date" id="birthdate" name="birthdate" required defaultValue={selectedEmployee.birthdate}/>
+                                    <input type="date" id="birthdate" name="birthdate" required defaultValue={selectedEmployee.birthdate}
+                                    onChange={(e)=>handleBirthdateChange(e,selectedEmployee.birthdate)}
+                                    />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="degree">Bằng Cấp:</label>
@@ -642,7 +731,9 @@ export default function AdminEmployeesPage(){
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="cmnd">CMND:</label>
-                                    <input type="text" id="cmnd" name="cmnd" required/>
+                                    <input type="text" id="cmnd" name="cmnd" required
+                                    onChange={checkCMND}
+                                    />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="email">Email:</label>
@@ -650,7 +741,7 @@ export default function AdminEmployeesPage(){
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="birthdate">Ngày sinh:</label>
-                                    <input type="date" id="birthdate" name="birthdate" required/>
+                                    <input type="date" id="birthdate" name="birthdate" required onChange={handleBirthdateChange}/>
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="degree">Bằng Cấp:</label>

@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
+import { errorSwal } from '../custom/sweetalert';
 export default function UserChangePassword(){
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
@@ -23,6 +24,10 @@ export default function UserChangePassword(){
             oldpassword:password,
             newpassword:newpassword
 
+        }
+        if(data.username === '' || data.oldpassword === '' || data.newpassword === ''){
+          errorSwal('Thất bại','Không được bỏ trống');
+          return;
         }
         if(newpassword !== renewpassword){
           Swal.fire({
@@ -53,7 +58,7 @@ export default function UserChangePassword(){
         }catch(error:any){
             Swal.fire({
                 title:"Thất bại",
-                text:`${error.response.message}`,
+                text:`${error.response.data.message}`,
                 icon:'error'
             })
         }

@@ -241,7 +241,7 @@ const AdminPayrollPage = () =>{
   
     const updateStatus = async (index:number)=>{
         if(showPayroll[index].status === 'Đã thanh toán'){
-            errorSwal('Thất bại','Nhân viên đã được tính lương');
+            errorSwal('Thất bại','Lương nhân viên đã được thanh toán');
             return;
         }
         const paymentResponse = await fetch('/api/payment', {

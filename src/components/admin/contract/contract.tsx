@@ -17,9 +17,7 @@ interface Contract{
     endate:string;
     status?:string;
 }
-interface IFEmployee{
-    idemployee:string;
-}
+
 
 const formattedAmount = (num:Float32Array | number)=>{
     return  num.toLocaleString('vi-VN', {
@@ -36,7 +34,7 @@ export default function AdminContract(){
     const [showContract,setShowContract] = useState<Contract[]>([]);
     const [contracts,setContracts] = useState<Contract[]>([]);
     const [modal,setModal] = useState(false);
-    const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
+    const [idEmployee,setIdEmployee] = useState<string[]>([]);
     const [selectedIdEmployee, setSelectedIdEmployee] = useState<string>('');
     const [searchId, setSearchId] = useState<string>('');
     const [formData, setFormData] = useState({
@@ -67,14 +65,14 @@ export default function AdminContract(){
     }
     const getIDemployee = async ()=>{
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/getidemployee`,
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/list`,
                 {
                                 headers: {
                                     Authorization: `Bearer ${token}`  
                                   }
                             });
-            console.log(response.data);
-            setIdEmployee(response.data);
+        
+            setIdEmployee(response.data.data.map((employee: { idemployee: string }) => employee.idemployee));
         
         } catch (error) {
             console.error('Error fetching id employee:', error);
@@ -416,7 +414,7 @@ export default function AdminContract(){
                             type='number'
                           
                             defaultValue={formData.workingdays}
-                           
+                            
                             required
                         />
                     </div>
@@ -466,9 +464,9 @@ export default function AdminContract(){
                         value={selectedIdEmployee}
                 onChange={handleSelectChange} 
                 required>
-                                            {idEmployee.map((employee) => (
-                                                <option key={employee.idemployee} value={employee.idemployee}>
-                                                    {employee.idemployee}
+                                            {idEmployee.map((employee,index) => (
+                                                <option key={index} value={employee}>
+                                                    {employee}
                                                 </option>
                                             ))}
                                     </select>
@@ -481,7 +479,7 @@ export default function AdminContract(){
 
                         <div>
                             <label htmlFor='work'>Số ngày công:</label>
-                            <input id='work' name='work' type='number'  min={0} required/>
+                            <input id='work' name='work' type='number'  min={0} max={26} required/>
                         </div>
                         <div className={classes.timecontract}>
                         <div>
