@@ -55,7 +55,9 @@ export default function AdminDashboard(){
    const [arrPunish,setArrPunish] = useState<number[]>([]);
     const token = localStorage.getItem('token')
     const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().split('T')[0];
+   
+    const formattedDate = currentDate.toLocaleDateString('en-CA');
+    console.log(currentDate + "---" + formattedDate);
     const currentMonth = new Date().getMonth() + 1;
     const currentYear = new Date().getFullYear();
     const data1 = {

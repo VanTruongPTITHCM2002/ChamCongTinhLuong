@@ -271,7 +271,7 @@ export default function Header(){
              <h3>Ứng dụng chấm công và tính lương dành cho quản lý</h3>
             </div>
             <div className={classes.option_title}>
-            <h5>Xin chào, {email}</h5>
+            <h5>Xin chào, {admin?.firstname + ' ' + admin?.lastname}</h5>
             {/* <img src="/images/download.jpg" alt="Avatar" className={classes.avatar}></img> */}
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"
             onClick={toggleMenu}

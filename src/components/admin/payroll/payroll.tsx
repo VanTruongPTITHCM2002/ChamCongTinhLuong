@@ -254,43 +254,46 @@ const AdminPayrollPage = () =>{
 
           if (paymentResponse.ok) {
             const paymentUrl = await paymentResponse.json();
-            window.location.href = paymentUrl; // Chuyển hướng đến URL thanh toán của VNPAY
+            window.location.href = paymentUrl;// Chuyển hướng đến URL thanh toán của VNPAY
+            
            
+            
+            if(showPayroll[index].status === 'Chưa thanh toán'){
+                showPayroll[index].status = 'Đã thanh toán';
+                const salary:SalaryRequest ={
+                    idemployee: showPayroll[index].idemployee,
+                    month: Number(showPayroll[index].month),
+                    year: Number(showPayroll[index].year),
+                    datecreated: showPayroll[index].datecreated,
+                    status:showPayroll[index].status
+                }
+                
+                try {
+                    const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,salary,{
+                        headers: {
+                            Authorization: `Bearer ${token}`  
+                          }
+                    });
+                    if(response.status === 200){
+                    // Swal.fire(
+                    //     {
+                    //         title:"Thành công",
+                    //         text:`${response.data.message}`,
+                    //         icon:"success"
+                    //     }
+                    // )
+                
+                    setShowDetail(false);
+                }
+                
+                } catch (error) {
+                    console.error('Error fetching id employee:', error);
+                }
+            }
           } else {
             alert('Có lỗi xảy ra khi tạo đơn hàng!');
           }
-        if(showPayroll[index].status === 'Chưa thanh toán'){
-            showPayroll[index].status = 'Đã thanh toán';
-            const salary:SalaryRequest ={
-                idemployee: showPayroll[index].idemployee,
-                month: Number(showPayroll[index].month),
-                year: Number(showPayroll[index].year),
-                datecreated: showPayroll[index].datecreated,
-                status:showPayroll[index].status
-            }
-            
-            try {
-                const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,salary,{
-                    headers: {
-                        Authorization: `Bearer ${token}`  
-                      }
-                });
-                if(response.status === 200){
-                Swal.fire(
-                    {
-                        title:"Thành công",
-                        text:`${response.data.message}`,
-                        icon:"success"
-                    }
-                )
-            
-                setShowDetail(false);
-            }
-            
-            } catch (error) {
-                console.error('Error fetching id employee:', error);
-            }
-        }
+       
     }
     const searchPayrollByid = async ()=>{
      

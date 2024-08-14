@@ -134,6 +134,7 @@ export default function WorkSchedule(){
 
     // Định dạng ngày thành chuỗi YYYY-MM-DD
     const formattedDate = selectedDay.toISOString().split('T')[0];
+    console.log(formattedDate)
     setSelectedDate(formattedDate);
     const work:workDate={
         date:formattedDate
