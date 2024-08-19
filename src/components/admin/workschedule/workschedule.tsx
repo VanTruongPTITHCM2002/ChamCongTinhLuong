@@ -57,6 +57,7 @@ export default function WorkSchedule(){
     const [isSelected, setIsSelected] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState<string>('');
+    const [listWorkSchedule,setListWorkSchedule] = useState<WorkSchedule[]>([]);
     const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
     const [timeidemployee,setTimeIdemployee] = useState<IFEmployee[]>([]);
     const [workEmoloyee,setWorkEmployee] = useState<newIFEMployee[]>([]);
@@ -100,6 +101,23 @@ export default function WorkSchedule(){
         setIsSelected(true)
   }
 
+
+  const getWorkSchedule =  async()=>{
+    try{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                  }
+            }
+        );
+       
+        setListWorkSchedule(response.data.data);
+    }catch{
+
+    }
+  }
+
   const getAllWorkSchedule = async()=>{
         try{
             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workscheduledetail`,
@@ -118,7 +136,23 @@ export default function WorkSchedule(){
 
   useEffect(()=>{
         getAllWorkSchedule()
+        getWorkSchedule()
   },[])
+
+  const isWorkDays = (dayOffset: number)=>{
+    const startOfWeek = new Date(startOfWeekDate);
+    startOfWeek.setDate(startOfWeekDate.getDate()); // Điều chỉnh để có Chủ nhật
+
+    // Tính toán ngày được chọn
+    const selectedDay = new Date(startOfWeek);
+    selectedDay.setDate(startOfWeek.getDate() + dayOffset); // Thêm số ngày tương ứng
+
+    // Định dạng ngày thành chuỗi YYYY-MM-DD
+    const formattedDate = selectedDay.toISOString().split('T')[0];
+    return listWorkSchedule.filter(event => event.workdate === formattedDate).length > 0;
+  }
+
+
   const handleDetailWorkSchedule = async  (dayOffset: number) => {
   
     
@@ -170,32 +204,7 @@ export default function WorkSchedule(){
    
   };
 
-  const generateCalendarHTML = () => {
-    const calendarHTML = [];
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
 
-    // Get the first day of the month
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-
-    // Get the number of days in the month
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    // Generate the days of the month
-    for (let i = 0; i < firstDay; i++) {
-      calendarHTML.push(`<div class="${classes.calendar_day}"></div>`);
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const dayEvents = timeidemployee.filter(event => event.workdate === dateStr);
-      const eventHTML = dayEvents.map(e => `<div class="${classes.calendar_event}">${e.idemployee}</div>`).join('');
-      calendarHTML.push(`<div class="${classes.calendar_day}">${day}${eventHTML}</div>`);
-    }
-
-    return calendarHTML.join('');
-  };
 
 
 
@@ -282,9 +291,20 @@ const fetchEmployeeDetails = async (id: string) => {
     }
   };
 
+  const createCheckboxHtml = (employees:IFEmployee[]) => {
+    
+    return employees.map(employee => `
+        <div>
+            <input type="checkbox" class="employee" value="${employee.id}" id="${employee.id}" />
+            <label for="${employee.id}">Nhân viên ${employee.id}</label>
+        </div>
+    `).join('');
+};
+
   // Thêm lịch làm việc
   const handleAddWorkScheduleDate = async (event:FormEvent)=>{
     event.preventDefault();
+   
     const formElement = document.getElementById('form-add-work-date') as HTMLFormElement;
     if (!formElement) {
         console.error('Form element not found');
@@ -324,7 +344,7 @@ const fetchEmployeeDetails = async (id: string) => {
         errorSwal("Thất bại","Không thể tạo lịch làm việc ngày trong quá khứ");
         return;
     }
-
+   
     
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule`, workschedule,{
@@ -466,32 +486,7 @@ const fetchEmployeeDetails = async (id: string) => {
 };
 
 
-const showCalendarAlert = () => {
-    Swal.fire({
-      title: `<strong>Lịch làm việc tháng ${(new Date().getMonth() + 1) + '-' + (new Date().getFullYear())}</strong>`,
-      html: `
-        <div style="display: flex; justify-content: center;">
-          <div style="width: 90%;">
-            <div class="${classes.calendar_header}">
-              <div>Chủ nhật</div><div>Thứ hai</div><div>Thứ 3</div><div>Thứ 4</div><div>Thứ 5</div><div>Thứ 6</div><div>Thứ 7</div>
-            </div>
-            <div class="${classes.calendar_body}">
-              ${generateCalendarHTML()}
-            </div>
-          </div>
-        </div>
-      `,
-      width: '80%',
-      padding: '1em',
-      background: '#f9f9f9',
-      confirmButtonColor: '#007bff',
-      customClass: {
-        popup: 'customSwalPopup',
-        title: 'customSwalTitle',
-        htmlContainer: 'customSwalHtml',
-      },
-    });
-  };
+
     return (
         <div className={classes.article}>
            
@@ -501,10 +496,7 @@ const showCalendarAlert = () => {
                 <span>Tuần: {format(startOfWeekDate, 'dd/MM/yyyy', { locale: vi })} - {format(endOfWeekDate, 'dd/MM/yyyy', { locale: vi })}</span>
                 <button className={classes.btn_next} onClick={handleNextDay}>Sau</button>
 
-                <span style={{float:"right"}}>
-                    <button className={classes.btnCalendar} title='Lịch làm việc' onClick={showCalendarAlert}><FontAwesomeIcon icon={faCalendar} /></button>
-
-                </span>
+               
             </div>
             
             <table>
@@ -523,28 +515,28 @@ const showCalendarAlert = () => {
                 <tbody>
                     <tr>
                         <td>Ca làm việc 8:00 - 17:00</td>
-                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(1)}><FontAwesomeIcon icon={faCircleInfo} 
+                        <td><button disabled = {isWorkDays(1)?false:true} className={isWorkDays(1)?classes.btnDetail : classes.btnDisable} onClick={()=>handleDetailWorkSchedule(1)}><FontAwesomeIcon icon={faCircleInfo} 
                        
                         /></button>
-                            <button className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(1)}><FontAwesomeIcon icon={faTrash}/></button>
+                            <button disabled = {isWorkDays(1)?false:true} className={isWorkDays(1)?classes.btnUnDelete: classes.btnDisable} onClick={()=>handelDeleteWorkSchedule(1)}><FontAwesomeIcon icon={faTrash}/></button>
                         </td>
-                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(2)}><FontAwesomeIcon icon={faCircleInfo} /></button>
-                        <button  className={classes.btnCancel}  onClick={()=>handelDeleteWorkSchedule(2)}><FontAwesomeIcon icon={faTrash}/></button>
+                        <td><button disabled = {isWorkDays(2)?false:true} className={isWorkDays(2)?classes.btnDetail : classes.btnDisable} onClick={()=>handleDetailWorkSchedule(2)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button  disabled = {isWorkDays(2)?false:true} className={isWorkDays(2)?classes.btnUnDelete: classes.btnDisable}  onClick={()=>handelDeleteWorkSchedule(2)}><FontAwesomeIcon icon={faTrash}/></button>
                         </td>
-                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(3)}><FontAwesomeIcon icon={faCircleInfo} /></button>
-                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(3)}><FontAwesomeIcon icon={faTrash}/></button>
+                        <td><button disabled = {isWorkDays(3)?false:true} className={isWorkDays(3)?classes.btnDetail : classes.btnDisable} onClick={()=>handleDetailWorkSchedule(3)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button disabled = {isWorkDays(3)?false:true} className={isWorkDays(3)?classes.btnUnDelete: classes.btnDisable} onClick={()=>handelDeleteWorkSchedule(3)}><FontAwesomeIcon icon={faTrash}/></button>
                         </td>
-                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(4)}><FontAwesomeIcon icon={faCircleInfo} /></button>
-                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(4)}><FontAwesomeIcon icon={faTrash}/></button>
+                        <td><button disabled = {isWorkDays(4)?false:true} className={isWorkDays(4)?classes.btnDetail : classes.btnDisable} onClick={()=>handleDetailWorkSchedule(4)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button disabled = {isWorkDays(4)?false:true} className={isWorkDays(4)?classes.btnUnDelete: classes.btnDisable} onClick={()=>handelDeleteWorkSchedule(4)}><FontAwesomeIcon icon={faTrash}/></button>
                         </td>
-                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(5)}><FontAwesomeIcon icon={faCircleInfo} /></button>
-                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(5)}><FontAwesomeIcon icon={faTrash}/></button>
+                        <td><button disabled = {isWorkDays(5)?false:true} className={isWorkDays(5)?classes.btnDetail : classes.btnDisable} onClick={()=>handleDetailWorkSchedule(5)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button disabled = {isWorkDays(5)?false:true} className={isWorkDays(5)?classes.btnUnDelete: classes.btnDisable} onClick={()=>handelDeleteWorkSchedule(5)}><FontAwesomeIcon icon={faTrash}/></button>
                         </td>
-                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(6)}><FontAwesomeIcon icon={faCircleInfo} /></button>
-                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(6)}><FontAwesomeIcon icon={faTrash}/></button>
+                        <td><button disabled = {isWorkDays(6)?false:true} className={isWorkDays(6)?classes.btnDetail : classes.btnDisable} onClick={()=>handleDetailWorkSchedule(6)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button disabled = {isWorkDays(6)?false:true} className={isWorkDays(6)?classes.btnUnDelete: classes.btnDisable} onClick={()=>handelDeleteWorkSchedule(6)}><FontAwesomeIcon icon={faTrash}/></button>
                         </td>
-                        <td><button className={classes.btnDetail} onClick={()=>handleDetailWorkSchedule(7)}><FontAwesomeIcon icon={faCircleInfo} /></button>
-                        <button  className={classes.btnCancel} onClick={()=>handelDeleteWorkSchedule(7)}><FontAwesomeIcon icon={faTrash}/></button>
+                        <td><button disabled = {isWorkDays(7)?false:true} className={isWorkDays(7)?classes.btnDetail : classes.btnDisable} onClick={()=>handleDetailWorkSchedule(7)}><FontAwesomeIcon icon={faCircleInfo} /></button>
+                        <button disabled = {isWorkDays(7)?false:true} className={isWorkDays(7)?classes.btnUnDelete: classes.btnDisable} onClick={()=>handelDeleteWorkSchedule(7)}><FontAwesomeIcon icon={faTrash}/></button>
                         </td>
                     </tr>
                 </tbody>

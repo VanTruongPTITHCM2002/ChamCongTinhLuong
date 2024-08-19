@@ -34,7 +34,7 @@ import Swal from 'sweetalert2';
 
 
 
-function calculateWorkHours(startTime: string, endTime: string): number {
+export function calculateWorkHours(startTime: string, endTime: string): number {
     const startMinutes = convertToMinutes(startTime);
     const endMinutes = convertToMinutes(endTime);
    
@@ -213,9 +213,9 @@ export default function UserAttendance(){
         }
   
         
-        const endTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        let endTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
         // const totalAdjustedDays = calculateAdjustedDays(currentCheckIn.startime, endTime);
-       
+     
         if (compareTimes(currentCheckIn.checkintime, "08:15") > 0 && compareTimes(endTime, "16:45") > 0) {
             statusAttendance = 'Đi trễ';
         } else if (compareTimes(currentCheckIn.checkintime, "08:15") <= 0 && compareTimes(endTime, "16:45") < 0) {
@@ -226,7 +226,7 @@ export default function UserAttendance(){
         else {
              statusAttendance ='Đi làm đầy đủ';
         }
-        
+      
 
         let checkoutt = "16:00";
 

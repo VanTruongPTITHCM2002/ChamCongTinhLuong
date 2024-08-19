@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBorderNone, faCircle, faCirclePlus, faDeleteLeft, faInfoCircle, faPen, faSearch, faTableList } from '@fortawesome/free-solid-svg-icons';
 import { errorSwal, successSwal } from '@/components/user/custom/sweetalert';
 import { Payroll } from '../payroll/payroll';
+import { calculateWorkHours } from '@/components/user/attedance/attendance';
 
 interface Attendance{
     idemployee:string;
@@ -70,7 +71,7 @@ export default function AdminAttendancePage(){
     const inputRefs = useRef<Record<number, any>>({});
     const [num,setNum] = useState(-1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(8);
     const [indexArray,setIndexArrray] = useState(-1);
     const customModalStyles = {
         width: '50%', // Tùy chỉnh độ rộng của modal
@@ -433,14 +434,23 @@ export default function AdminAttendancePage(){
           setAttendance(filterdata);
         }
       }
+  
       const addAttendance = async () => {
+        const employeeOptions = idEmployee.map(employee => 
+            `<option key="${employee.idemployee}" value="${employee.idemployee}">
+                ${employee.idemployee}
+            </option>`
+        ).join('');
         const { value: formValues } = await Swal.fire({
           title: 'Thêm chấm công',
           html: `
             <div class="${classes.formGrid}">
               <div class="${classes.formGroup}">
                 <label for="idemployee"><strong>Mã nhân viên:</strong></label>
-                <input type="text" class="${classes.swalInput}" id="idemployee" placeholder="Nhập mã nhân viên">
+             <select id="manv" name="manv" class="${classes.swalInput}" required>
+                        <option value="">Chọn mã nhân viên</option> <!-- Tùy chọn mặc định -->
+                        ${employeeOptions}
+                    </select>
               </div>
               <div class="${classes.formGroup}">
                 <label for="dateattendance"><strong>Ngày chấm công:</strong></label>
@@ -462,7 +472,7 @@ export default function AdminAttendancePage(){
               </div>
               <div class="${classes.formGroup}">
                 <label for="numberwork"><strong>Số công:</strong></label>
-                <input type="number" class="${classes.swalInput}" id="numberwork" step="0.1" min="0" placeholder="Nhập số công">
+                <input type="number" class="${classes.swalInput}"  id="numberwork" step="0.1" min="0" placeholder="Nhập số công">
               </div>
             </div>
           `,
@@ -475,19 +485,57 @@ export default function AdminAttendancePage(){
             popup: classes.customSwalPopup,
             title: classes.customSwalTitle,
             htmlContainer: classes.customSwalHtml
-          }
+          },
+
+          didOpen: () => {
+            const checkInTimeInput = document.getElementById('checkintime') as HTMLInputElement | null;
+            const checkOutTimeInput = document.getElementById('checkouttime') as HTMLInputElement | null;
+            const numberWorkInput = document.getElementById('numberwork') as HTMLInputElement | null;
+        
+            // Định nghĩa hàm cập nhật số công
+            function updateWorkHours() {
+                if (checkInTimeInput && checkOutTimeInput && numberWorkInput) {
+                    const checkInTime = checkInTimeInput.value;
+                    const checkOutTime = checkOutTimeInput.value;
+        
+                    if (!checkInTime || !checkOutTime) {
+                        numberWorkInput.value = '0';
+                        return;
+                    }
+        
+                    const workHours = calculateWorkHours(checkInTime, checkOutTime);
+                    numberWorkInput.value = workHours.toFixed(3); // Đảm bảo định dạng số thập phân chính xác
+                }
+            }
+        
+            // Thêm sự kiện cho các trường thời gian nếu phần tử tồn tại
+            if (checkInTimeInput) {
+                checkInTimeInput.addEventListener('input', updateWorkHours);
+            }
+        
+            if (checkOutTimeInput) {
+                checkOutTimeInput.addEventListener('input', updateWorkHours);
+            }
+        
+            // Tính số công ban đầu khi mở popup
+            updateWorkHours();
+        }
         });
-      
+         
         if (formValues) {
+            
+        
           // Lấy dữ liệu từ các trường nhập liệu sau khi nhấn "Lưu"
           const attendanceData = {
-            idemployee: (document.getElementById('idemployee') as HTMLInputElement)?.value ?? '',
+            idemployee: (document.getElementById('manv') as HTMLSelectElement)?.value ?? '',
             dateattendance: (document.getElementById('dateattendance') as HTMLInputElement)?.value ?? '',
             checkintime: (document.getElementById('checkintime') as HTMLInputElement)?.value ?? '',
             checkouttime: (document.getElementById('checkouttime') as HTMLInputElement)?.value ?? '',
             status: (document.getElementById('status') as HTMLSelectElement)?.value ?? '',
             numberwork: parseFloat((document.getElementById('numberwork') as HTMLInputElement)?.value ?? '0')
           };
+
+         
       
           if(attendanceData.idemployee.trim() === '' || attendanceData.numberwork.toString().trim() === ''){
             errorSwal('Thất bại',"Không được bỏ trống");
@@ -759,7 +807,7 @@ export default function AdminAttendancePage(){
                   />
                 </td>
                 <td>
-                    <button  className={classes.btn_update} onClick={() => handleClickSave(num)}>Lưu</button>
+                    <button  className={classes.btn_update} onClick={() => handleClickSave((currentPage - 1) * itemsPerPage + num)}>Lưu</button>
 
                     <button  className={classes.btn_cancel} onClick={handleCancel}>Hủy</button>
                 </td>
