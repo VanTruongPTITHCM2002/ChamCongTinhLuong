@@ -13,6 +13,7 @@ import { error } from 'console';
 import moment from 'moment'
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { errorAlert, errorSwal, successSwal } from '@/components/user/custom/sweetalert';
+import { Router } from 'next/router';
 interface IFEmployee{
     id?:string;
     idemployee?:string,
@@ -53,6 +54,7 @@ const events = [
 export default function WorkSchedule(){
    const token = localStorage.getItem('token');
     const dateRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
     const [date,setDate] = useState(new Date());    
     const [isSelected, setIsSelected] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -240,6 +242,7 @@ export default function WorkSchedule(){
        
             if(response.status === 200){
                 successSwal('Thành công',response.data.message);
+              window.location.reload();
             }
        
     } catch (error:any) {
@@ -364,6 +367,7 @@ const fetchEmployeeDetails = async (id: string) => {
         text: `${response.data.message}`,
         icon: "success"
       });
+      window.location.reload();
     } catch (error:any) {
         if (error.response) {
             // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi
