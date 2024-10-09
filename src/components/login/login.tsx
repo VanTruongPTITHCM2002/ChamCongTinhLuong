@@ -20,25 +20,52 @@ const Toast = Swal.mixin({
 });
 
 
+interface ErrorForm{
+  username:string;
+  password:string;
+}
+
 
 export default function LoginPage(){
   const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
-    
+  const [error, setError] = useState<ErrorForm>();
+  
     const [email,setEmail] = useState('');
     const [password,setPassword]= useState('');
     const router = useRouter();
     
-    
+    const validateForm = () =>{
+      
+      let errors:ErrorForm ={
+        username: '',
+        password: ''
+      }
+
+      if(!email){
+        errors.username = 'Username không được để trống';
+      }
+
+      if(!password){
+        errors.password = 'Password không được để trống';
+      }
+      setError(errors);
+    }
  
-    const handleSubmit = (e: React.FormEvent)=>{
+    const handleSubmit = async (e: React.FormEvent)=>{
         e.preventDefault();
         const data = {
       username:email,
       password:password
     }
 
-        axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/auth/login`,data)
+    if(email === ' ' || password === ''){
+      validateForm();
+      return;
+    }
+    
+    
+
+       await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/auth/login`,data)
             .then(response => {
                
                if(response.status === 200){
@@ -142,9 +169,11 @@ export default function LoginPage(){
               placeholder="Nhập tài khoản"
               onChange={(e) => setEmail(e.target.value)}
              
-              required
+        
             />
-         
+            {error?.username  && (
+              <p className={classes.errorInput}>{error.username}</p>
+            )}
          
             <input
             className={classes.inputStyle}
@@ -155,9 +184,11 @@ export default function LoginPage(){
               placeholder="Nhập mật khẩu"
               onChange={(e) => setPassword(e.target.value)}
              
-              required
+            
             />
-          
+            {error?.password && (
+              <p  className={classes.errorInput}>{error.password}</p>
+            )}
           <button type="submit" 
           className={classes.buttonStyle}>Đăng nhập</button>
         </form>

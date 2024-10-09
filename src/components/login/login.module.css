@@ -16,7 +16,6 @@
     background-color: white;
     border-radius: 8px;
     width: 500px;
-    height: 300px;
     background: rgba(255, 255, 255, 0.1);
 
     /* Add a transparency to shadow */
@@ -62,4 +61,12 @@
 .labelStyle {
     margin-bottom: 5px;
     color: #333;
+  }
+
+  .errorInput{
+    display: inline-block;
+    width: 282px;
+    font-size: 10px;
+    color: red;
+    text-align: start;
   }
