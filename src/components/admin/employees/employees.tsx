@@ -357,8 +357,8 @@ export default function AdminEmployeesPage(){
                         return;
                     }
                     
-                } catch (error) {
-                    console.error('Error submitting employee data:', error);
+                } catch (error:any) {
+                    errorSwal('Thất bại',`${error.response.data.message}`)
                 }
             }
           });

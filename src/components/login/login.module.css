@@ -1,10 +1,20 @@
 .container{
-
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #1d3b55;
+}
+
+.container img {
+  position: absolute; /* Để hình ảnh chiếm toàn bộ màn hình */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Đảm bảo hình ảnh không bị biến dạng */
+  z-index: 1; /* Đặt z-index thấp hơn form */
+  opacity: 0.5;
 }
 
 .form{
@@ -16,10 +26,9 @@
     background-color: white;
     border-radius: 8px;
     width: 500px;
-    background: rgba(255, 255, 255, 0.1);
-
-    /* Add a transparency to shadow */
+    background: #9cbfdd;
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+    z-index: 2;
 }
 
 .subject{
@@ -29,7 +38,7 @@
 
 
 .title{
-    color:rgb(127, 202, 255);
+    color:black;
     display: inline-flex;
     justify-content: center;
     margin-bottom: 16px;
@@ -39,23 +48,28 @@
     box-sizing: border-box;
     width: 70%;
     margin: 20px auto;
-    padding: 12px 20px;
+    padding: 12px 15px;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
+    background: whitesmoke;
     box-shadow: 0 13px 21px rgba(0, 0, 0, 0.05);
-    color:#333
+    color:#333;
+    border-radius: 4px;
   }
   
 
 
 .buttonStyle {
     padding: 10px;
-    background-color: #0070f3;
+    background-color: green;
     color: white;
     border: none;
     width: 100px;
     border-radius: 4px;
     cursor: pointer;
+  }
+
+  .buttonStyle:hover{
+    background-color: #0854ab;
   }
 
 .labelStyle {
@@ -66,7 +80,16 @@
   .errorInput{
     display: inline-block;
     width: 282px;
-    font-size: 10px;
+    font-size: 12px;
     color: red;
     text-align: start;
+  }
+
+  .forgotPassword{
+    display: inline-block;
+    color:blue;
+    width: 282px;
+    text-decoration: underline;
+    font-size: 12px;
+    text-align: end;
   }
