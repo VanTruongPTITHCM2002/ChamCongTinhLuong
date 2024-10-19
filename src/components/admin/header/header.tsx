@@ -268,7 +268,7 @@ export default function Header(){
     return (
         <div className={classes.header}>
             <div>
-             <h3>Ứng dụng chấm công và tính lương dành cho quản lý</h3>
+         
             </div>
             <div className={classes.option_title}>
             <h5>Xin chào, {admin?.firstname + ' ' + admin?.lastname}</h5>

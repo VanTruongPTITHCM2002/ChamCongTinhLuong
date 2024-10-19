@@ -4,10 +4,12 @@
     left: 0; /* Đặt navbar từ bên trái */
     width: 200px;
     height: 100vh;
-    background-color:#003d7a;
+    background-color:#0e86cc;
     display: flex;
     flex-direction: column;
     z-index:2;
+    border-radius: 4px;
+    box-shadow: 10px 0 15px rgba(0,0,0,0.1);
 }
 /* #00405d */
 .navbar ul{

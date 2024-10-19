@@ -1,12 +1,14 @@
 .header{
-    background-color:#1C1C1C;
-   color:#fff;
-   padding:20px;
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   width: 100%;
-
+  background-color: #0e86cc;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* width: 100%; */
+  margin: 2px 5px 0 5px;
+  border-radius: 4px;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.2);;
 }
 
 .option_title{
@@ -52,7 +54,7 @@
     border-width: 20px 26px;
     border-color: transparent transparent #fff transparent;
     position: absolute;
-    right:5px;
+    right:11px;
     top:-30px;
     cursor: pointer;
 }

@@ -1,12 +1,11 @@
 'use client'
-import { cookies } from 'next/headers'
 import React, { CSSProperties, FormEvent, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import jwt from 'jsonwebtoken'
 import classes from './login.module.css'
 import axios from "axios"
 import { errorSwal } from "../user/custom/sweetalert"
 import Image from 'next/image'
+import  { FetchAccount } from "@/pages/api/login/apiLogin"
 
 
 
@@ -31,20 +30,21 @@ export default function LoginPage(){
     }
 
     if (!email) {
-      errors.username = 'Username không được để trống';
+      errors.username = 'Tài khoản không được để trống';
     }
 
     if (!password) {
-      errors.password = 'Password không được để trống';
+      errors.password = 'Mật khẩu không được để trống';
     }
     setError(errors);
   }
  
-  const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const data = {
-      username:email,
-      password:password
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const data:AccountRequest = {
+    username:email,
+    password:password
     }
 
     if(email === ' ' || password === ''){
@@ -52,34 +52,40 @@ export default function LoginPage(){
       return;
     }
     
-      try{
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/auth/login`,data);
-          if(response.status === 200){
+      // try{
+      //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/auth/login`,data);
+      //     if(response.status === 200){
 
-            if (response.data.data.status === 0) {
-              errorSwal('Thất bại', "Bạn không thể đăng nhập");
-              router.push('/login');
-              return;
-            }
-              if(response.data.data.role === process.env.NEXT_PUBLIC_ROLE_A){
-                localStorage.setItem('token', response.data.data.token);
-                localStorage.setItem('username', response.data.data.username);
-                router.push('/admin/dashboard');
-              }else{
-                localStorage.setItem('token', response.data.data.token);
-                localStorage.setItem('username', response.data.data.username);
-                router.push(`/${response.data.data.username}/dashboard`);
-              }
-          }
-      }catch(error : any){
-        if(error.response === undefined){
-            errorSwal("Thất bại","Không thể kết nối đến server....") 
-            return;
-        }
-        errorSwal("Thất bại",`${error.response.data.message}`)
+      //       if (response.data.data.status === 0) {
+      //         errorSwal('Thất bại', "Bạn không thể đăng nhập");
+      //         router.push('/login');
+      //         return;
+      //       }
+      //         if(response.data.data.role === process.env.NEXT_PUBLIC_ROLE_A){
+      //           localStorage.setItem('token', response.data.data.token);
+      //           localStorage.setItem('username', response.data.data.username);
+      //           router.push('/admin/dashboard');
+      //         }else{
+      //           localStorage.setItem('token', response.data.data.token);
+      //           localStorage.setItem('username', response.data.data.username);
+      //           router.push(`/${response.data.data.username}/dashboard`);
+      //         }
+      //     }
+      // }catch(error : any){
+      //   if(error.response === undefined){
+      //       errorSwal("Thất bại","Không thể kết nối đến server....") 
+      //       return;
+      //   }
+      //   errorSwal("Thất bại",`${error.response.data.message}`)
        
-      }
-      
+      // }
+    try{
+        await FetchAccount(data,router);
+    }catch(error){
+        console.error(error);
+    }
+
+  
     };
 
     return(
