@@ -1,11 +1,8 @@
-
 'use client'
 import { useRouter } from "next/navigation";
 import classes from "./header.module.css";
 import Image from 'next/image'
 import { useEffect, useState } from "react";
-import jwt from 'jsonwebtoken'
-import Modal from "@/components/modal";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { successSwal } from "@/components/user/custom/sweetalert";

@@ -17,7 +17,7 @@
   /* Đảm bảo hình ảnh không bị biến dạng */
   z-index: 1;
   /* Đặt z-index thấp hơn form */
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .form {
