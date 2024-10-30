@@ -7,7 +7,8 @@ import Modal from '@/components/modal';
 import Swal from 'sweetalert2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faInfoCircle, faPen, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { errorSwal } from '@/components/user/custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
+
 
 interface Employee {
     idemployee: string;

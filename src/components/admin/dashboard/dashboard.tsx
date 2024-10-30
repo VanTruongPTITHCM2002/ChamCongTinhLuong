@@ -5,7 +5,8 @@ import { Chart, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend }
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { errorAlert, errorSwal } from '@/components/user/custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
+
 
 // Đăng ký các thành phần cần thiết
 Chart.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);

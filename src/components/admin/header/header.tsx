@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { successSwal } from "@/components/user/custom/sweetalert";
+import { successSwal } from "@/custom/sweetalert";
 interface Employee {
   idemployee: string;
   firstname: string;

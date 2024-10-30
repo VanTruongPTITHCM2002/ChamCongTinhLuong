@@ -4,7 +4,8 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartOptions, Tick } from 'chart.js';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { errorSwal } from '../custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 

@@ -6,18 +6,39 @@
   background-color: #1d3b55;
 }
 
-.container img {
-  position: absolute;
-  /* Để hình ảnh chiếm toàn bộ màn hình */
+.containerImageSpace{
+  width: 576px;
+  display: block !important;
+}
+
+.containerImage {
+  /* position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Đảm bảo hình ảnh không bị biến dạng */
   z-index: 1;
-  /* Đặt z-index thấp hơn form */
-  opacity: 0.4;
+  opacity: 0.4; */
+  background-image: url("/images/desktop.jpg");
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 15px;
+  position: relative;
+  z-index: 1
+}
+
+.containerFormSpace{
+  width: 50%;
+  height: 100%;
+  border: 1px cornsilk black;
+  z-index: 2;
 }
 
 .form {
@@ -25,13 +46,27 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  padding: 20px;
   background-color: white;
-  border-radius: 8px;
-  width: 500px;
-  background: #9cbfdd;
+  width: 100%;
+  background: #e9f1f9;
   box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
-  z-index: 2;
+  height: 100%;
+}
+
+.formGroup{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 300px;
+  width: 100%;
+}
+
+.labelInput{
+    align-self: flex-start;
+    margin-left: 60px;
+    color:#000;
+    font-size: 15px;
 }
 
 .subject {
@@ -44,13 +79,11 @@
   color: black;
   display: inline-flex;
   justify-content: center;
-  margin-bottom: 16px;
 }
 
 .inputStyle {
   box-sizing: border-box;
   width: 70%;
-  margin: 20px auto;
   padding: 12px 15px;
   border: none;
   background: whitesmoke;
@@ -66,10 +99,12 @@
   background-color: green;
   color: white;
   border: none;
-  width: 100px;
+  width: 300px;
   border-radius: 4px;
   cursor: pointer;
 }
+
+
 
 .buttonStyle:hover {
   background-color: #0854ab;

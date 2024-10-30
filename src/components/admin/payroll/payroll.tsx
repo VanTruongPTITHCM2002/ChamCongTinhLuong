@@ -9,7 +9,7 @@ import Swal from 'sweetalert2'
 import { GetServerSideProps } from 'next'
 import * as XLSX from 'xlsx';
 import { error } from 'console'
-import { errorSwal, successSwal } from '@/components/user/custom/sweetalert'
+import { errorSwal, successSwal } from '@/custom/sweetalert'
 import { randomUUID } from 'crypto'
 
 const payrollCustom = {

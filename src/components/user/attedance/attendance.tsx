@@ -4,35 +4,14 @@ import classes from './attendance.module.css'
 import { faCheck, faDeleteLeft, faPlus, faRightFromBracket, faRightToBracket, faSquareArrowUpRight, faTable, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { errorAlert, errorSwal, successSwal } from '../custom/sweetalert';
+import { errorAlert, errorSwal, successSwal } from '@/custom/sweetalert';
 import Swal from 'sweetalert2';
 
 
- interface Attendance{
-    idemployee:string,
-    dateattendance:string,
-    date?:string;
-    checkintime:string,
-    checkouttime:string,
-    status:string,
-    attendanceStatusName?:string
-    numberwork:number
- } 
-
- interface AttendanceExplain{
-    idemployee:string;
-    date:string;
-    checkintime:string;
-    checkoutime:string;
-    explaination:string;
-    status:string;
- }
  function convertToMinutes(time: string): number {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
 }
-
-
 
 export function calculateWorkHours(startTime: string, endTime: string): number {
     const startMinutes = convertToMinutes(startTime);

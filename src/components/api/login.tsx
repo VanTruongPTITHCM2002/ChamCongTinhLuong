@@ -2,6 +2,7 @@
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import classes from './login.module.css'
+import Image from 'next/image'
 import  { FetchAccount } from "@/pages/api/login/apiLogin"
 import { errorAlert, errorSwal } from "@/custom/sweetalert"
 
@@ -79,21 +80,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     return(
         <div className={classes.container}>
-        <div className={classes.containerImage}>
-          <div className={classes.containerImageSpace}>
-          {/* <Image src={"/images/background.jpg"} alt='Hình nền'  layout='fill' quality={100} /> */}
-          </div>
-            
-        </div>
-       
-          <div className={classes.containerFormSpace}>
-            <form onSubmit={handleSubmit} className={classes.form}>
-      
-          <div className={classes.formGroup}>
-              <h1 className={classes.subject}>Ứng dụng chấm công và tính lương</h1>
-              <h4 className={classes.title}>Đăng nhập</h4>
+        <Image src={"/images/background.jpg"} alt='Hình nền'  layout='fill' quality={100} />
+        <form onSubmit={handleSubmit} className={classes.form}>
+        <h1 className={classes.subject}>Ứng dụng chấm công và tính lương</h1>
+          <h4 className={classes.title}>Đăng nhập</h4>
 
-            <p className={classes.labelInput}>Tên tài khoản</p>
           <input
             className={classes.inputStyle}
             type="text"
@@ -112,7 +103,6 @@ const handleSubmit = async (e: React.FormEvent) => {
               <p className={classes.errorInput}>{error.username}</p>
             )}
          
-         <p className={classes.labelInput}>Mật khẩu</p>
           <input
             className={classes.inputStyle}
             type="password"
@@ -131,17 +121,11 @@ const handleSubmit = async (e: React.FormEvent) => {
               <p  className={classes.errorInput}>{error.password}</p>
             )}
 
-              <div className={classes.forgotPassword}>Quên mật khẩu</div>
+            <div className={classes.forgotPassword}>Quên mật khẩu</div>
 
-              <button type="submit" 
+          <button type="submit" 
           className={classes.buttonStyle}>Đăng nhập</button>
-          </div>
-        
-
-          
         </form>
-            </div>
-       
       </div>
     )
 }

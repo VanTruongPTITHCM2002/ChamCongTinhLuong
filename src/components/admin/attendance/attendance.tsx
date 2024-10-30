@@ -6,7 +6,7 @@ import Modal from '@/components/modal';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBorderNone, faCircle, faCirclePlus, faDeleteLeft, faInfoCircle, faPen, faSearch, faTableList } from '@fortawesome/free-solid-svg-icons';
-import { errorSwal, successSwal } from '@/components/user/custom/sweetalert';
+import { errorSwal, successSwal } from '@/custom/sweetalert';
 import { Payroll } from '../payroll/payroll';
 import { calculateWorkHours } from '@/components/user/attedance/attendance';
 

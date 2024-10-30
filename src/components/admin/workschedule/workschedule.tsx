@@ -12,7 +12,7 @@ import { faCalendar, faCircle, faCircleInfo, faCirclePlus, faPen, faPlus, faTras
 import { error } from 'console';
 import moment from 'moment'
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { errorAlert, errorSwal, successSwal } from '@/components/user/custom/sweetalert';
+import { errorAlert, errorSwal, successSwal } from '@/custom/sweetalert';
 import { Router } from 'next/router';
 interface IFEmployee{
     id?:string;

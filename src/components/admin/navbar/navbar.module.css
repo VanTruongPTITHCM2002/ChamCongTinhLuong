@@ -4,7 +4,7 @@
     left: 0; /* Đặt navbar từ bên trái */
     width: 200px;
     height: 100vh;
-    background-color:#0e86cc;
+    background-color:#0f1d3a;
     display: flex;
     flex-direction: column;
     z-index:2;
@@ -47,13 +47,11 @@
 
 .active {
     background-color: #e0e0e0; /* Màu nền khi được chọn */
-    
     border-radius: 5px ;
 }
 
 
 
 li.active a {
-    
     color:#0056b3 /* Màu chữ khi active */
 }
