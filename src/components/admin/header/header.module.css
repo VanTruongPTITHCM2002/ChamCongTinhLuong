@@ -14,6 +14,13 @@
 .option_title{
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.option_title_sub{
+  position: absolute;
+  top: 22px;
+  right: 60px;
 }
 /* #00263d */
 .header .btn_logout{

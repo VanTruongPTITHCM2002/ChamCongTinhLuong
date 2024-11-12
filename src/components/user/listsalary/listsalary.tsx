@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import classes from './listsalary.module.css'
 import axios from 'axios';
-import { errorSwal } from '../custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faEye, faSearch } from '@fortawesome/free-solid-svg-icons';
 interface ListSalary{

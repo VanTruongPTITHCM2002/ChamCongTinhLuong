@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation"
 import classes from './login.module.css'
 import  { FetchAccount } from "@/pages/api/login/apiLogin"
 import { errorAlert, errorSwal } from "@/custom/sweetalert"
-
-
+import Cookies from 'js-cookie';
 interface ErrorForm{
   username:string;
   password:string;
@@ -13,7 +12,7 @@ interface ErrorForm{
 
 export default function LoginPage(){
   const [error, setError] = useState<ErrorForm>();
-  const [username, setusername] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
     
@@ -57,11 +56,14 @@ const handleSubmit = async (e: React.FormEvent) => {
           return;
         }
           if(response.data.data.role === process.env.NEXT_PUBLIC_ROLE_A){
-            localStorage.setItem('token', response.data.data.token);
+         //   localStorage.setItem('token', response.data.data.token);
+            Cookies.set('token',response.data.data.token);
             localStorage.setItem('username', response.data.data.username);
+            localStorage.setItem('roleDescription',response.data.data.roleDescription)
             router.push('/admin/dashboard');
           }else{
-            localStorage.setItem('token', response.data.data.token);
+           // localStorage.setItem('token', response.data.data.token);
+            Cookies.set('token',response.data.data.token);
             localStorage.setItem('username', response.data.data.username);
             router.push(`/${response.data.data.username}/dashboard`);
           }
@@ -101,7 +103,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             value={username}
             placeholder="Nhập tài khoản"
             onChange={(e) => {
-              setusername(e.target.value)
+              setUsername(e.target.value)
               setError({
                 username: '',
                 password: error?.password || ""
@@ -130,15 +132,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             {error?.password && (
               <p  className={classes.errorInput}>{error.password}</p>
             )}
-
               <div className={classes.forgotPassword}>Quên mật khẩu</div>
-
               <button type="submit" 
           className={classes.buttonStyle}>Đăng nhập</button>
           </div>
         
-
-          
         </form>
             </div>
        

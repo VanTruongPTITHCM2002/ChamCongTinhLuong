@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { successSwal } from "@/custom/sweetalert";
+import Cookies from "js-cookie";
 interface Employee {
   idemployee: string;
   firstname: string;
@@ -35,6 +36,7 @@ export default function Header(){
     // Lấy email từ payload
     const email = localStorage.getItem('username');
     const token = localStorage.getItem('token');
+    const roleDescription = localStorage.getItem('roleDescription');
     const defaultEmployee: Employee = {
       idemployee: '',
       firstname: '',
@@ -52,29 +54,30 @@ export default function Header(){
     const router = useRouter();
     const handleLogout = ()=>{
         localStorage.removeItem('token');
+        Cookies.remove('token');
         localStorage.removeItem('username');
         router.push('/login');
     }
-    const getEmployeeById = async () => {
-      try {
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${email}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                  }
-            }
-          );
-          if (response.status === 200) {
-              // successSwal("Thành công",`${response.data.message}`);
-              setAdmin(response.data.data);
-          }
-      } catch (error) {
+//     const getEmployeeById = async () => {
+//       try {
+//           const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${email}`,
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`
+//                   }
+//             }
+//           );
+//           if (response.status === 200) {
+//               // successSwal("Thành công",`${response.data.message}`);
+//               setAdmin(response.data.data);
+//           }
+//       } catch (error) {
 
-      }
-  }
-  useEffect(() => {
-      getEmployeeById();
-  }, [])
+//       }
+//   }
+//   useEffect(() => {
+//       getEmployeeById();
+//   }, [])
 
     const handleChangePassword = ()=>{
       router.push('/admin/changepassword');
@@ -268,12 +271,19 @@ export default function Header(){
          
             </div>
             <div className={classes.option_title}>
-            <h5>Xin chào, {admin?.firstname + ' ' + admin?.lastname}</h5>
+            <h5>Xin chào, {email}</h5>
+            
             {/* <img src="/images/download.jpg" alt="Avatar" className={classes.avatar}></img> */}
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"
             onClick={toggleMenu}
             />
+            
+            <div className={classes.option_title_sub}>
+                <h6>{roleDescription}</h6>
+            </div>  
+
             </div>
+        
            
         {/* <button type="submit" className={classes.btn_logout} onClick={handleLogout}>Đăng xuất</button> */}
         {isMenuVisible && (

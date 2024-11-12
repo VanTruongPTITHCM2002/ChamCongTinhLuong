@@ -5,9 +5,9 @@ import axios from 'axios';
 import { error } from 'console';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faPen, faRotateLeft, faSave, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfoCircle, faPen, faRotateLeft, faSave, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
-
+import Cookies from 'js-cookie';
 interface Account{
     username:string,
     role:string,
@@ -26,12 +26,12 @@ export default function AdminAccountsPage(){
     const [searchTerm, setSearchTerm] = useState('');
     const [tempStatus,setTempStatus] = useState('');
     const [originStatus,setOriginStatus] = useState('');
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
  ;
-    if(!localStorage.getItem('username') && !token){
-        router.push('/login');
-        return null;
-    }
+    // if(!localStorage.getItem('username') && !token){
+    //     router.push('/login');
+    //     return null;
+    // }
 
 
     const getAccounts = async ()=>{
@@ -183,6 +183,10 @@ export default function AdminAccountsPage(){
         setSearchTerm(term);
       };
 
+      const btnShowListRolePermissons = ()=>{
+        router.push("/admin/roles");
+        return;
+      }
     return (
         <div className={classes.article}>
         <h2>Bảng danh sách tài khoản của nhân viên</h2>
@@ -207,9 +211,10 @@ export default function AdminAccountsPage(){
             <thead>
                 <tr>
                 <th>Tên tài khoản</th>
-                <th>Quyền hạn</th>
+                <th>Vai trò</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
+                <th>Phân quyền</th>
                 </tr>
             </thead>
 
@@ -303,6 +308,9 @@ export default function AdminAccountsPage(){
                     </div>
                 )}
             </td>
+            <td><button className={classes.btnDetailPermissons}>
+                <FontAwesomeIcon icon={faInfoCircle}/>
+               </button></td>
         </tr>
     ))
 )}

@@ -8,7 +8,7 @@ import axios, { AxiosResponse } from 'axios';
 import Modal from '@/components/modal/modal';
 import Swal from 'sweetalert2';
 import { Payroll } from '../payroll/payroll';
-import { errorSwal } from '@/components/user/custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
 interface RewardPunish{
     idemployee:string;
     type:string;

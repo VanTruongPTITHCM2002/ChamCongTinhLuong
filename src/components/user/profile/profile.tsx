@@ -2,7 +2,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import classes from './profile.module.css'
 import axios from 'axios';
-import { successSwal } from '../custom/sweetalert';
+import { successSwal } from '@/custom/sweetalert';
 import { useRouter } from 'next/navigation';
 interface Employee {
     idemployee: string;

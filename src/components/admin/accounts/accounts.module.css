@@ -2,9 +2,9 @@
     color: #000;
     background-color: #fff;
     padding: 10px;
-   height: 85vh;
-   margin:10px 10px 0 10px;
-    overflow-x: auto; 
+    height: 85vh;
+    margin: 10px 10px 0 10px;
+    overflow-x: auto;
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
 }
 
@@ -20,6 +20,7 @@
 
 .article_button{
     margin-bottom: 5px;
+    float: right;
 }
 
 .article_button input{
@@ -90,7 +91,7 @@
     background-color: #fff;
     color:#000;
     border:1px solid #000;
-    pading:10px;
+    padding:10px;
 }
 
 
@@ -224,4 +225,27 @@
   .statusInactive {
     color: red;
     font-weight: bold;
+  }
+
+  .btnDetailPermissons{
+    text-align: center;
+    background-color: orange;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btnPermissonsRole{
+    background-color: lightcoral;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btnPermissonsRole:hover{
+    background-color: rgb(247, 71, 71);
   }

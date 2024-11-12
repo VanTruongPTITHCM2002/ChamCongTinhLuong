@@ -8,19 +8,20 @@ import Swal from 'sweetalert2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faInfoCircle, faPen, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { errorSwal } from '@/custom/sweetalert';
-
+import Cookies from 'js-cookie'
 
 interface Employee {
-    idemployee: string;
-    firstname: string;
-    lastname: string;
+    idEmployee: string;
+    firstName: string;
+    lastName: string;
     gender: string;
-    birthdate: string;
-    cmnd: string;
+    birthDate: string;
+    idCard: string;
     email: string;
-    phonenumber: string;
+    phoneNumber: string;
     address: string;
     degree: number | string;
+    department?:number | string;
     status: number | string;
 }
 
@@ -31,7 +32,7 @@ function formatDateString(dateString: string): string {
 
 export default function AdminEmployeesPage(){
     const router = useRouter();
-    const token = localStorage.getItem('token')
+    const token = Cookies.get('token');
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
     const [employees,setEmployees] = useState<Employee[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -70,7 +71,7 @@ export default function AdminEmployeesPage(){
     const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
     const handleDeleteEmployee = (maNV: string) => {
         // Tạo mảng mới chỉ chứa những nhân viên không có mã nhân viên bằng maNV
-        const updatedEmployees = employeesData.filter(employee => employee.idemployee !== maNV);
+        const updatedEmployees = employeesData.filter(employee => employee.idEmployee !== maNV);
         // Cập nhật lại danh sách nhân viên
         setEmployeesData(updatedEmployees);
     };
@@ -150,14 +151,14 @@ export default function AdminEmployeesPage(){
         }
     
         const employee: Employee = {
-            idemployee: form.get('idemployee') as string,
-            firstname: form.get('firstname') as string,
-            lastname: form.get('lastname') as string,
+            idEmployee: form.get('idemployee') as string,
+            firstName: form.get('firstname') as string,
+            lastName: form.get('lastname') as string,
             gender: form.get('gender') as string,
-            birthdate: form.get('birthdate') as string,
-            cmnd: form.get('cmnd') as string,
+            birthDate: form.get('birthdate') as string,
+            idCard: form.get('cmnd') as string,
             email: form.get('email') as string,
-            phonenumber: form.get('phonenumber') as string,
+            phoneNumber: form.get('phonenumber') as string,
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
@@ -200,19 +201,19 @@ export default function AdminEmployeesPage(){
         const form = new FormData(formElement);
       
         const employee: Employee = {
-            idemployee: form.get('idemployee') as string,
-            firstname: form.get('firstname') as string,
-            lastname: form.get('lastname') as string,
+            idEmployee: form.get('idemployee') as string,
+            firstName: form.get('firstname') as string,
+            lastName: form.get('lastname') as string,
             gender: form.get('gender') as string,
-            birthdate: form.get('birthdate') as string,
-            cmnd: form.get('cmnd') as string,
+            birthDate: form.get('birthdate') as string,
+            idCard: form.get('cmnd') as string,
             email: form.get('email') as string,
-            phonenumber: form.get('phonenumber') as string,
+            phoneNumber: form.get('phonenumber') as string,
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
         };
-        const id = employee.idemployee;
+        const id = employee.idEmployee;
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${id}`, employee
                 ,  {
@@ -230,7 +231,7 @@ export default function AdminEmployeesPage(){
 
                   setEmployeesData(prevEmployees => {
                     const updatedEmployees = prevEmployees.map(emp => {
-                        if (emp.idemployee === employee.idemployee) {
+                        if (emp.idEmployee === employee.idEmployee) {
                             return { ...emp, ...employee };
                         }
                         return emp;
@@ -257,15 +258,15 @@ export default function AdminEmployeesPage(){
                 <div class="${classes.employeeDetails}">
                     <div class="${classes.formGroup}">
                         <label><strong>Mã nhân viên:</strong></label>
-                        <input type="text" value="${employee.idemployee}" readonly class="${classes.input}"/>
+                        <input type="text" value="${employee.idEmployee}" readonly class="${classes.input}"/>
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>Họ:</strong></label>
-                        <input type="text" value="${employee.firstname}" readonly class="${classes.input}"/>
+                        <input type="text" value="${employee.firstName}" readonly class="${classes.input}"/>
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>Tên:</strong></label>
-                        <input type="text" value="${employee.lastname}" readonly class="${classes.input}"/>
+                        <input type="text" value="${employee.lastName}" readonly class="${classes.input}"/>
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>Giới tính:</strong></label>
@@ -273,7 +274,7 @@ export default function AdminEmployeesPage(){
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>Ngày sinh:</strong></label>
-                        <input type="text" value="${employee.birthdate}" readonly class="${classes.input}"/>
+                        <input type="text" value="${employee.birthDate}" readonly class="${classes.input}"/>
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>Địa chỉ:</strong></label>
@@ -281,11 +282,11 @@ export default function AdminEmployeesPage(){
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>Số điện thoại:</strong></label>
-                        <input type="text" value="${employee.phonenumber}" readonly class="${classes.input}"/>
+                        <input type="text" value="${employee.phoneNumber}" readonly class="${classes.input}"/>
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>CMND:</strong></label>
-                        <input type="text" value="${employee.cmnd}" readonly class="${classes.input}"/>
+                        <input type="text" value="${employee.idCard}" readonly class="${classes.input}"/>
                     </div>
                     <div class="${classes.formGroup}">
                         <label><strong>Email:</strong></label>
@@ -331,7 +332,7 @@ export default function AdminEmployeesPage(){
             if (result.isConfirmed) {
                
                 try {
-                    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${employee.idemployee}`
+                    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${employee.idEmployee}`
                         , {
                             headers: {
                                 Authorization: `Bearer ${token}`
@@ -347,7 +348,7 @@ export default function AdminEmployeesPage(){
         
                           setEmployeesData(prevEmployees => {
                             // Loại bỏ nhân viên với idemployee tương ứng
-                            const updatedEmployees = prevEmployees.filter(emp => emp.idemployee !== employee.idemployee);
+                            const updatedEmployees = prevEmployees.filter(emp => emp.idEmployee !== employee.idEmployee);
                             return updatedEmployees;
                         });
                         return;
@@ -377,12 +378,12 @@ export default function AdminEmployeesPage(){
          }else{
             const filterdata = employees.filter(
                 (item) =>
-                  item.idemployee.includes(searchTerm) ||
-                  item.firstname.includes(searchTerm)
-                  || item.lastname.includes(searchTerm) ||
+                  item.idEmployee.includes(searchTerm) ||
+                  item.firstName.includes(searchTerm)
+                  || item.lastName.includes(searchTerm) ||
                   item.email.includes(searchTerm) ||
                   item.gender.includes(searchTerm)
-                  || item.birthdate.includes(searchTerm)
+                  || item.birthDate.includes(searchTerm)
                   || item.status.toString().includes(searchTerm)
                 
               );
@@ -577,11 +578,11 @@ export default function AdminEmployeesPage(){
             <tbody>
                     {currentData.map((employee, index) => (
                         <tr key={index}>
-                            <td>{employee.idemployee}</td>
-                            <td>{employee.firstname}</td>
-                            <td>{employee.lastname}</td>
+                            <td>{employee.idEmployee}</td>
+                            <td>{employee.firstName}</td>
+                            <td>{employee.lastName}</td>
                             <td>{employee.gender}</td> 
-                            <td>{ formatDateString(employee.birthdate)}</td>
+                            <td>{ formatDateString(employee.birthDate)}</td>
                             <td className={employee.status === 'Đang hoạt động' ? classes.statusActive : classes.statusInactive}>
         {employee.status === 'Đang hoạt động' ? 'Đang hoạt động' : 'Ngưng hoạt động'}
       </td>
@@ -617,17 +618,17 @@ export default function AdminEmployeesPage(){
                             <h2 className={classes.centeredHeading}>Chỉnh sửa thông tin nhân viên</h2>
                         <div  className={classes.formGroup}>
                                 <label>Mã nhân viên:</label>
-                                <input name="idemployee" type="text" defaultValue={selectedEmployee.idemployee} readOnly/>
+                                <input name="idemployee" type="text" defaultValue={selectedEmployee.idEmployee} readOnly/>
                             </div>
                             <div  className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
-                                <input name="firstname" type="text" required defaultValue={selectedEmployee.firstname}
-                                onChange={(e)=>handleChange(e,selectedEmployee.firstname)}/>
+                                <input name="firstname" type="text" required defaultValue={selectedEmployee.firstName}
+                                onChange={(e)=>handleChange(e,selectedEmployee.firstName)}/>
                             </div>
                             <div  className={classes.formGroup}>
                                 <label>Tên nhân viên:</label>
-                                <input name="lastname" type="text" required defaultValue={selectedEmployee.lastname}
-                                onChange={(e)=>handleChange(e,selectedEmployee.lastname)}/>
+                                <input name="lastname" type="text" required defaultValue={selectedEmployee.lastName}
+                                onChange={(e)=>handleChange(e,selectedEmployee.lastName)}/>
                             </div>
                             
                                 <div className={classes.formGroup}>
@@ -645,14 +646,14 @@ export default function AdminEmployeesPage(){
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="phonenumber">Số Điện Thoại:</label>
-                                    <input type="text" id="phonenumber" name="phonenumber" required defaultValue={selectedEmployee.phonenumber}
-                                    onChange={(e)=>checkNumber(e,selectedEmployee.phonenumber)}
+                                    <input type="text" id="phonenumber" name="phonenumber" required defaultValue={selectedEmployee.phoneNumber}
+                                    onChange={(e)=>checkNumber(e,selectedEmployee.phoneNumber)}
                                     />
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="cmnd">CMND:</label>
-                                    <input type="text" id="cmnd" name="cmnd" required defaultValue={selectedEmployee.cmnd}
-                                    onChange={(e)=>checkCMND(e,selectedEmployee.cmnd)}
+                                    <input type="text" id="cmnd" name="cmnd" required defaultValue={selectedEmployee.idCard}
+                                    onChange={(e)=>checkCMND(e,selectedEmployee.idCard)}
                                     />
                                 </div>
                                 <div className={classes.formGroup}>
@@ -661,8 +662,8 @@ export default function AdminEmployeesPage(){
                                 </div>
                                 <div className={classes.formGroup}>
                                     <label htmlFor="birthdate">Ngày sinh:</label>
-                                    <input type="date" id="birthdate" name="birthdate" required defaultValue={selectedEmployee.birthdate}
-                                    onChange={(e)=>handleBirthdateChange(e,selectedEmployee.birthdate)}
+                                    <input type="date" id="birthdate" name="birthdate" required defaultValue={selectedEmployee.birthDate}
+                                    onChange={(e)=>handleBirthdateChange(e,selectedEmployee.birthDate)}
                                     />
                                 </div>
                                 <div className={classes.formGroup}>
