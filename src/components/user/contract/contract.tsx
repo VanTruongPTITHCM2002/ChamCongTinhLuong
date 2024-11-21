@@ -5,7 +5,7 @@ import classes from './contract.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { errorSwal } from '../custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
 interface Contract{
     idemployee:string;
     basicsalary:number;

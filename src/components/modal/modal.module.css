@@ -33,6 +33,14 @@
     overflow-y: auto;
 }
 
+.modal_content::-webkit-scrollbar{
+    display: none;
+}
+
+.modalContent::-webkit-scrollbar{
+    display: none;
+}
+
 .modal_payroll_content {
     background-color: #fefefe;
     border-radius: 8px;

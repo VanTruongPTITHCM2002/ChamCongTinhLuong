@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import { errorSwal } from '../custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
 export default function UserChangePassword(){
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');

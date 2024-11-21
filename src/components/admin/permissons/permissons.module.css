@@ -7,3 +7,28 @@
     overflow-x: auto; 
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
 }
+.article table {
+    border-collapse: collapse;
+    height: 50px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+ /* Để bảng co giãn theo nội dung */
+}
+
+.article table th, 
+.article table td {
+    border: 1px solid #000; /* Đường viền cho các ô */
+    padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+    
+}
+
+.article table th{
+    background-color: #95A5A6;
+  }
+ 
+ .article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+     background-color: #eee;     }
+  
+ .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+ background-color:#fff;      }

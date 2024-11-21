@@ -102,7 +102,8 @@ background-color:#fff;      }
     background-color: #fff;
     color:#000;
     border:1px solid #000;
-    pading:10px;
+    padding:10px;
+
 }
 
 
@@ -232,6 +233,10 @@ background-color:#fff;      }
     gap: 10px;
 }
 
+/* .employeeDetails::-webkit-scrollbar{
+    display: none;
+} */
+
 .formGroup, .formGroupPair {
     flex: 1 1 calc(50% - 20px); /* Đặt hai thẻ div trên một hàng, trừ đi khoảng cách giữa chúng */
     display: flex;
@@ -248,6 +253,8 @@ background-color:#fff;      }
     background-color: #fff;
     color: #000;
     padding: 5px;
+    border: 1px solid grey;
+    outline:none;
 }
 
 .formGroup h2{

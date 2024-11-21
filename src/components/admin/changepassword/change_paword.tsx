@@ -1,11 +1,11 @@
 'use client'
 import { useState } from 'react';
 import classes from './change_password.module.css';
-import jwt from 'jsonwebtoken'
+import Cookies from 'js-cookie'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import { errorSwal } from '@/components/user/custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
 export default function AdminChangePassword(){
     
     const router = useRouter();
@@ -14,8 +14,11 @@ export default function AdminChangePassword(){
     const [newpassword,setNewPassoword] = useState('');
     const [renewpassword,setReNewPassword] = useState('');
     // Lấy email từ payload
+
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token')
+ 
+  
+    const token = Cookies.get('token')
 
     const handleChangePassword = async()=>{
         const data = {

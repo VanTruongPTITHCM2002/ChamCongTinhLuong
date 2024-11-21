@@ -9,7 +9,7 @@ import { faBorderNone, faCircle, faCirclePlus, faDeleteLeft, faInfoCircle, faPen
 import { errorSwal, successSwal } from '@/custom/sweetalert';
 import { Payroll } from '../payroll/payroll';
 import { calculateWorkHours } from '@/components/user/attedance/attendance';
-
+import Cookies from 'js-cookie';
 interface Attendance{
     idemployee:string;
     dateattendance?:string;
@@ -54,7 +54,7 @@ function formatDateString(dateString: string | undefined): string {
     return `${day}-${month}-${year}`;
   }
 export default function AdminAttendancePage(){
-    const token =localStorage.getItem('token')
+    const token =Cookies.get('token')
     const [isUpdate,setIsUpdate]= useState(false);
     const [workRecord,setWorkRecord] = useState(false);
     const [attendanceExplain,setAttendanceExplain] = useState(false);

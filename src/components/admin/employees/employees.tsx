@@ -9,57 +9,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faInfoCircle, faPen, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { errorSwal } from '@/custom/sweetalert';
 import Cookies from 'js-cookie'
+import Image from 'next/image';
+import { AdminDepartments, DepartmentsDTO } from '@/pages/api/admin/apiDepartments';
+import { allEmployee, Employee } from '@/pages/api/admin/apiEmployee';
 
-interface Employee {
-    idEmployee: string;
-    firstName: string;
-    lastName: string;
-    gender: string;
-    birthDate: string;
-    idCard: string;
-    email: string;
-    phoneNumber: string;
-    address: string;
-    degree: number | string;
-    department?:number | string;
-    status: number | string;
-}
+
 
 function formatDateString(dateString: string): string {
     const [year, month, day] = dateString.split('-');
     return `${day}-${month}-${year}`;
   }
 
-export default function AdminEmployeesPage(){
+  const AdminEmployeesPage: React.FC<{ departments: DepartmentsDTO[], employees: Employee[] }> = ({ departments, employees })=>{
     const router = useRouter();
     const token = Cookies.get('token');
     const [employeesData, setEmployeesData] = useState<Employee[]>([]);
-    const [employees,setEmployees] = useState<Employee[]>([]);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
     const [searchTerm, setSearchTerm] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
-    const initialInputValue = useRef<string>('');
-    useEffect(()=>{
-         
-        axios.get( `${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                  }
-            }
-        )
-        .then(response => {
-            setEmployeesData(response.data.data);
-            setEmployees(response.data.data);
-
-        })
-        .catch(error => {
-            console.error('Lỗi khi lấy dữ liệu từ API:', error);
-        });
+    const [image, setImage] = useState<string | null>(null);
+    const [file, setFile] = useState<File | null>(null);
+    const [idNV, setIDNV]= useState('');
+    
  
-
-    },[])
     const totalPages = Math.ceil(employeesData.length / itemsPerPage);
     
     const handlePageChange = (pageNumber:number) => {
@@ -77,16 +51,19 @@ export default function AdminEmployeesPage(){
     };
     const handleUpdateClick = (employee: Employee) => {
         setSelectedEmployee(employee); // Lưu thông tin nhân viên được chọn
+
         setShowModal(true); // Hiển thị modal
     };
      // Xử lý hàm đóng modal
      const handleCloseModal = () => {
         setShowModal(false);
+       
     };
 
     const handleCancelEdit = () => {
         setSelectedEmployee(null);
         setShowModal(false);
+        setImage(null);
       };
     
 
@@ -151,7 +128,6 @@ export default function AdminEmployeesPage(){
         }
     
         const employee: Employee = {
-            idEmployee: form.get('idemployee') as string,
             firstName: form.get('firstname') as string,
             lastName: form.get('lastname') as string,
             gender: form.get('gender') as string,
@@ -162,6 +138,8 @@ export default function AdminEmployeesPage(){
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
+            position:form.get('position') as string,
+            department:form.get('department') as string,
         };
     
         try {
@@ -172,7 +150,7 @@ export default function AdminEmployeesPage(){
                       }
                 }
             );
-            console.log('Response:', response.data.message);
+           
            
                 if(response.data.status === 201){
                     Swal.fire({
@@ -180,13 +158,32 @@ export default function AdminEmployeesPage(){
                         text: `${response.data.message}`,
                         icon: "success"
                       });
-                      setEmployeesData(prevEmployees => [...prevEmployees, employee]);
-                      fetchEmployeeId();
+                     // setEmployeesData(prevEmployees => [...prevEmployees, employee]);
+                     // fetchEmployeeId();
+                     const formImage = new FormData();
+                     formImage.append("image", file!); // 'file' phải khớp với tên parameter ở backend
+                     formImage.append("idEmployee",response.data.data)
+                     try {
+                       const response = await fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/upload`, {
+                         method: "POST",
+                         body: formImage,
+                         headers:{
+                               Authorization: `Bearer ${token}`
+                         }
+                       });
+                 
+                   
+                     } catch (error) {
+                      
+                     }
+                      router.refresh();
             }
          //   alert("Thêm nhân viên thành công");
         } catch (error) {
             console.error('Error submitting employee data:', error);
         }
+        
+       
        setShowModal(false);
         
     }
@@ -201,7 +198,7 @@ export default function AdminEmployeesPage(){
         const form = new FormData(formElement);
       
         const employee: Employee = {
-            idEmployee: form.get('idemployee') as string,
+           // idEmployee: form.get('idemployee') as string,
             firstName: form.get('firstname') as string,
             lastName: form.get('lastname') as string,
             gender: form.get('gender') as string,
@@ -212,8 +209,10 @@ export default function AdminEmployeesPage(){
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
+            position:form.get('position') as string,
+            department:form.get('department') as string,
         };
-        const id = employee.idEmployee;
+        const id = form.get('idemployee') as string;
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${id}`, employee
                 ,  {
@@ -223,21 +222,39 @@ export default function AdminEmployeesPage(){
                 }
             );
             if(response.data.status === 200){
+              
+                  
+                //   setEmployeesData(prevEmployees => {
+                //     const updatedEmployees = prevEmployees.map(emp => {
+                //         if (emp.idEmployee === employee.idEmployee) {
+                //             return { ...emp, ...employee };
+                //         }
+                //         return emp;
+                //     });
+                //     return updatedEmployees;
+                // });
+                const formImage = new FormData();
+                formImage.append("image", file!); // 'file' phải khớp với tên parameter ở backend
+                formImage.append("idEmployee",id)
+                try {
+                  const response = await fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/upload`, {
+                    method: "POST",
+                    body: formImage,
+                    headers:{
+                          Authorization: `Bearer ${token}`
+                    }
+                  });
+            
+              
+                } catch (error) {
+                 
+                }
                 Swal.fire({
                     title: "Thành công",
                     text: `${response.data.message}`,
                     icon: "success"
                   });
-
-                  setEmployeesData(prevEmployees => {
-                    const updatedEmployees = prevEmployees.map(emp => {
-                        if (emp.idEmployee === employee.idEmployee) {
-                            return { ...emp, ...employee };
-                        }
-                        return emp;
-                    });
-                    return updatedEmployees;
-                });
+                 router.refresh();
             }
             
         } catch (error) {
@@ -256,6 +273,13 @@ export default function AdminEmployeesPage(){
             title: `<strong>Chi tiết nhân viên</strong>`,
             html: `
                 <div class="${classes.employeeDetails}">
+        
+                      <div class="${classes.formGroup}">
+                        <label><strong>Hình ảnh:</strong></label>
+                        <img  src="${`data:image/jpeg;base64,${employee.image!}`}" alt=''
+                                    width="100" height="100"/>
+                    </div>
+                    <div class="${classes.formGroup}"></div>
                     <div class="${classes.formGroup}">
                         <label><strong>Mã nhân viên:</strong></label>
                         <input type="text" value="${employee.idEmployee}" readonly class="${classes.input}"/>
@@ -291,6 +315,14 @@ export default function AdminEmployeesPage(){
                     <div class="${classes.formGroup}">
                         <label><strong>Email:</strong></label>
                         <input type="text" value="${employee.email}" readonly class="${classes.input}"/>
+                    </div>
+                     <div class="${classes.formGroup}">
+                        <label><strong>Phòng ban:</strong></label>
+                        <input type="text" value="${employee.department}" readonly class="${classes.input}"/>
+                    </div>
+                     <div class="${classes.formGroup}">
+                        <label><strong>Chức vụ:</strong></label>
+                        <input type="text" value="${employee.position}" readonly class="${classes.input}"/>
                     </div>
                     <div class="${classes.formGroupPair}">
                         <div class="${classes.formGroup}">
@@ -366,7 +398,7 @@ export default function AdminEmployeesPage(){
           });
        
     }
-    const currentData = employeesData.slice(
+    const currentData = employees.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
       );
@@ -378,7 +410,7 @@ export default function AdminEmployeesPage(){
          }else{
             const filterdata = employees.filter(
                 (item) =>
-                  item.idEmployee.includes(searchTerm) ||
+                  item.idEmployee!.includes(searchTerm) ||
                   item.firstName.includes(searchTerm)
                   || item.lastName.includes(searchTerm) ||
                   item.email.includes(searchTerm) ||
@@ -528,6 +560,21 @@ export default function AdminEmployeesPage(){
        
       }
       
+
+      const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const File = event.target.files?.[0];
+        if (File) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (reader.result) {
+              // Chắc chắn rằng reader.result là một string
+              setImage(reader.result as string); 
+            }
+          };
+          setFile(File);
+          reader.readAsDataURL(File); // Đọc file và chuyển thành base64
+        }
+      };
     return (
         <div className={classes.article}>
              
@@ -560,6 +607,7 @@ export default function AdminEmployeesPage(){
         <table>
             <thead>
                 <tr>
+                <th>Hình ảnh</th>
                 <th>Mã nhân viên</th>
                 <th>Họ nhân viên</th>
                 <th>Tên nhân viên</th>
@@ -574,10 +622,17 @@ export default function AdminEmployeesPage(){
                 <th>Hành động</th>
                 </tr>
             </thead>
-
+                    
             <tbody>
                     {currentData.map((employee, index) => (
                         <tr key={index}>
+                            <td >
+                               <div>
+                                    <Image src={`data:image/jpeg;base64,${employee.image!}`} alt=''
+                                    width={60} height={30}
+                                    />
+                               </div>
+                            </td>
                             <td>{employee.idEmployee}</td>
                             <td>{employee.firstName}</td>
                             <td>{employee.lastName}</td>
@@ -616,6 +671,37 @@ export default function AdminEmployeesPage(){
                         <form id='employeeFormUpdate' className={classes.employeeDetails}>
                         
                             <h2 className={classes.centeredHeading}>Chỉnh sửa thông tin nhân viên</h2>
+                            <div  className={classes.formGroup}>
+                                {/* <label>Mã nhân viên:</label>
+                                <input name="idemployee" type="text" defaultValue={employeeId} readOnly/> */}
+                                <label htmlFor="fileInput">Select an image:</label>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    accept="image/*"
+                                  onChange={handleImageChange}
+                                />
+
+                               {image? 
+                                     (
+                                        <div>
+                                        <h3>Preview:</h3>
+                                        <Image src={image!}  alt="Selected Preview" width="200" height={100}/>
+                                    </div>
+                                    )
+                                    :
+                                    (
+                                        <div>
+                                        <h3>Preview:</h3>
+                                        <Image src={`${`data:image/jpeg;base64,${selectedEmployee.image!}`}`}  alt="Selected Preview" width="200" height={100}/>
+                                    </div>
+                                    )   
+                            }
+                                   
+                           
+                            </div>
+
+
                         <div  className={classes.formGroup}>
                                 <label>Mã nhân viên:</label>
                                 <input name="idemployee" type="text" defaultValue={selectedEmployee.idEmployee} readOnly/>
@@ -676,6 +762,23 @@ export default function AdminEmployeesPage(){
                                     </select>
                                 </div>
                                 <div className={classes.formGroup}>
+                                    <label htmlFor="position">Chức vụ:</label>
+                                <select name="position" id="position" defaultValue={selectedEmployee.position}>
+                                    <option value="Nhân viên">Nhân viên</option>
+                                    <option value="Trưởng phòng">Trưởng phòng</option>
+                                </select>
+                                </div>
+                                <div className={classes.formGroup}>
+                                    <label htmlFor="department">Phòng ban:</label>
+                                <select name="department" id="department" defaultValue={selectedEmployee.department}>
+                                    {departments.map((r, idx) => (
+                                        <option key={idx} value={r.departmentsName}>
+                                            {r.departmentsName}
+                                        </option>
+                                    ))}
+                                </select>
+                                </div>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="status">Trạng Thái:</label>
                                     <select id="status" name="status" required defaultValue={selectedEmployee.status}>
                                         <option value="Đang hoạt động">Đang hoạt động</option>
@@ -694,9 +797,28 @@ export default function AdminEmployeesPage(){
                     ):  <form  id='employeeForm' className={classes.employeeDetails} >
                     <h2 className={classes.centeredHeading}>Thêm mới nhân viên</h2>
                             <div  className={classes.formGroup}>
-                                <label>Mã nhân viên:</label>
-                                <input name="idemployee" type="text" defaultValue={employeeId} readOnly/>
+                                {/* <label>Mã nhân viên:</label>
+                                <input name="idemployee" type="text" defaultValue={employeeId} readOnly/> */}
+                                <label htmlFor="fileInput">Select an image:</label>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    accept="image/*"
+                                  onChange={handleImageChange}
+                                />
+
+                                {image && (
+                                    <div>
+                                        <h3>Preview:</h3>
+                                        <Image src={image} alt="Selected Preview" width="200" height={100}/>
+                                    </div>
+                                )}
                             </div>
+
+                            <div className={classes.formGroup}>
+                             
+                            </div>
+
                             <div className={classes.formGroup}>
                                 <label>Họ nhân viên:</label>
                                 <input name="firstname"   ref={inputRef} type="text" required
@@ -755,6 +877,23 @@ export default function AdminEmployeesPage(){
                                     </select>
                                 </div>
                                 <div className={classes.formGroup}>
+                                    <label htmlFor="position">Chức vụ:</label>
+                                <select name="position" id="position">
+                                    <option value="Nhân viên">Nhân viên</option>
+                                    <option value="Trưởng phòng">Trưởng phòng</option>
+                                </select>
+                                </div>
+                                <div className={classes.formGroup}>
+                                    <label htmlFor="department">Phòng ban:</label>
+                                <select name="department" id="department">
+                                    {departments.map((r, idx) => (
+                                        <option key={idx} value={r.departmentsName}>
+                                            {r.departmentsName}
+                                        </option>
+                                    ))}
+                                </select>
+                                </div>
+                                <div className={classes.formGroup}>
                                     <label htmlFor="status">Trạng Thái:</label>
                                     <select id="status" name="status" required>
                                     <option value="Đang hoạt động">Đang hoạt động</option>
@@ -786,3 +925,5 @@ export default function AdminEmployeesPage(){
     </div>
     )
 }
+
+export default AdminEmployeesPage;

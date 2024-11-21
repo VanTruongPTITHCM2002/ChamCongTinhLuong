@@ -8,7 +8,7 @@ import axios, { AxiosResponse } from 'axios';
 import Modal from '@/components/modal';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import { errorSwal } from '@/components/user/custom/sweetalert';
+import { errorSwal } from '@/custom/sweetalert';
 interface Contract{
     idemployee:string;
     basicsalary:number;

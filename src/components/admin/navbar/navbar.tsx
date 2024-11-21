@@ -34,9 +34,9 @@ export default function Navbar({ currentPath } : any){
                         <li className={`${currentPath === "/admin/accounts" ? classes.active: ""}`} onClick={handleSubItemClick}>
                             <Link href="/admin/accounts">Tài khoản</Link>
                         </li>
-                        <li className={`${currentPath === "/admin/permissons" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                        {/* <li className={`${currentPath === "/admin/permissons" ? classes.active: ""}`} onClick={handleSubItemClick}>
                             <Link href="/admin/permissons">Quyền</Link>
-                        </li>
+                        </li> */}
                         <li className={`${currentPath === "/admin/roles" ? classes.active: ""}`} onClick={handleSubItemClick}>
                             <Link href="/admin/roles">Vai trò</Link>
                         </li>

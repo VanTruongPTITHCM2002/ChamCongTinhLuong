@@ -218,13 +218,28 @@
   }
 
   .statusActive {
-    color: green;
+    color: white;
+    box-sizing: border-box;
     font-weight: bold;
+    background-color: green;
+    height: 20px;
+    width: 100px;
+    border-radius: 2px;
+    margin:0 auto;
+    text-align: center;
   }
   
   .statusInactive {
-    color: red;
+    color: white;
+    box-sizing: border-box;
+    color: white;
     font-weight: bold;
+    background-color: red;
+    height: 20px;
+    width: 105px;
+    border-radius: 2px;
+    margin:0 auto;
+    text-align: center;
   }
 
   .btnDetailPermissons{

@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faInfoCircle, faPen, faRotateLeft, faSave, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { AdminPageRoleProps } from '@/pages/api/admin/apiRole';
 interface Account{
     username:string,
     role:string,
@@ -15,7 +16,7 @@ interface Account{
 }
 
 
-export default function AdminAccountsPage(){
+const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
     const router = useRouter();
     const [isUpdate,setIsUpdate] = useState(false);
     const [accountData,setAccountData] = useState<Account[]>([]);
@@ -26,12 +27,11 @@ export default function AdminAccountsPage(){
     const [searchTerm, setSearchTerm] = useState('');
     const [tempStatus,setTempStatus] = useState('');
     const [originStatus,setOriginStatus] = useState('');
+    const [tempRole,setTempRole] = useState('');
+    const [originRole,setOriginRole] = useState('');
     const token = Cookies.get('token');
- ;
-    // if(!localStorage.getItem('username') && !token){
-    //     router.push('/login');
-    //     return null;
-    // }
+
+    
 
 
     const getAccounts = async ()=>{
@@ -75,18 +75,19 @@ export default function AdminAccountsPage(){
 
     const handleUpdateAccountStatusSave = async (account:Account,num?:number)=>{
         if(num === -1){
-            if(tempStatus !== originStatus){
+          
                 const updatedData = currentData.map((acc, idx) => {
                     if (acc.username === account.username) {
                         return {
                             ...acc,
-                            status: originStatus
+                            status: tempStatus !== originStatus ? originStatus: account.status,
+                            role: tempRole !== originRole ? originRole: account.role
                         };
                     }
                     return acc;
                 });
                 setAccountData(updatedData);
-            }
+            
             
             setIsUpdate(false);
             setIsNumber(-1);
@@ -121,6 +122,14 @@ export default function AdminAccountsPage(){
         setTempStatus(newStatus);
         setAccountData(updatedAccounts);
       };
+
+    const handleRoleChange = (index:number,newRole:string)=>{
+        const updatedAccounts = [...accountData];
+        setOriginRole(updatedAccounts[index].role);
+        updatedAccounts[index].role = newRole;
+        setTempRole(newRole);
+        setAccountData(updatedAccounts);
+    }
 
     const handleResetPasswod = async (username: string)=>{
        Swal.fire({
@@ -214,7 +223,7 @@ export default function AdminAccountsPage(){
                 <th>Vai trò</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
-                <th>Phân quyền</th>
+                {/* <th>Phân quyền</th> */}
                 </tr>
             </thead>
 
@@ -223,14 +232,32 @@ export default function AdminAccountsPage(){
             {isNumber !== -1 ? (
     <tr key={isNumber}>
         <td>{accountData[isNumber].username}</td>
-        <td>{accountData[isNumber].role}</td>
+        <td>
+         
+            
+            {isUpdate? (
+                    <select name="" id=""
+                    defaultValue={accountData[isNumber].role}
+                    onChange={(e) => handleRoleChange(isNumber, e.target.value)}
+                    >
+                        {role.map((r, idx) => (
+                            <option key={idx} value={r.roleDescription}>
+                                {r.roleDescription}
+                            </option>
+                        ))}
+                    </select>
+                ):(
+                    accountData[isNumber].role
+                )}
+
+        </td>
         <td>
             {isUpdate ? 
                 (
                     <select 
                         aria-label='text' 
                         style={{ backgroundColor: "#fff", color: "#000" }} 
-                        id="status" 
+
                         name="status" 
                         defaultValue={accountData[isNumber].status} 
                         onChange={(e) => handleStatusChange(isNumber, e.target.value)}
@@ -268,8 +295,22 @@ export default function AdminAccountsPage(){
     currentData.map((account, index) => (
         <tr key={index}>
             <td>{account.username}</td>
-            <td>{account.role}</td>
-            <td className={account.status === 'Đang hoạt động' ? classes.statusActive : classes.statusInactive}>
+            <td>
+                {isUpdate? (
+                    <select name="" id=""
+                    defaultValue={account.role}
+                    >
+                        {role.map((r, idx) => (
+                            <option key={idx} value={r.rolename}>
+                                {r.roleDescription}
+                            </option>
+                        ))}
+                    </select>
+                ):(
+                        account.role
+                )}
+            </td>
+            <td>
                 {isUpdate ? 
                     (
                         <select 
@@ -284,7 +325,10 @@ export default function AdminAccountsPage(){
                             <option value="Đang hoạt động">Đang hoạt động</option>
                         </select>
                     ) : (
-                        account.status
+                        <div className={account.status === 'Đang hoạt động' ? classes.statusActive : classes.statusInactive}>
+                             {account.status}      
+                        </div>
+                       
                     )}
             </td> 
             <td>
@@ -308,9 +352,9 @@ export default function AdminAccountsPage(){
                     </div>
                 )}
             </td>
-            <td><button className={classes.btnDetailPermissons}>
+            {/* <td><button className={classes.btnDetailPermissons}>
                 <FontAwesomeIcon icon={faInfoCircle}/>
-               </button></td>
+               </button></td> */}
         </tr>
     ))
 )}
@@ -331,3 +375,5 @@ export default function AdminAccountsPage(){
             </div>
     )
 }
+
+export default AdminAccountsPage;

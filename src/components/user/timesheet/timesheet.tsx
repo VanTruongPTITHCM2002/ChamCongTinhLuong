@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import classes from './timesheet.module.css'
 import axios from "axios";
-import { errorSwal } from "../custom/sweetalert";
+import { errorSwal } from '@/custom/sweetalert';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
