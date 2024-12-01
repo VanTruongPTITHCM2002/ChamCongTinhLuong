@@ -12,7 +12,6 @@ export default async function Page(){
     const token = cookieStore.get('token');
     const response: DepartmentsDTO[] = await getServerSideDepartments(token!);
     const res: Employee[] = await getServerSideEmployees(token!);  
-    console.log("asdasdasd",res);
     return(
         <div>
             <Navbar currentPath="/admin/employees"/>

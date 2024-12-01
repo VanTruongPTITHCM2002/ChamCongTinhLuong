@@ -1,22 +1,18 @@
-
-'use client'
+"use client"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classes from './contract.module.css'
 import { faMagnifyingGlass, faPen, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import Modal from '@/components/modal';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import { errorSwal } from '@/custom/sweetalert';
-interface Contract{
-    idemployee:string;
-    basicsalary:number;
-    workingdays:number;
-    startdate:string;
-    endate:string;
-    status?:string;
-}
+import Cookies from 'js-cookie'
+import { Contract } from '@/pages/api/admin/apiContract';
+import { Employee } from '@/pages/api/admin/apiEmployee';
+
+
 
 
 const formattedAmount = (num:Float32Array | number)=>{
@@ -29,10 +25,9 @@ const formattedAmount = (num:Float32Array | number)=>{
     const [year, month, day] = dateString.split('-');
     return `${day}-${month}-${year}`;
   }
-export default function AdminContract(){
-    const token = localStorage.getItem('token')
-    const [showContract,setShowContract] = useState<Contract[]>([]);
-    const [contracts,setContracts] = useState<Contract[]>([]);
+const AdminContract:React.FC<{contract:Contract[],employee: Employee[]}> =({contract,employee}) =>{
+    const token = Cookies.get('token');
+    const router = useRouter();
     const [modal,setModal] = useState(false);
     const [idEmployee,setIdEmployee] = useState<string[]>([]);
     const [selectedIdEmployee, setSelectedIdEmployee] = useState<string>('');
@@ -41,6 +36,7 @@ export default function AdminContract(){
         idemployee: '',
         basicsalary: 0,
         workingdays: 0,
+        leavedays: 0,
         startdate: '',
         endate: '',
     });
@@ -48,41 +44,9 @@ export default function AdminContract(){
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const [isUpdate,setIsUpdate] = useState(false);
-    const getAll = async ()=>{
-        try{
-            const response =  await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/contract`,{
-                headers: {
-                    Authorization: `Bearer ${token}`  
-                  }
-            });
-            if(response.status === 200){
-                setShowContract([...response.data.data].reverse());
-                setContracts([...response.data.data].reverse());
-            }
-        }catch(error){
-            console.error('Xảy ra lỗi trong quá trình tải dữ liệu')
-        }
-    }
-    const getIDemployee = async ()=>{
-        try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/list`,
-                {
-                                headers: {
-                                    Authorization: `Bearer ${token}`  
-                                  }
-                            });
-        
-            setIdEmployee(response.data.data.map((employee: { idemployee: string }) => employee.idemployee));
-        
-        } catch (error) {
-            console.error('Error fetching id employee:', error);
-        }
+ 
     
-    }
    
-    useEffect(()=>{
-        getAll();
-    },[])
     const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     
         const selectedId = event.target.value;
@@ -95,13 +59,14 @@ export default function AdminContract(){
             idemployee: '',
             basicsalary: 0,
             workingdays: 0,
+            leavedays:0,
             startdate: '',
             endate: '',
         });
         setModal(false);
     }
     const showFormAdd = ()=>{
-        getIDemployee();
+
         setModal(true);
         setIsUpdate(false);
     }
@@ -121,9 +86,9 @@ export default function AdminContract(){
             idemployee:form.get('manv') as string,
             basicsalary: Number(form.get('basic') as string),
             workingdays: Number(form.get('work') as string),
+            leavedays: Number(form.get('leavedays') as string),
             startdate: form.get('startdate') as string,
             endate: form.get('endate') as string,
-        
         } 
         if (contract.basicsalary=== null || contract.basicsalary.toString().trim() === "" || 
     contract.workingdays === null || contract.workingdays.toString().trim() === "" || 
@@ -158,8 +123,9 @@ export default function AdminContract(){
                     text:`${response.data.message}`,
                     icon:"success"
                })
-               setShowContract(prevContract => [...prevContract, contract]);
+            //    setShowContract(prevContract => [...prevContract, contract]);
                setModal(false);
+               router.refresh();
             }
         }catch(error:any){
             Swal.fire({
@@ -176,6 +142,7 @@ export default function AdminContract(){
             idemployee: contract.idemployee,
             basicsalary: contract.basicsalary,
             workingdays: contract.workingdays,
+            leavedays: contract.leavedays,
             startdate: contract.startdate,
             endate: contract.endate,
         });
@@ -201,6 +168,7 @@ export default function AdminContract(){
                 idemployee:form.get('manv') as string,
                 basicsalary: Number(form.get('basic') as string),
                 workingdays: Number(form.get('work') as string),
+                leavedays: Number(form.get('leavedays') as string),
                 startdate: form.get('startdate') as string,
                 endate: form.get('endate') as string,
             
@@ -233,21 +201,22 @@ export default function AdminContract(){
                         text: "Sửa hợp đồng thành công",
                         icon: "success",
                     });
-                    setShowContract(prevContract => {
-                        const updateContract = prevContract.map(contract => {
-                            if ((contract.idemployee === data.newContractRequest.idemployee)
-                            && (contract.startdate === data.newContractRequest.startdate)
-                        && (contract.endate === data.newContractRequest.endate)) {
-                                return { ...contract, ...data.newContractRequest };
-                            }
-                            return contract;
-                        });
-                        return updateContract;
-                    });
+                    // setShowContract(prevContract => {
+                    //     const updateContract = prevContract.map(contract => {
+                    //         if ((contract.idemployee === data.newContractRequest.idemployee)
+                    //         && (contract.startdate === data.newContractRequest.startdate)
+                    //     && (contract.endate === data.newContractRequest.endate)) {
+                    //             return { ...contract, ...data.newContractRequest };
+                    //         }
+                    //         return contract;
+                    //     });
+                    //     return updateContract;
+                    // });
                     // Reset form hoặc thực hiện các thao tác khác
                 }
                 setModal(false);
                 setIsUpdate(false);
+                
             } catch (error) {
                 console.error('Xảy ra lỗi trong quá trình sửa hợp đồng');
             }
@@ -263,7 +232,7 @@ export default function AdminContract(){
             }
             if(response.status === 200){
             
-                setShowContract(response.data.data);
+                // setShowContract(response.data.data);
              }
         
         } catch (error) {
@@ -272,65 +241,46 @@ export default function AdminContract(){
         }
        
     }
-    const totalPages = Math.ceil(showContract.length / itemsPerPage);
+    const totalPages = Math.ceil(contract.length / itemsPerPage);
     
     const handlePageChange = (pageNumber:number) => {
       setCurrentPage(pageNumber);
     };
-    const currentData = showContract.slice(
+    const currentData =searchTerm ? contract.filter(
+        (item) =>
+          item.idemployee.includes(searchTerm) ||
+            item.workingdays === Number(searchTerm)
+            || item.startdate.includes(searchTerm)
+            || item.endate.includes(searchTerm)
+            || item.status?.toString().includes(searchTerm)
+        
+      ): contract.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
       );
 
-      const searchButton = ()=>{
-        if(searchTerm === ''){
-            setShowContract(contracts);
-           
-         }else{
-            const filterdata = contracts.filter(
-                (item) =>
-                  item.idemployee.includes(searchTerm) ||
-                    item.workingdays === Number(searchTerm)
-                    || item.startdate.includes(searchTerm)
-                    || item.endate.includes(searchTerm)
-                    || item.status?.toString().includes(searchTerm)
-                
-              );
-          setShowContract(filterdata);
-        }
-      }
-      const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
-        const term = event.target.value;
-        setSearchTerm(term);
-      };
+      
+        
+      
+   
     return(
         <div className={classes.article}>
              <h2 style={{textAlign:"center"}}>Quản lý hợp đồng lao động</h2>
                <div className={classes.article_button}>
-                <div className={classes.article_button_search}>
+                
                     <input type="text" 
                     value={searchTerm}
-                    onChange={handleSearch} 
+                    onChange={(e) => setSearchTerm(e.target.value)} 
                      placeholder='Tìm kiếm...'
                     />
-                    <button 
-                    onClick={searchButton}
-                    ><FontAwesomeIcon icon={faMagnifyingGlass} 
-                       
-                       style={{width:"10px",
-                               height:"10px"
-                       }}/></button>
-                </div>
-
-                <div className={classes.article_button_add}>
-                    <button   
+                     <button   
                     onClick={showFormAdd}
                     ><FontAwesomeIcon icon={faPlus}  style={{width:"10px",
                                height:"10px"
                        }}
                      
                        /></button>    
-                </div>                  
+               
             </div>
             
             <table>
@@ -339,6 +289,7 @@ export default function AdminContract(){
                         <th>Mã nhân viên</th>
                         <th>Lương cơ bản</th>
                         <th>Số ngày công</th>
+                        <th>Số ngày phép</th>
                         <th>Ngày bắt đầu</th>
                         <th>Ngày kết thúc</th>
                         <th>Trạng thái</th>
@@ -347,20 +298,21 @@ export default function AdminContract(){
                 </thead>
 
                 <tbody>
-                    {currentData.map((contract,index)=>(
+                    {currentData.map((c,index)=>(
                              <tr key={index}>
-                             <td>{contract.idemployee}</td>
-                             <td>{ formattedAmount (contract.basicsalary)}</td>
-                             <td>{contract.workingdays}</td>
-                             <td>{formatDateString(contract.startdate)}</td>
-                             <td>{ formatDateString(contract.endate)}</td>
-                             <td  className={contract.status === "Còn hợp đồng" ? classes.statusActive : classes.statusInactive}
-                             >{contract.status}</td>
+                             <td>{c.idemployee}</td>
+                             <td>{ formattedAmount (c.basicsalary)}</td>
+                             <td>{c.workingdays}</td>
+                             <td>{c.leavedays}</td>
+                             <td>{formatDateString(c.startdate)}</td>
+                             <td>{ formatDateString(c.endate)}</td>
+                             <td  className={c.status === "Còn hợp đồng" ? classes.statusActive : classes.statusInactive}
+                             >{c.status}</td>
                              <td>
                                  <div className={classes.button_update_delete}>
                                          
-                                         <button  disabled={contract.status === 'Hết hợp đồng'} className={classes.button_update}
-                                             onClick={()=>updateContract(contract)}
+                                         <button  disabled={c.status === 'Hết hợp đồng'} className={classes.button_update}
+                                             onClick={()=>updateContract(c)}
                                          ><FontAwesomeIcon icon={faPen} style={{width:"10px",
                                 height:"10px"
                         }}/></button>
@@ -419,6 +371,19 @@ export default function AdminContract(){
                         />
                     </div>
 
+                    <div>
+                        <label htmlFor='work'>Số ngày phép:</label>
+                        <input
+                            id='leavedays'
+                            name='leavedays'
+                            type='number'
+                          
+                            defaultValue={formData.leavedays}
+                            
+                            required
+                        />
+                    </div>
+
                     <div className={classes.timecontract}>
                         <div>
                             <label htmlFor='startdate'>Ngày bắt đầu:</label>
@@ -464,9 +429,9 @@ export default function AdminContract(){
                         value={selectedIdEmployee}
                 onChange={handleSelectChange} 
                 required>
-                                            {idEmployee.map((employee,index) => (
-                                                <option key={index} value={employee}>
-                                                    {employee}
+                                            {employee.map((e,index) => (
+                                                <option key={index} value={e.idEmployee}>
+                                                    {e.idEmployee}
                                                 </option>
                                             ))}
                                     </select>
@@ -481,6 +446,13 @@ export default function AdminContract(){
                             <label htmlFor='work'>Số ngày công:</label>
                             <input id='work' name='work' type='number'  min={0} max={26} required/>
                         </div>
+                        
+                        
+                        <div>
+                            <label htmlFor='work'>Số ngày phép:</label>
+                            <input id='leavedays' name='leavedays' type='number'  min={0} max={15} required/>
+                        </div>
+
                         <div className={classes.timecontract}>
                         <div>
                             <label htmlFor='reason'>Ngày bắt đầu:</label>
@@ -525,3 +497,6 @@ export default function AdminContract(){
             </div>
     )
 }
+
+
+export default AdminContract;

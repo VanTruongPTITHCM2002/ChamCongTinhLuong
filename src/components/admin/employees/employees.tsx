@@ -254,7 +254,7 @@ function formatDateString(dateString: string): string {
                     text: `${response.data.message}`,
                     icon: "success"
                   });
-                 router.refresh();
+                 
             }
             
         } catch (error) {
@@ -264,6 +264,7 @@ function formatDateString(dateString: string): string {
    
     setShowModal(false);
     setSelectedEmployee(null); 
+    router.refresh();
     }
 
     
@@ -420,6 +421,8 @@ function formatDateString(dateString: string): string {
                 
               );
           setEmployeesData(filterdata);
+
+        
         }
       }
       const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -628,7 +631,10 @@ function formatDateString(dateString: string): string {
                         <tr key={index}>
                             <td >
                                <div>
-                                    <Image src={`data:image/jpeg;base64,${employee.image!}`} alt=''
+                                    <Image 
+                                    // src={`data:image/jpeg;base64,${employee.image!}`} 
+                                    src={`data:image/jpeg;base64,${employee.image!}`}
+                                    alt=''
                                     width={60} height={30}
                                     />
                                </div>
@@ -693,7 +699,10 @@ function formatDateString(dateString: string): string {
                                     (
                                         <div>
                                         <h3>Preview:</h3>
-                                        <Image src={`${`data:image/jpeg;base64,${selectedEmployee.image!}`}`}  alt="Selected Preview" width="200" height={100}/>
+                                        <Image 
+                                        src={`${`data:image/jpeg;base64,${selectedEmployee.image!}`}`}  
+                                        alt="Selected Preview" 
+                                        width="200" height={100}/>
                                     </div>
                                     )   
                             }

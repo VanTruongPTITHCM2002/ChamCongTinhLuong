@@ -39,3 +39,21 @@ export async function getServerSideEmployees(token:RequestCookie){
     return [];
 }
 } 
+
+
+export async function getServerSideEmployeesActive(token : RequestCookie){
+    try{
+        const response = await axios.get( `${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/list`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token.value}`
+                  }
+            }
+        )
+    
+        return response.data.data;
+    } catch (error : any) {
+        errorSwal("Thất bại", error.response.data.message)
+        return [];
+    }
+}

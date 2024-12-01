@@ -5,14 +5,35 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronDown, faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie'
 export default function Navbar({ currentPath } : any){
     const [isOpen, setIsOpen] = useState(false);
-
+    const [isOpenAttendance,setIsOpenAttendance] = useState(false);
+    useEffect(() => {
+        const savedState = Cookies.get("menuState");
+        const savedStateAttendance = Cookies.get('OpenAttendance')
+        if (savedState) {
+            setIsOpen(savedState === "true"); // Cookies lưu trạng thái dạng string
+        }
+        if(savedStateAttendance){
+            setIsOpenAttendance(savedStateAttendance === "true");
+        }
+    }, []);
+    
     const toggleMenu = () => {
-        setIsOpen(prevState => !prevState); // Đảo ngược trạng thái khi click
+        const newState = !isOpen;
+        setIsOpen(newState); // Toggle trạng thái
+        Cookies.set("menuState", newState.toString());
     };
+
+    const toggleMenuAttendance = ()=>{
+        const newState = !isOpenAttendance;
+        setIsOpenAttendance(newState); // Toggle trạng thái
+        Cookies.set("OpenAttendance", newState.toString());
+    }
     const handleSubItemClick = (e : any) => {
-        e.stopPropagation(); // Ngừng sự kiện click để không ảnh hưởng đến toggle menu
+        e.stopPropagation(); 
+        
     };
     return (
         <div className={classes.navbar}>
@@ -34,9 +55,6 @@ export default function Navbar({ currentPath } : any){
                         <li className={`${currentPath === "/admin/accounts" ? classes.active: ""}`} onClick={handleSubItemClick}>
                             <Link href="/admin/accounts">Tài khoản</Link>
                         </li>
-                        {/* <li className={`${currentPath === "/admin/permissons" ? classes.active: ""}`} onClick={handleSubItemClick}>
-                            <Link href="/admin/permissons">Quyền</Link>
-                        </li> */}
                         <li className={`${currentPath === "/admin/roles" ? classes.active: ""}`} onClick={handleSubItemClick}>
                             <Link href="/admin/roles">Vai trò</Link>
                         </li>
@@ -48,8 +66,24 @@ export default function Navbar({ currentPath } : any){
                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/workschedule" ? classes.active : ""}`}>
                     <Link href="/admin/workschedule">Quản lý lịch làm việc</Link>
                 </li>
-                <li className={`${classes.listOptionMenu} ${currentPath === "/admin/attendance" ? classes.active : ""}`}>
-                    <Link href="/admin/attendance">Quản lý chấm công</Link>
+                <li className={`${classes.subMenu} ${classes.listOptionMenu}`} onClick={toggleMenuAttendance}>
+                    <a className={classes.subDrop}>
+                        <span>Quản lý chấm công</span>
+                        <span className={classes.arrowList}>
+                            {isOpenAttendance ? <FontAwesomeIcon icon={faCircleChevronDown} /> : <FontAwesomeIcon icon={faCircleChevronRight} />}
+                        </span>
+                    </a>
+                    <ul className={`${classes.subMenuItem} ${isOpenAttendance ? classes.open : ''}`}>
+                        <li className={`${currentPath === "/admin/attendance" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/admin/attendance">Danh sách chấm công</Link>
+                        </li>
+                        <li className={`${currentPath === "/admin/workrecord" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/admin/workrecord">Danh sách công tháng</Link>
+                        </li>
+                        <li className={`${currentPath === "/admin/attendance-explain" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/admin/attendance-explain">Danh sách giải trình chấm công</Link>
+                        </li>
+                    </ul>
                 </li>
                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/payroll" ? classes.active : ""}`}>
                     <Link href="/admin/payroll">Quản lý tính lương</Link>
@@ -57,14 +91,14 @@ export default function Navbar({ currentPath } : any){
                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/rewardpunish" ? classes.active : ""}`}>
                     <Link href="/admin/rewardpunish">Quản lý thưởng phạt</Link>
                 </li>
+                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/leaverequest" ? classes.active : ""}`}>
+                    <Link href="/admin/leaverequest">Quản lý nghỉ phép</Link>
+                </li> 
                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/contract" ? classes.active : ""}`}>
                     <Link href="/admin/contract">Quản lý hợp đồng lao động</Link>
                 </li>
                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/notification" ? classes.active : ""}`}>
                     <Link href="/admin/notification">Quản lý thông báo</Link>
-                </li>
-                <li className={`${classes.listOptionMenu} ${currentPath === "/admin/settings" ? classes.active : ""}`}>
-                    <Link href="/admin/settings">Cài đặt hệ thống</Link>
                 </li>
             </ul>
         </div>

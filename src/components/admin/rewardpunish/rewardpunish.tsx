@@ -9,6 +9,7 @@ import Modal from '@/components/modal/modal';
 import Swal from 'sweetalert2';
 import { Payroll } from '../payroll/payroll';
 import { errorSwal } from '@/custom/sweetalert';
+import Cookies from 'js-cookie'
 interface RewardPunish{
     idemployee:string;
     type:string;
@@ -31,7 +32,7 @@ const formattedAmount = (num:Float32Array | number)=>{
     return `${day}-${month}-${year}`;
   }
 export default function AdminRewardPunishPage(){
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const[showRewardPunish,setShowRewardPunish] = useState<RewardPunish[]>([]);
     const[rewardPunish,setRewardPunish] = useState<RewardPunish[]>([]);
     const [modal,setModal] = useState(false);

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { errorSwal } from '@/custom/sweetalert';
-
+import Cookies from 'js-cookie'
 
 // Đăng ký các thành phần cần thiết
 Chart.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
@@ -54,7 +54,7 @@ export default function AdminDashboard(){
    const [countAttendance,setCountAttendance] = useState(0);
    const [arrReward,setArrReward] = useState<number[]>([]);
    const [arrPunish,setArrPunish] = useState<number[]>([]);
-    const token = localStorage.getItem('token')
+    const token = Cookies.get('token')
     const currentDate = new Date();
    
     const formattedDate = currentDate.toLocaleDateString('en-CA');

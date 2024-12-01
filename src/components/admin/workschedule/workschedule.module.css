@@ -330,3 +330,7 @@
    cursor: pointer;
    margin: 10px;
 }
+
+.tableEmpContractActive{
+   overflow-y: auto;
+}

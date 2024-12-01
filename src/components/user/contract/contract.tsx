@@ -6,6 +6,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { errorSwal } from '@/custom/sweetalert';
+import Cookies from 'js-cookie';
 interface Contract{
     idemployee:string;
     basicsalary:number;
@@ -29,7 +30,7 @@ function formatDate(dateString:string) {
 }
 export default function UserContract (){
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const [contracts,setContracts] = useState<Contract[]>([]); 
     const [contractsTwo,setContractsTwo] = useState<Contract[]>([]); 
     const [searchTerm, setSearchTerm] = useState('');

@@ -34,16 +34,18 @@
  .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
  background-color:#fff;      }
 
- .nameTable{
-    text-align: center;
- }
-
  .groupOption{
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #dae1f3;
+ }
+
+ .groupFormUpdateButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
  }
 
 .groupOption input{
@@ -69,49 +71,10 @@
     background-color: rgb(7, 101, 7);
 }
 
-.Active{
-    color: white;
-    box-sizing: border-box;
-    font-weight: bold;
-    background-color: green;
-    height: 28px;
-    width: 100px;
-    border-radius: 2px;
-    margin:0 auto;
-    text-align: center;
-    padding: 5px;
-}
-
-.InActive{
-    color: white;
-    box-sizing: border-box;
-    color: white;
-    font-weight: bold;
-    background-color: red;
-    height: 20px;
-    width: 105px;
-    border-radius: 2px;
-    margin:0 auto;
-    text-align: center;
-    padding: 0 0 5px 0;
-}
-
-.groupButtonOption{
+.groupButton{
     display: flex;
     justify-content: space-around;
     align-items: center;
-}
-
-.updateButton{
-    height: 30px;
-    width: 40px;
-    background-color: orange;
-    border: none;
-    cursor: pointer;
-}
-
-.updateButton:hover{
-    background-color: rgb(149, 103, 17);
 }
 
 .deleteButton{
@@ -122,8 +85,45 @@
     cursor: pointer;
 }
 
+.updateButton{
+    height: 30px;
+    width: 40px;
+    background-color: orange;
+    border: none;
+    cursor: pointer;
+}
+
+.detailButton{
+    height: 30px;
+    width: 40px;
+    background-color: rgb(237, 237, 129);
+    border: none;
+    cursor: pointer;
+}
+
+.saveUpdateButton{
+    height: 30px;
+    width: 40px;
+    background-color: blue;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.saveUpdateButton:hover{
+    background-color: rgb(35, 35, 126);
+}
+
+.updateButton:hover{
+    background-color: rgb(149, 103, 17);
+}
+
 .deleteButton:hover{
     background-color: rgb(151, 16, 16);
+}
+
+.detailButton:hover{
+    background-color: rgb(197, 197, 12);
 }
 
 .modalAddRole {
@@ -160,15 +160,6 @@
     cursor: pointer;
 }
 
-.content {
-    margin-top: 20px;
-}
-
-.mainGroup h3{
-    text-align: center;
-    margin-top: 5px;
-}
-
 .formGroup{
     display: grid;
     gap: 20;
@@ -183,41 +174,9 @@
     padding: 0 5px;
     border-radius: 4px;
     outline: none;
+    border: 1px solid gray;
 }
-
-
 
 .formGroup label{
     font-size: 12px;
-}
-
-.groupButton{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.groupButton button{
-    margin-left: 5px;
-    width: 50px;
-    height: 30px;
-    cursor: pointer;
-    border-radius: 2px;
-    border: none;
-}
-
-.btnSave{
-    background-color: blue;
-}
-
-.btnSave:hover{
-    background-color: rgb(14, 14, 146);
-}
-
-.btnDelete{
-    background-color: red;
-}
-
-.btnDelete:hover{
-    background-color: rgb(120, 8, 8);
 }

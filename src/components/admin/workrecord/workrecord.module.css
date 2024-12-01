@@ -34,9 +34,6 @@
  .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
  background-color:#fff;      }
 
- .nameTable{
-    text-align: center;
- }
 
  .groupOption{
     margin-top: 10px;
@@ -56,7 +53,7 @@
     border-radius: 2px;
 }
 
-.groupOption .btnAddRole{
+.groupOption .btnAddWorkRecord{
     width: 50px;
     height: 30px;
     margin-right: 5px;
@@ -65,65 +62,8 @@
     border: none;
 }
 
-.btnAddRole:hover{
+.btnAddWorkRecord:hover{
     background-color: rgb(7, 101, 7);
-}
-
-.Active{
-    color: white;
-    box-sizing: border-box;
-    font-weight: bold;
-    background-color: green;
-    height: 28px;
-    width: 100px;
-    border-radius: 2px;
-    margin:0 auto;
-    text-align: center;
-    padding: 5px;
-}
-
-.InActive{
-    color: white;
-    box-sizing: border-box;
-    color: white;
-    font-weight: bold;
-    background-color: red;
-    height: 20px;
-    width: 105px;
-    border-radius: 2px;
-    margin:0 auto;
-    text-align: center;
-    padding: 0 0 5px 0;
-}
-
-.groupButtonOption{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.updateButton{
-    height: 30px;
-    width: 40px;
-    background-color: orange;
-    border: none;
-    cursor: pointer;
-}
-
-.updateButton:hover{
-    background-color: rgb(149, 103, 17);
-}
-
-.deleteButton{
-    height: 30px;
-    width: 40px;
-    background-color: red;
-    border: none;
-    cursor: pointer;
-}
-
-.deleteButton:hover{
-    background-color: rgb(151, 16, 16);
 }
 
 .modalAddRole {
@@ -158,10 +98,6 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-}
-
-.content {
-    margin-top: 20px;
 }
 
 .mainGroup h3{

@@ -13,28 +13,27 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    background-color: #dae1f3;
+    padding: 5px 5px;
 }
 
-.article_button_search{
-    display: flex;
-    align-items: center;
-}
 
-.article_button_search input{
+
+.article_button input{
     margin-right: 5px;
-    height: 25px;
+    width: 300px;
+    height: 30px;
     background-color: #eee;
+    padding: 0 5px;
     color: #000;
+    border-radius: 2px;
     
 }
 
-.article_button_search button{
-    width: 30px;
-    height: 30px;
-}
 
-.article_button_add button{
+
+.article_button button{
     width: 50px;
     height: 30px;
     background-color: #4CAF50;
@@ -46,7 +45,7 @@
     
 }
 
-.article_button_add button:hover{
+.article_button button:hover{
     background-color: #28952c;
 }
 

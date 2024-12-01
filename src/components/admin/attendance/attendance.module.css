@@ -19,14 +19,14 @@
   justify-content: space-between;
 }
 
-.article_option_select input{
-  background-color: #eee;
-  width: 200px;
-  height: 30px;
-  margin-right: 5px;
-  padding-left: 2px;
+.article_option input{
   color:#000;
-  border-radius: 4px;
+  padding: 0 5px;
+  height: 30px;
+  width: 250px;
+  background-color: #eee;
+  margin: 5px 0 5px 5px;
+  border-radius: 2px;
   outline: none;
 }
 
@@ -67,6 +67,7 @@ background-color:#fff;      }
 .article_option{
     display: flex;
     justify-content: space-between;
+    background-color: #dae1f3;
 }
  
  .article_option select{
@@ -267,14 +268,12 @@ background-color:#fff;      }
    transition: background-color 0.3s;
  }
  .btnAddAttendance{
-  background-color:rgb(15, 201, 15);
-  color: white;
-   border: none;
-   padding: 5px 10px;
-   cursor: pointer;
-   margin-left: 5px;
-   border-radius: 3px;
-   width: 40px;
+   width: 50px;
+    height: 30px;
+    margin:5px 5px 0 0;
+    cursor: pointer;
+    background-color: rgb(27, 237, 27);
+    border: none;
    transition: background-color 0.3s;
  }
  .btnUpdateExplain{

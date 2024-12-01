@@ -6,11 +6,9 @@ import { FormEvent, useEffect, useState } from 'react'
 import Modal from '@/components/modal'
 import axios, { AxiosResponse } from 'axios'
 import Swal from 'sweetalert2'
-import { GetServerSideProps } from 'next'
 import * as XLSX from 'xlsx';
-import { error } from 'console'
 import { errorSwal, successSwal } from '@/custom/sweetalert'
-import { randomUUID } from 'crypto'
+import Cookies from 'js-cookie'
 
 const payrollCustom = {
     width: '50%', // Tùy chỉnh độ rộng của modal
@@ -22,7 +20,7 @@ interface IFEmployee{
 
 
 interface SalaryRequest{
-    idemployee:string;
+    idEmployee:string;
     month: number;
     year:number;
     datecreated:string;
@@ -30,16 +28,15 @@ interface SalaryRequest{
 }
 
 export interface Payroll{
-    idemployee:string;
-    name:string;
+    idEmployee:string;
     month:number;
     year:number;
-    basicsalary:number;
+    basicSalary:number;
     day_work:Float32Array;
     reward:number;
     punish:number;
-    datecreated:string;
-    totalpayment:Float32Array;
+    createDate:string;
+    totalPayment:Float32Array;
     status:string;
 }
 
@@ -63,7 +60,7 @@ function formatDate(dateString:string) {
   }
 
 const AdminPayrollPage = () =>{
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const [modal,setModal] = useState(false);
     const [showDetail,setShowDetail] = useState(false);
     const [num,setNum] = useState<number>(-1);
@@ -136,7 +133,7 @@ const AdminPayrollPage = () =>{
     
         const form = new FormData(formElement);
         const salary:SalaryRequest ={
-            idemployee:form.get('manv') as string,
+            idEmployee:form.get('manv') as string,
             month: Number(form.get('month') as string),
             year: Number(form.get('year') as string),
             datecreated: form.get('date') as string,
@@ -249,7 +246,7 @@ const AdminPayrollPage = () =>{
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ amount: showPayroll[index].totalpayment, orderId: 'asdasdadccaca'}),
+            body: JSON.stringify({ amount: showPayroll[index].totalPayment, orderId: 'asdasdadccaca'}),
           });
 
           if (paymentResponse.ok) {
@@ -261,10 +258,10 @@ const AdminPayrollPage = () =>{
             if(showPayroll[index].status === 'Chưa thanh toán'){
                 showPayroll[index].status = 'Đã thanh toán';
                 const salary:SalaryRequest ={
-                    idemployee: showPayroll[index].idemployee,
+                    idEmployee: showPayroll[index].idEmployee,
                     month: Number(showPayroll[index].month),
                     year: Number(showPayroll[index].year),
-                    datecreated: showPayroll[index].datecreated,
+                    datecreated: showPayroll[index].createDate,
                     status:showPayroll[index].status
                 }
                 
@@ -345,10 +342,10 @@ const AdminPayrollPage = () =>{
          }else{
             const filterdata = showPay.filter(
                 (item) =>
-                  item.idemployee.includes(searchTerm) ||
+                  item.idEmployee.includes(searchTerm) ||
                   item.month === Number(searchTerm)
-                  || item.year === Number(searchTerm) ||
-                  item.name.includes(searchTerm) 
+                  || item.year === Number(searchTerm) 
+                 
                 
                 
               );
@@ -362,16 +359,15 @@ const AdminPayrollPage = () =>{
 
       const downloadExcel = ()=>{
         const processedData = showPayroll.map(item => ({
-            'Mã nhân viên': item.idemployee,
-            'Họ tên': item.name,
+            'Mã nhân viên': item.idEmployee,
             'Tháng': item.month,
             'Năm': item.year,
-            'Lương cơ bản': formattedAmount(item.basicsalary),
+            'Lương cơ bản': formattedAmount(item.basicSalary),
             'Số công thực tế': item.day_work.toString(), // Chuyển đổi Float32Array thành chuỗi
             'Thưởng':formattedAmount(item.reward),
             'Phạt': formattedAmount(item.punish),
-            'Ngày tính lương': formatDate(item.datecreated),
-            'Tổng lương': formattedAmount(item.totalpayment), // Chuyển đổi Float32Array thành chuỗi
+            'Ngày tính lương': formatDate(item.createDate),
+            'Tổng lương': formattedAmount(item.totalPayment), // Chuyển đổi Float32Array thành chuỗi
             'Trạng thái': item.status
           }));
       
@@ -466,7 +462,6 @@ const AdminPayrollPage = () =>{
                 <thead>
                     <tr>
                         <th>Mã nhân viên</th>
-                        <th>Họ tên nhân viên</th>
                         <th>Tháng</th>
                         <th>Năm</th>
                         {num !== -1 ? (
@@ -493,18 +488,17 @@ const AdminPayrollPage = () =>{
                 <tbody>
 
                 {num !== -1 && showPayroll[num] ? (
-            <tr key={showPayroll[num].idemployee}>
-                <td>{showPayroll[num].idemployee}</td>
-                <td>{showPayroll[num].name}</td>
+            <tr key={showPayroll[num].idEmployee}>
+                <td>{showPayroll[num].idEmployee}</td>
                 <td>{showPayroll[num].month}</td>
                 <td>{showPayroll[num].year}</td>
                <td>{formattedAmount (showPayroll[num].reward)}</td>
                <td>{formattedAmount(showPayroll[num].punish)}</td>
-               <td>{formattedAmount(showPayroll[num].basicsalary)}</td>
+               <td>{formattedAmount(showPayroll[num].basicSalary)}</td>
                <td>{showPayroll[num].day_work}</td>
-               <td>{formatDate(showPayroll[num].datecreated)}</td>
+               <td>{formatDate(showPayroll[num].createDate)}</td>
                
-                <td>{formattedAmount(showPayroll[num].totalpayment)}</td>
+                <td>{formattedAmount(showPayroll[num].totalPayment)}</td>
                 {/* <td style={{cursor:"pointer"}}>{showPayroll[num].status}</td> */}
                 <td className={showPayroll[num].status === "Đã thanh toán"?classes.statusActive:classes.statusInactive} >
              {showPayroll[num].status}
@@ -524,11 +518,10 @@ const AdminPayrollPage = () =>{
         ):(
             currentData.map((p,index)=>(
                 <tr key={index}>
-                    <td>{p.idemployee}</td>
-                    <td>{p.name}</td>
+                    <td>{p.idEmployee}</td>
                     <td>{p.month}</td>
                     <td>{p.year}</td>
-                    <td>{ formattedAmount(p.totalpayment)}</td>
+                    <td>{ formattedAmount(p.totalPayment)}</td>
                     <td>
                         
                         <button className={classes.article_button_detail} title='Xem chi tiết'

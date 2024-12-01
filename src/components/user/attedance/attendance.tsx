@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { errorAlert, errorSwal, successSwal } from '@/custom/sweetalert';
 import Swal from 'sweetalert2';
-
+import CameraCapture from '@/components/cameraCapture/CameraCapture';
+import Cookies from 'js-cookie';
 
  function convertToMinutes(time: string): number {
     const [hours, minutes] = time.split(':').map(Number);
@@ -18,6 +19,10 @@ export function calculateWorkHours(startTime: string, endTime: string): number {
     const endMinutes = convertToMinutes(endTime);
    
     const gracePeriodStartMinutes = convertToMinutes('08:15');
+
+    const gracePeriodEndMorningMinutes = convertToMinutes('11:45');
+
+    const gracePeriodStartAfternoonMinutes = convertToMinutes('13:15');
    
     const gracePeriodEndMinutes = convertToMinutes('16:45');
 
@@ -34,23 +39,13 @@ export function calculateWorkHours(startTime: string, endTime: string): number {
     }
 
     console.log (endTime + ' ||' + endMinutes +  ' ' + gracePeriodEndMinutes + ' = ' + earlyLeaveMinutes)
-    // const totalMinutes = endMinutes - startMinutes;
-    // const totalHours = totalMinutes / 60;
-    // console.log(  totalMinutes+' '+ totalHours)
-    // let totalDays = 0;
-    // if (totalHours >= 8) totalDays = 1;
-    // else if (totalHours >= 6) totalDays = 0.75;
-    // else if (totalHours >= 4) totalDays = 0.5;
-    // else if (totalHours >= 2) totalDays = 0.25;
-    // else if (totalHours === 1) totalDays = 0.1;
-    // else (totalHours < 1)
-    //  {
-    //     totalDays = 0;
-    // }
    
-    // return totalDays - ((lateMinutes + earlyLeaveMinutes)/480);
+    if(startTime === '08:00' && endTime === '12:00' || startTime === '13:00' && endTime === '17:00'){
+      return Number((1 - ((lateMinutes + earlyLeaveMinutes)/240)).toFixed(3)) > 0 ? Number((1 - ((lateMinutes + earlyLeaveMinutes)/240)).toFixed(3)):0
+    }
+
     return Number((1 - ((lateMinutes + earlyLeaveMinutes)/480)).toFixed(3)) > 0 ? Number((1 - ((lateMinutes + earlyLeaveMinutes)/480)).toFixed(3)):0
-    // return totalDays;
+    
 }
 
 function compareTimes(time1: string, time2: string): number {
@@ -71,8 +66,13 @@ function calculateMinutes(a:string,b:string) : number{
    }
 
 export default function UserAttendance(){
+  const [isCameraVisible, setIsCameraVisible] = useState(false);
+
+  const toggleCamera = () => {
+    setIsCameraVisible(!isCameraVisible);
+  };
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const [isExplain, setIsExplain] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [attendance,setAttendance] = useState<Attendance[]>([]);
@@ -349,6 +349,13 @@ export default function UserAttendance(){
               <FontAwesomeIcon icon={faRightFromBracket} style={{ marginRight: '5px' }} />
               Chấm công ra
             </button>
+            <div>
+      <button onClick={toggleCamera}>
+        {isCameraVisible ? "Ẩn Camera" : "Hiển thị Camera"}
+      </button>
+
+      {isCameraVisible && <CameraCapture />}
+    </div>
               </>
             )}
            
