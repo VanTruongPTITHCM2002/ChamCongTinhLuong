@@ -1,0 +1,394 @@
+.article {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+    font-size: 12px;
+}
+
+.article h2{
+  text-align: center;
+}
+
+.article_option_select{
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.article_option input{
+  color:#000;
+  padding: 0 5px;
+  height: 30px;
+  width: 250px;
+  background-color: #eee;
+  margin: 5px 0 5px 5px;
+  border-radius: 2px;
+  outline: none;
+}
+
+.article_option_select button{
+  width: 50px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.article table {
+    white-space: nowrap;
+    border-collapse: collapse;
+  
+    text-align: center;
+    width: 100%;
+   
+  /* Để bảng co giãn theo nội dung */
+ }
+
+
+ .article table th, 
+ .article table td {
+     border: 1px solid #000; /* Đường viền cho các ô */
+     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+     
+ }
+
+ .article table th{
+   background-color: #95A5A6;
+ }
+
+.article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+    background-color: #eee;     }
+ 
+.article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+background-color:#fff;      }
+
+.article_option{
+    display: flex;
+    justify-content: space-between;
+    background-color: #dae1f3;
+}
+ 
+ .article_option select{
+    margin:10px;
+    height: 30px;
+ }
+
+ .article_option_button{
+    display: flex;
+    justify-content: center;
+ }
+
+ .article_option_button button{
+    margin: 10px;
+    height: 30px;
+ }
+
+ .btn_search{
+    height: 30px;
+ }
+
+ .btn_update{
+    margin: 10px;
+    height: 30px;
+    width: 50px;
+    background-color: #007bff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+ }
+
+ .btn_update:hover{
+  background-color: #0056b3;
+ }
+
+ .btn_cancel{
+  margin: 10px;
+    height: 30px;
+    width: 50px;
+    background-color: crimson;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+ }
+
+ .btn_cancel:hover{
+  background-color: rgb(180, 40, 68);
+ }
+ 
+.btnUpdate{
+  background-color: #007bff; /* Màu xanh lam cho nút chi tiết */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.tableUpdate input, .tableUpdate select{
+  background-color: #eee;
+  color: #000;
+  border-radius: 4px;
+}
+
+.buttonWordRecord{
+  background-color: green; /* Màu xanh lam cho nút chi tiết */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 5px;
+  border-radius: 3px;
+  width: 50px;
+  transition: background-color 0.3s;
+}
+
+.buttonWordRecord:hover{
+  background-color: rgb(8, 107, 8);
+}
+
+.buttonBackWordRecord{
+  background-color: red; /* Màu xanh lam cho nút chi tiết */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 5px;
+  border-radius: 3px;
+  width: 50px;
+  transition: background-color 0.3s;
+}
+
+.buttonBackWordRecord:hover{
+  background-color: rgb(133, 13, 13);
+}
+
+.article_option_button_workrecord button{
+  height: 30px;
+  width: 50px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #F4A460;
+}
+
+.article_option_button_workrecord button:hover{
+  background-color:#95A5A6;
+}
+
+
+
+.article_option_button_explain button{
+  height: 30px;
+  width: 50px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #655069;
+}
+
+.article_option_button_explain button:hover{
+  background-color: darkgoldenrod;
+}
+
+ .form_add_work_record{
+   display: grid;
+   gap: 20px;
+ }
+
+.form_add_work_record input{
+    background-color: #f1f1f1;  
+    color: #000;
+    width: 100%;  
+    padding: 16px 16px;  
+    border: none;  
+    border-radius: 4px; 
+}
+
+.form_add_work_record select { 
+    width: 100%;  
+    padding: 16px 16px;  
+    border: none;  
+    border-radius: 4px; 
+     background-color: #f1f1f1;
+    color: #000;
+   }
+
+ .form_add_work_record_button{
+   display: flex;
+   justify-content: center;
+ }
+
+ .form_add_work_record_button button{
+   margin:10px;
+   height: 30px;
+   width: 50px;
+ }
+
+ .btnAdd{
+   background-color: #007bff;
+   color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 50px;
+   transition: background-color 0.3s;
+ }
+
+ .btnAdd:hover{
+  background-color: #0056b3;
+ }
+
+ .btnCancel{
+  background-color: crimson;
+  color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 50px;
+   transition: background-color 0.3s;
+ }
+
+ .btnDetails{
+  background-color:#def460;
+  color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 40px;
+   transition: background-color 0.3s;
+ }
+ .btnAddAttendance{
+   width: 50px;
+    height: 30px;
+    margin:5px 5px 0 0;
+    cursor: pointer;
+    background-color: rgb(27, 237, 27);
+    border: none;
+   transition: background-color 0.3s;
+ }
+ .btnUpdateExplain{
+  background-color: #007bff;
+   color: white;
+   border: none;
+   padding: 5px 10px;
+   cursor: pointer;
+   margin-left: 5px;
+   border-radius: 3px;
+   width: 40px;
+   transition: background-color 0.3s;
+ }
+
+ .btnUpdateExplain:hover{
+  background-color: #0056b3;
+ }
+ 
+ .btnDetails:hover{
+  background-color:#ea9143;
+ }
+
+.btnCancel:hover{
+  background-color: rgb(190, 29, 61);
+}
+
+.btnAddAttendance:hover{
+  background-color:rgb(34, 128, 34);
+}
+
+ .button_explain button{
+   margin: 10px;
+   height: 30px;
+   width: 50px;
+ }
+
+ .pagination {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
+}
+
+.pagination .active {
+  background-color: #0056b3;
+  font-weight: bold;
+}
+
+.btnTableExplain select{
+  background-color: #eee;
+  color:#000;
+}
+
+.statusActive {
+  color: rgb(30, 194, 30);
+  font-weight: bold;
+}
+
+.statusInactive {
+  color: red;
+  font-weight: bold;
+}
+
+.statusUnActive{
+  color: grey;
+  font-weight: bold;
+}
+
+/* CSS cho SweetAlert2 */
+.custom-swal-popup {
+  width: 500px; /* Chiều rộng của popup */
+}
+
+.custom-swal-title {
+  font-size: 1.5rem; /* Kích thước tiêu đề */
+}
+
+.custom-swal-html {
+  padding: 20px; /* Khoảng cách bên trong */
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.formGroup label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.swalInput {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: #eee;
+  color: #000;
+}
+

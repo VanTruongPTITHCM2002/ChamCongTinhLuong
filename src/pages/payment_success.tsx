@@ -1,10 +1,13 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 
-const PaymentSuccess: React.FC = () => {
+
+const PaymentSuccess: React.FC = async () => {
   const router = useRouter();
 
+
   const handleBackToPayroll = () => {
+    
     router.push('/admin/payroll');
   };
 

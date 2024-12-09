@@ -55,9 +55,8 @@ const WorkSchedule: React.FC<{ employee: Employee[], workschedule:WorkSchedule[]
     const [showModal, setShowModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState<string>('');
     const [idEmployee, setIdEmployee] = useState<IFEmployee[]>([]);
-    const [timeidemployee, setTimeIdemployee] = useState<IFEmployee[]>([]);
+   
     const [workEmoloyee, setWorkEmployee] = useState<newIFEMployee[]>([]);
-    const [selectedEmployee, setSelectedEmployee] = useState<string>('');
     const [employeeDetails, setEmployeeDetails] = useState<IFEmployee | null>(null);
 
 
@@ -246,13 +245,7 @@ const WorkSchedule: React.FC<{ employee: Employee[], workschedule:WorkSchedule[]
         if (dateRef.current) dateRef.current.value = '';
         event.preventDefault();
     }
-    const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
 
-        const selectedId = event.target.value;
-        setSelectedEmployee(selectedId);
-        fetchEmployeeDetails(selectedId);
-
-    };
     const fetchEmployeeDetails = async (id: string) => {
         try {
             const response = await axios.get<IFEmployee>(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule/${id}`, {
@@ -275,7 +268,7 @@ const WorkSchedule: React.FC<{ employee: Employee[], workschedule:WorkSchedule[]
     // Thêm lịch làm việc
     const handleAddWorkScheduleDate = async (event: FormEvent) => {
         event.preventDefault();
-
+        const offDay = ["30/04","01/05","02/09"];
         const formElement = document.getElementById('form-add-work-date') as HTMLFormElement;
         if (!formElement) {
             console.error('Form element not found');
@@ -315,8 +308,16 @@ const WorkSchedule: React.FC<{ employee: Employee[], workschedule:WorkSchedule[]
             errorSwal("Thất bại", "Không thể tạo lịch làm việc ngày trong quá khứ");
             return;
         }
-
-
+  
+        
+        if (offDay.includes((workdDate.getDate() < 10 ? "0" + workdDate.getDate() : workdDate.getDate()) + "/" 
+        + ((workdDate.getMonth() + 1) < 10 ? "0" + (workdDate.getMonth() + 1) : (workdDate.getMonth() + 1))))
+        {
+            
+            errorSwal('Thất bại',"Không thể chọn vì đây là nghỉ lễ");
+            return;
+        }
+       
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workschedule`, workschedule, {
                 headers: {
@@ -447,17 +448,20 @@ const WorkSchedule: React.FC<{ employee: Employee[], workschedule:WorkSchedule[]
     ,
                 })
                 if (response.data.status === 200) {
+                   
                     successSwal('Thành công', response.data.message);
                     // setWorkEmployee(prev => {
                     //     // Loại bỏ mục với idemployee và workdate tương ứng
                     //     return prev.filter(emp => !(emp.idEmployee === idemployee && emp.workdate === date));
                     // });
-
-                    return;
+                     window.location.reload();
+                  
                 }
+               
             } catch (error) {
 
             }
+           
         }
 
     };

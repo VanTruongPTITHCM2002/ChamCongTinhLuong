@@ -1,0 +1,119 @@
+.navbar {
+    position: absolute;
+    /* Sử dụng position là absolute */
+    top: 0;
+    /* Đặt navbar ở đầu trang */
+    left: 0;
+    /* Đặt navbar từ bên trái */
+    width: 200px;
+    height: 100vh;
+    background-color: #f8eeee;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    border-radius: 4px;
+    box-shadow: 10px 0 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.navbar::-webkit-scrollbar{
+    display: none;
+}
+
+/* #00405d */
+.navbar ul {
+    list-style: none;
+    width: 200px;
+}
+
+.navbar .listOptionMenu {
+    padding: 15px 20px;
+    display: block;
+    width: 95%;
+    font-size: 11px;
+    border-bottom: 1px dashed #fff;
+    margin: 0 5px;
+}
+
+.navbar li a {
+    text-decoration: none;
+    color: rgb(8, 8, 8);
+    display: block;
+    box-sizing: border-box;
+}
+
+.navbar_image {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 10px 0;
+}
+
+.navbar .listOptionMenu:hover {
+    border-radius: 5px;
+}
+
+
+
+.active {
+    background-color: #e0e0e0;
+    /* Màu nền khi được chọn */
+    border-radius: 5px;
+}
+
+
+
+li.active a {
+    color: #0056b3
+        /* Màu chữ khi active */
+}
+
+.subMenu {
+    position: relative;
+    overflow: hidden;
+
+}
+
+.subMenu .subDrop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.arrowList::before {
+    content: "";
+    display: block;
+    position: absolute;
+    background-color: #e0e0e0;
+    top: 100%;
+    width: 100%;
+    height: 5px;
+    /* Mô phỏng mũi tên */
+    left: 0;
+}
+
+.subMenuItem {
+    display: none;
+    /* Ẩn menu con ban đầu */
+    margin-left: -22px;
+    margin-top: 15px;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+    padding: 0 5px;    
+}
+
+.subMenuItem li {
+    padding: 10px 10px;
+    display: block;
+    width: 95%;
+    font-size: 11px;
+    margin: 0 5px;
+}
+
+.subMenuItem.open {
+    display: block;
+    /* Hiển thị khi có lớp .open */
+    opacity: 1;
+    max-height: 1000px;
+    /* Tạo độ mở rộng khi menu mở */
+}
+

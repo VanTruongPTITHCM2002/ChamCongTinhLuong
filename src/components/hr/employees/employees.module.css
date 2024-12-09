@@ -1,0 +1,306 @@
+.article {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+    
+}
+
+.article table {
+    white-space: nowrap;
+     border-collapse: collapse;
+     height: 100px;
+     text-align: center;
+     overflow-x: scroll;
+     font-size:12px;
+     width: 100%;
+  /* Để bảng co giãn theo nội dung */
+ }
+ 
+ .article table th, 
+ .article table td {
+     border: 1px solid #000; /* Đường viền cho các ô */
+     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+     
+ }
+ 
+ .article table th{
+     background-color: #61eaef;
+   }
+ 
+ .article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+     background-color: #eff1e4;     }
+  
+ .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+ background-color:#c9c5e1;      }
+ 
+ .article table .btn{
+    display: flex;
+    justify-content: center;
+}
+
+.article table a{
+    cursor: pointer;
+}
+ 
+.form_add_emp{
+    font-size: 12px;
+}
+
+
+.form_add_emp h2{
+    text-align: center;
+    color: #20B2AA;
+    
+}
+
+.form_add_emp input{
+    background-color: #fff;
+    color:#000;
+    border:1px solid #000;
+    padding:10px;
+
+}
+
+
+.form_group{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 10px 0 10px 0;
+}
+
+.form_group input[type="text"], .form_group input[type="email"]{
+    height: 25px;
+    border-radius:5px;
+}
+
+.form_group_button{
+    display: flex;
+    justify-content: center;
+   
+}
+
+.form_group_button button{
+    margin:20px;
+    width: 70px;
+    height: 25px;
+}
+
+.btn_submit{
+    background-color: blue;
+    border: none;
+    border-radius: 2px;
+    width: 50px;
+    height: 30px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.btn_submit:hover{
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
+.btn_cancel{
+    background-color: #FF4C4C;
+    border: none;
+    border-radius: 2px;
+    width: 50px;
+    height: 30px;
+   cursor: pointer;
+}
+
+.btn_cancel:hover{
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
+
+.btn_update{
+    background-color: #007bff; /* Màu xanh lam cho nút chi tiết */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.btn_update:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
+
+.btn_delete{
+    background-color: crimson; /* Màu xanh lam cho nút chi tiết */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.btn_delete:hover{
+    background-color: rgb(164, 23, 51); /* Màu xanh lam cho nút chi tiết */
+}
+
+
+.form_update{
+    font-size:12px;
+}
+
+.form_update h2{
+    text-align: center;
+    color: #20B2AA;
+}
+
+.form_update input{
+    background-color: #fff;
+    color:#000;
+    padding:10px;
+    border:1px solid #000;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pagination .active {
+    background-color: #0056b3;
+    font-weight: bold;
+  }
+
+  .employeeDetails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* .employeeDetails::-webkit-scrollbar{
+    display: none;
+} */
+
+.formGroup, .formGroupPair {
+    flex: 1 1 calc(50% - 20px); /* Đặt hai thẻ div trên một hàng, trừ đi khoảng cách giữa chúng */
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.formGroup label, .formGroupPair label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.formGroup input, .formGroup select{
+    background-color: #fff;
+    color: #000;
+    padding: 5px;
+    border: 1px solid grey;
+    outline:none;
+}
+
+.formGroup h2{
+    text-align: center;
+}
+
+.input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff; /* White background for input fields */
+    color: #000; /* Ensure text is readable on white background */
+}
+
+.btn_detail {
+    background-color: #FFC107;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.btn_detail:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
+
+
+.formGroupButton {
+    display: flex;
+    justify-content: center; /* Căn giữa các nút */
+    width: 100%;
+    margin-top: 20px;
+}
+
+.centeredHeading {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333; /* Màu chữ */
+}
+
+.statusActive {
+    color: rgb(30, 194, 30);
+    font-weight: bold;
+  }
+  
+  .statusInactive {
+    color: red;
+    font-weight: bold;
+  }
+
+  .error_message {
+    color: red;
+    font-size: 0.875rem;
+}
+
+.groupOption{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #dae1f3;
+ }
+
+.groupOption input{
+    color:#000;
+    padding: 0 5px;
+    height: 30px;
+    width: 250px;
+    background-color: #eee;
+    margin: 5px 0 5px 5px;
+    border-radius: 2px;
+}
+
+.groupOption .btnAddRole{
+    width: 50px;
+    height: 30px;
+    margin-right: 5px;
+    cursor: pointer;
+    background-color: rgb(27, 237, 27);
+    border: none;
+}
+
+.btnAddRole:hover{
+    background-color: rgb(7, 101, 7);
+}

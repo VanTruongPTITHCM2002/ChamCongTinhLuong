@@ -2,12 +2,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classes from './attendance.module.css'
 import { faCheck, faDeleteLeft, faPlus, faRightFromBracket, faRightToBracket, faSquareArrowUpRight, faTable, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { errorAlert, errorSwal, successSwal } from '@/custom/sweetalert';
 import Swal from 'sweetalert2';
 import CameraCapture from '@/components/cameraCapture/CameraCapture';
 import Cookies from 'js-cookie';
+import FaceDetection from '@/components/cameraCapture/FaceRegister';
+import FaceRegister from '@/components/cameraCapture/FaceRegister';
+import FaceRecognition from '@/components/cameraCapture/FaceRecognition';
+import * as faceapi from "face-api.js";
 
  function convertToMinutes(time: string): number {
     const [hours, minutes] = time.split(':').map(Number);
@@ -71,6 +75,8 @@ export default function UserAttendance(){
   const toggleCamera = () => {
     setIsCameraVisible(!isCameraVisible);
   };
+
+
     const username = localStorage.getItem('username');
     const token = Cookies.get('token');
     const [isExplain, setIsExplain] = useState(false);
@@ -81,6 +87,15 @@ export default function UserAttendance(){
     const [error, setError] = useState<string | null>(null);
     const [selectedRowIndex, setSelectedRowIndex] = useState(null);
     const [isReasonTableVisible, setIsReasonTableVisible] = useState(false);
+
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const [modelsLoaded, setModelsLoaded] = useState(false);
+    const streamRef = useRef<MediaStream | null>(null); // Kiểu cho streamRef là MediaStream
+    const [isOut, setIsOut] = useState(false);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+    const employeeId = localStorage.getItem('username');
+
     const getAllAttendance = async()=>{
         try{
             const response  = await axios(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance/${username}`,
@@ -93,7 +108,7 @@ export default function UserAttendance(){
                 setAttendance(response.data.data.reverse());
             }
         }catch(error:any){
-            errorSwal("Thất bại",`${error.response.data.message}`);
+            //errorSwal("Thất bại",`${error.response.data.message}`);
         }
     }
 
@@ -108,19 +123,88 @@ export default function UserAttendance(){
             setAttendance_Explain(response.data.data.reverse());
         }
     }catch(error:any){
-        errorSwal("Thất bại",`${error.response.data.message}`);
+        //errorSwal("Thất bại",`${error.response.data.message}`);
     }
     }
 
     useEffect(()=>{
         getAllAttendance();
         getAttendanceExplain();
+        const loadModels = async () => {
+          try {
+            const MODEL_URL = "/models"; // Đảm bảo đường dẫn chính xác
+            await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+            await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+            await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+            await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+           
+            console.log("Mô hình đã được tải thành công.");
+          } catch (error) {
+            console.error("Lỗi khi tải mô hình:", error);
+          }
+        };
+      loadModels();
     },[])
     
     const itemsPerPage = 5;
     const totalPages = Math.ceil(attendance.length / itemsPerPage);
   
-    const handleCheckIn = async () => {
+    const handleCheckIn = () => {
+ 
+      setModelsLoaded(true);
+      // const today = new Date().toISOString().slice(0, 10);
+      // const hasCheckedIn = attendance.some((item) => item.idemployee === `${username}` && item.dateattendance === today && item.checkintime);
+   
+      // if (hasCheckedIn) {
+      //   errorAlert('Bạn đã chấm công vào trong ngày hôm nay rồi.');
+        
+      //   return;
+      // }
+
+
+  
+      // const newEntry: Attendance = {
+      //   idemployee: `${username}` , 
+      //   dateattendance: today,
+      //   // startime: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+      //   checkintime:new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+      //   // checkintime:"10:30",
+      //   checkouttime: '',
+      //   status: compareTimes(new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }), "08:15") > 0 ? 'Đi trễ': 'Đi làm đầy đủ',
+      //   numberwork: 0,
+      //   // workhours: 0
+      // };
+      // if(compareTimes(newEntry.checkintime,"17:15") >= 0){
+      //       errorSwal('Thất bại','Ngoài thời gian chấm công');
+      //       return;
+      //   }
+      //   try{
+      //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance`,newEntry,{
+      //       headers: {
+      //           Authorization: `Bearer ${token}`  
+      //         }
+      //   });
+      //     if(response.status === 201){
+              
+      //       setCurrentCheckIn(newEntry);
+      //       setAttendance([newEntry,...attendance]);
+      //       setError(null);
+      //           successSwal('Thành công',`${response.data.message}`);
+      //     }
+      //     if(response.data.status === 404){
+      //       errorSwal('Thất bại',response.data.message);
+      //       return;
+      //     }
+      // }catch(error:any){
+      //     errorSwal('Thất bại',`${error.response.data.message}`);
+      // }
+      // setCurrentCheckIn(newEntry);
+      // setAttendance([newEntry,...attendance]);
+        
+     
+    };
+
+    const checkInWork = async (token:string)=>{
       const today = new Date().toISOString().slice(0, 10);
       const hasCheckedIn = attendance.some((item) => item.idemployee === `${username}` && item.dateattendance === today && item.checkintime);
    
@@ -167,14 +251,14 @@ export default function UserAttendance(){
       }catch(error:any){
           errorSwal('Thất bại',`${error.response.data.message}`);
       }
-      // setCurrentCheckIn(newEntry);
-      // setAttendance([newEntry,...attendance]);
-        
-     
-    };
+    }
   
     const handleCheckOut = async () => {
-    
+      setModelsLoaded(true);
+      setIsOut(true);
+    };
+
+    const checkOutWork = async (token:string)=>{
       setCurrentCheckIn(attendance.find(item => item.checkouttime === '') ?? null);
       if (currentCheckIn) {
         const today = new Date().toISOString().slice(0, 10);
@@ -242,13 +326,10 @@ export default function UserAttendance(){
         }catch(error:any){
             errorSwal('Thất bại',`${error.response.data.message}`);
         }
-  
-        // const updatedData = attendance.map((item) =>
-        //               item.idemployee === currentCheckIn.idemployee && item.dateattendance === currentCheckIn.dateattendance ? updatedEntry : item
-        //             );
-        //             setAttendance(updatedData);
+      setIsOut(false);
+
       }
-    };
+    }
   
     const showExplain = () => {
       setIsExplain(true);
@@ -335,26 +416,154 @@ export default function UserAttendance(){
       }
    
     };
+
+    
+  const startVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        console.log("Camera started");
+        streamRef.current = stream;
+      }
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+    }
+  };
+
+  const stopVideo = () => {
+    if (streamRef.current) {
+      const tracks = streamRef.current.getTracks();
+      tracks.forEach(track => track.stop()); // Dừng camera
+    }
+
+    setModelsLoaded(false);
+    if (videoRef.current) {
+      videoRef.current.srcObject = null; // Gỡ stream khỏi video element
+    } // Đóng modal khi tắt camera
+  };
+
+
+  const identifyUser = async (descriptor: Float32Array) => {
+    try {
+      const response = await axios.post("http://localhost:8091/api/v1/face/recognize", {
+        idEmployee:employeeId,
+        faceDescriptor: Array.from(descriptor),
+      });
+      if(isOut){
+        await checkOutWork(token!);
+      }else{
+        await checkInWork?.(token!);
+      }
+
+   //  successSwal('Thành công',response.data.data);
+
+    } catch (error:any) {
+      errorSwal("Lỗi", error.response.data.message);
+    }
+  };
+
+  const detectFaceLoop = async () => {
+    if (!videoRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+
+    // Tạo canvas phù hợp với kích thước của video
+    const displaySize = { width: video.width, height: video.height };
+
+    faceapi.matchDimensions(canvas!, displaySize);
+    const detections = await faceapi
+      .detectSingleFace(video)
+      .withFaceLandmarks()
+      .withFaceDescriptor();
+      canvas?.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height); // Xóa canvas trước khi vẽ lại
+      const resizedDetections = faceapi.resizeResults(detections, displaySize);
+      faceapi.draw.drawDetections(canvas!, resizedDetections!);
+      faceapi.draw.drawFaceLandmarks(canvas!, resizedDetections!);
+    if (detections) {
+      const descriptor = detections.descriptor;
+      if (descriptor) {
+        console.log("Khuôn mặt đã được nhận diện!");
+        await identifyUser(descriptor);
+        return; // Gửi descriptor để nhận diện
+      } else {
+        console.log("Không phát hiện khuôn mặt.");
+      }
+    }
+
+    requestAnimationFrame(detectFaceLoop); // Tiếp tục vòng lặp nhận diện
+  };
+
+  const handleStartRecognition = async () => {
+    if (!employeeId) {
+      alert("Vui lòng nhập mã nhân viên!");
+      return;
+    }
+    detectFaceLoop(); // Bắt đầu nhận diện khuôn mặt
+  };
     return (
       <div className={classes.main_container}>
         <div className={classes.main_container_add_attendance}>
           <div className={classes.add_attendance}>
             {!isReasonTableVisible && (
               <>
-               <button className={classes.check_in_button} onClick={handleCheckIn}>
+               {/* <button className={classes.check_in_button} onClick={handleCheckIn}>
               <FontAwesomeIcon icon={faRightToBracket} style={{ marginRight: '5px' }} />
               Chấm công vào
             </button>
             <button className={classes.check_out_button} onClick={handleCheckOut}>
               <FontAwesomeIcon icon={faRightFromBracket} style={{ marginRight: '5px' }} />
               Chấm công ra
-            </button>
+            </button> */}
             <div>
-      <button onClick={toggleCamera}>
-        {isCameraVisible ? "Ẩn Camera" : "Hiển thị Camera"}
+      <button className={classes.faceRegisterButton} onClick={toggleCamera}>
+        {isCameraVisible ? "Tắt đăng ký" : "Đăng ký khuôn mặt"}
       </button>
 
-      {isCameraVisible && <CameraCapture />}
+      {isCameraVisible && <FaceRegister/>}
+    </div>
+
+    <div>
+
+      {/* <button onClick={openCamera}>
+        {isCamera ? "Tắt Camera" : "Mở Camera"}
+      </button> */}
+
+                 
+
+                    <>
+                      {modelsLoaded && (
+                        <>
+                        <div className={classes.modalOverplay}>
+                      <div className={classes.modalContent}>
+                      
+                           <div style={{ position: "relative", zIndex: 1000 }}>
+                           <video ref={videoRef} autoPlay muted width={700} height={500} />   
+                              <canvas
+                                ref={canvasRef}
+                                style={{
+                                  position: "absolute",
+                                  top: 0,
+                                  left: 0,
+                                  border: "1px solid red", // Đường viền giúp dễ kiểm tra canvas
+                                }}
+                              />
+                           </div>
+                        
+
+                          <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                            <button className={classes.startCamera} onClick={startVideo}>Bắt đầu nhận diện khuôn mặt</button>
+                          <button className={classes.faceRecoginiCamera} onClick={handleStartRecognition}>Nhận diện khuôn mặt</button>
+                          <button className={classes.closeButton} onClick={stopVideo}>Tắt Camera</button>
+                          </div>
+                          
+                          </div>
+                          </div>
+                        </>
+                      )}
+                     </>
+                  
     </div>
               </>
             )}

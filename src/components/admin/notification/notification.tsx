@@ -38,6 +38,7 @@ const AdminNotificationPage:React.FC<{notification:Notification[],employee:Emplo
     const openModalDelete = (noti:Notification)=>{
             setModalDelete(true);
             setSelectNotification(noti);
+        
     }
 
     const closeModalDelete = ()=>{
@@ -94,7 +95,7 @@ const AdminNotificationPage:React.FC<{notification:Notification[],employee:Emplo
     const delNotification = async (event:FormEvent)=>{
         event.preventDefault();
         const response = await deleteNotificationServer(token!,selectNotification!);
-        if(response.status === 201){
+        if(response.status === 200){
             successSwal('Thành công',response.message);
             setModalDelete(false);
             router.refresh();

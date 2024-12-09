@@ -368,7 +368,7 @@ export default function AdminRewardPunishPage(){
                             <div>
                             <label htmlFor='date'>Ngày thực hiện:</label>
                                 <input type='date' id='date' name='date' 
-                                value={formattedDate}
+                               defaultValue={formattedDate} 
                                 />
                             </div>
                           

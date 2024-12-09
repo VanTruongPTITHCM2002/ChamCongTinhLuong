@@ -5,6 +5,7 @@ import axios from 'axios';
 import { errorSwal } from '@/custom/sweetalert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faEye, faSearch } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie'
 interface ListSalary{
     idemployee:string;
     name:string;
@@ -33,7 +34,7 @@ interface ListSalary{
  }
 export default function UserSalary (){
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const [listSalary, setListSalary] = useState<ListSalary[]>([]);
     const [filterSalary, setFilterSalary] = useState<ListSalary[]>([]);
     const [isShowDetail,setIsShowDetail] = useState(false);

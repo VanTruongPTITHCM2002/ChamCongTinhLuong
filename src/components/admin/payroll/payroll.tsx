@@ -20,7 +20,8 @@ interface IFEmployee{
 
 
 interface SalaryRequest{
-    idEmployee:string;
+    idEmployee?:string;
+    listEmployee?:string[];
     month: number;
     year:number;
     datecreated:string;
@@ -132,8 +133,8 @@ const AdminPayrollPage = () =>{
         }
     
         const form = new FormData(formElement);
-        const salary:SalaryRequest ={
-            idEmployee:form.get('manv') as string,
+        const payrollRes:SalaryRequest ={
+            listEmployee:idEmployee.map(employee => employee.idemployee),
             month: Number(form.get('month') as string),
             year: Number(form.get('year') as string),
             datecreated: form.get('date') as string,
@@ -144,7 +145,7 @@ const AdminPayrollPage = () =>{
             return;
       }
         const date = new Date();
-        if(salary.year > date.getFullYear()){
+        if(payrollRes.year > date.getFullYear()){
             Swal.fire({
                 title: "Thất bại",
                 text: "Vui lòng chọn năm hiện tại",
@@ -153,7 +154,7 @@ const AdminPayrollPage = () =>{
             return;
         }
       
-        if(salary.month !== (date.getMonth()+1)){
+        if(payrollRes.month !== (date.getMonth()+1)){
             Swal.fire({
                 title: "Thất bại",
                 text: "Vui lòng chọn tháng hiện tại",
@@ -161,25 +162,18 @@ const AdminPayrollPage = () =>{
               });
             return;
         }
-    
+        console.log(idEmployee.map(employee => employee.idemployee))
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`, salary,{
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/many`,
+             payrollRes
+                ,{
                 headers: {
                     Authorization: `Bearer ${token}`  
                   }
             });
-            console.log('Response:', response.data.message);
-            if(response.status === 400){
-                Swal.fire(
-                    {
-                        title:"Thất bại",
-                        text:`${response.data.message}`,
-                        icon:"error"
-                    }
-                )
-             
-               
-            }else if(response.status ===201){
+          
+  
+     
             Swal.fire(
                 {
                     title:"Thành công",
@@ -189,18 +183,11 @@ const AdminPayrollPage = () =>{
             )
 
 
-            setShowPayroll([response.data.data,...showPayroll]);
-           
+          //  setShowPayroll([response.data.data,...showPayroll]);
+           window.location.reload();
 
-        }else{
-            Swal.fire(
-                {
-                    title:"Thất bại",
-                    text:`${response.data.message}`,
-                    icon:"error"
-                }
-            )
-        }
+      
+        
         
         } catch (error:any) {
             if (error.response) {
@@ -559,7 +546,7 @@ const AdminPayrollPage = () =>{
                         <h2>Tính lương nhân viên</h2>
                         </div>
                       
-                        <div>
+                        {/* <div>
                             <label htmlFor="manv">Mã nhân viên:</label>
                         <select id='manv' name='manv'  value={selectedIdEmployee}
                 onChange={handleSelectChange} required>
@@ -569,7 +556,7 @@ const AdminPayrollPage = () =>{
                                                 </option>
                                             ))}
                                     </select>
-                        </div>
+                        </div> */}
 
                         <div>
                             <label htmlFor='month'>Tháng:</label>

@@ -6,9 +6,10 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import { errorSwal } from '@/custom/sweetalert';
+import Cookies from 'js-cookie'
 export default function UserChangePassword(){
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const router = useRouter();
    
     const [password,setPassword]= useState('');

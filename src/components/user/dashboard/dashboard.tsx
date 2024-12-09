@@ -5,7 +5,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { errorSwal } from '@/custom/sweetalert';
-
+import Cookies from 'js-cookie'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -75,7 +75,7 @@ const options: ChartOptions<'line'> = {
 export default function UserDashboard (){
   
   const username = localStorage.getItem('username');
-  const token = localStorage.getItem('token');
+  const token = Cookies.get('token');
   const currentYear = new Date().getFullYear();
   const [totalMonth,setTotalMonth] = useState<number[]>([]);
   // http://localhost:8085/api/v1/payroll/getMonthlyEmployee

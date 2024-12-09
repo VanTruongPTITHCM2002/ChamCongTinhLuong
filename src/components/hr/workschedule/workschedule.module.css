@@ -1,0 +1,336 @@
+.article {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+}
+
+.article h2{
+   text-align: center;
+}
+
+.article span{
+    padding:10px;
+}
+
+.article table {
+    white-space: nowrap;
+    border-collapse: collapse;
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+  /* Để bảng co giãn theo nội dung */
+ }
+
+ .btn_prev {
+   background-color: #f39c12; /* Màu cam sáng */
+   color: #fff; /* Trắng */
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+   border-radius: 5px;
+
+}
+
+.btn_prev:hover{
+   background-color: #c68418;
+}
+
+.btn_next {
+   background-color: #3498db; /* Màu xanh dương sáng */
+   color: #fff; /* Trắng */
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+   border-radius: 5px;
+}
+
+.btn_next:hover{
+   background-color: #217cb9; /* Màu xanh dương sáng */
+}
+
+.article_button{
+   margin-bottom: 10px;
+}
+
+.btnAddWorkSchedule{
+   background-color: green;
+   border: none;
+   border-radius: 2px;
+   height: 30px;
+   padding: 2px;
+   cursor: pointer;
+}
+ 
+.btnAddWorkSchedule:hover{
+   background-color: #3498;
+}
+
+ .article table th, 
+ .article table td {
+     border: 1px solid #000; /* Đường viền cho các ô */
+     padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+     
+ }
+ .btnCancel{
+   background-color: crimson;
+   color: white;
+   margin:10px;
+   width: 50px;
+   height: 30px;
+   transition-duration: 0.4s;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+.btnUnDelete{
+   background-color: crimson;
+   width: 30px;
+   height: 30px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   margin: 10px;
+}
+
+.btnUnDelete:hover{
+   background-color: rgb(184, 35, 64);
+}
+ 
+.btnCancel:hover{
+   background-color: rgb(184, 35, 64);
+}
+ 
+ .article table th{
+     background-color: #95A5A6;
+   }
+
+.btnDetail{
+   width: 30px;
+   height: 30px;
+   background-color: rgb(192, 192, 30);
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+
+}
+
+.btnDetail:hover{
+   background-color: #95A5A6;
+}
+ 
+ .article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+     background-color: #eee;     }
+  
+ .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+ background-color:#fff;      }
+ .article .table_show_emp{
+    margin-top: 50px;
+ }
+
+ .article .btn_add_work_schedule{
+    float:right;
+    width: 120px;
+    background:linear-gradient(-45deg,blue,red);
+    height: 30px;
+ }
+
+ .btnFormAdd{
+    background:linear-gradient(-45deg,blue,red);
+    height: 30px;
+    width: 60px;
+ }
+
+ .form_show{
+  margin-top:10px;
+
+ }
+
+
+
+
+ .form_add_work_schedule{
+   width: 100%;
+   font-size:12px;
+   border-radius: 5px;
+   background-color: #f0f0f0; /* Màu xám nhạt cho form */
+      padding: 1rem; /* Thêm padding nếu cần */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ để nổi bật form */
+
+ }
+
+ .form_group{
+   margin-bottom:20px;
+ }
+
+.form_add_work_schedule input[type="text"]{
+   width: calc(100% - 20px); /* Đảm bảo input rộng toàn bộ form trừ padding */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #ffffff; /* Màu nền cho ô input */
+      color:#000;
+}
+
+ .form_time{
+   margin-bottom: 20px;
+   display: flex;
+ }
+
+
+
+
+
+.btnSave{
+   margin:10px;
+   width: 50px;
+   height: 30px;
+   transition-duration: 0.4s;
+   background-color: #3498db;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+.btnSave:hover{
+   background-color: #3498;
+}
+
+
+
+.form_add_container{
+   margin-top: 5px;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   font-size: 12px;
+   border: 2px solid #00796b; /* Màu sắc và độ dày của border */
+   padding: 20px; /* Khoảng cách giữa nội dung và border */
+   border-radius: 8px; /* Góc bo tròn cho border */
+   background-color: #f9f9f9; /* Màu nền cho div */
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng cho div */
+}
+
+
+
+.form_add_container h2{
+   margin-top:10px;
+   margin-bottom: 10px;
+}
+
+.form_add_container input{
+   background-color: #ccc;
+   color: #000;
+}
+
+.form_btn{
+   display: flex;
+   justify-content: center;
+}
+   
+
+/* CSS cho các chi tiết nhân viên */
+.employeeDetails {
+   display: grid;
+   grid-template-columns: 1fr 1fr; /* Hai cột có kích thước bằng nhau */
+   gap: 10px; /* Khoảng cách giữa các cột */
+   padding: 10px;
+}
+
+.formGroup {
+   display: flex;
+   flex-direction: column;
+}
+
+.formGroup label {
+   font-weight: bold;
+   margin-bottom: 5px;
+}
+
+.formGroup input, .formGroup select {
+   padding: 5px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-size: 14px;
+   background-color: #ccc;
+   color: #000;
+}
+
+.formGroup input[readonly], .formGroup select[readonly] {
+   background-color: #e9ecef; /* Màu nền cho trường đọc */
+}
+
+
+
+.calendar_header {
+   display: grid;
+   grid-template-columns: repeat(7, 1fr);
+   background-color: #f0f0f0;
+   padding: 10px;
+   text-align: center;
+   font-weight: bold;
+ }
+ .calendar_body {
+   display: grid;
+   grid-template-columns: repeat(7, 1fr);
+   gap: 1px;
+ }
+ .calendar_day {
+   background-color: #fff;
+   padding: 10px;
+   text-align: center;
+   border: 1px solid #ddd;
+   min-height: 80px;
+   position: relative;
+ }
+ .calendar_day.empty {
+   background-color: #f9f9f9;
+   border: none;
+ }
+ .calendar_event {
+   background-color: #007bff;
+   color: #fff;
+   padding: 2px 5px;
+   border-radius: 3px;
+   margin-top: 2px;
+   width: 100%;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   overflow: hidden;
+ }
+
+ /* #28a745 */
+ .btnCalendar{
+   background-color: #28a745;
+   color: white;
+   margin:10px;
+   width: 50px;
+   height: 30px;
+   transition-duration: 0.4s;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+.btnCalendar:hover{
+   background-color: #1e8d38;
+}
+
+.btnDisable{
+   background-color: rgb(178, 175, 175);
+   width: 30px;
+   height: 30px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   margin: 10px;
+}
+
+.tableEmpContractActive{
+   overflow-y: auto;
+}

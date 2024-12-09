@@ -55,18 +55,35 @@ const handleSubmit = async (e: React.FormEvent) => {
           router.push('/login');
           return;
         }
-          if(response.data.data.role === process.env.NEXT_PUBLIC_ROLE_A){
-         //   localStorage.setItem('token', response.data.data.token);
+
+        switch (response.data.data.role){
+          case "ADMIN":
             Cookies.set('token',response.data.data.token);
             localStorage.setItem('username', response.data.data.username);
             localStorage.setItem('roleDescription',response.data.data.roleDescription)
             router.push('/admin/dashboard');
-          }else{
-           // localStorage.setItem('token', response.data.data.token);
+            break;
+          case "USER":
             Cookies.set('token',response.data.data.token);
             localStorage.setItem('username', response.data.data.username);
             router.push(`/${response.data.data.username}/dashboard`);
-          }
+            break;
+          case "HR":
+            Cookies.set('token',response.data.data.token);
+            localStorage.setItem('username', response.data.data.username);
+            router.push(`/hr/dashboard`);
+            break;
+          case "MANAGER":
+            Cookies.set('token',response.data.data.token);
+            localStorage.setItem('username', response.data.data.username);
+            router.push(`/manager/dashboard`);
+            break;
+          default:
+            router.push("/login");
+            break;
+        }
+
+         
       }
    }catch(error:any){
        if(error.response === undefined){
@@ -132,7 +149,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             {error?.password && (
               <p  className={classes.errorInput}>{error.password}</p>
             )}
-              <div className={classes.forgotPassword}>Quên mật khẩu</div>
+              {/* <div className={classes.forgotPassword}>Quên mật khẩu</div> */}
               <button type="submit" 
           className={classes.buttonStyle}>Đăng nhập</button>
           </div>

@@ -4,7 +4,7 @@ import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 export interface Attendance{
     idemployee:string;
     dateattendance?:string;
-    checkintime:string;
+    checkintime?:string;
     checkouttime?:string;
     status?:string | number;
     attendanceStatusName?:string,

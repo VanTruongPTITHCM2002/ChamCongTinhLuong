@@ -41,6 +41,19 @@
     border-radius: 4px;
 }
 
+.faceRegisterButton{
+    background-color: navajowhite; /* Orange */
+    color: white;
+    border: none;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
 .check_in_button:hover {
     background-color: #0056b3; /* Darker Blue */
 }
@@ -144,4 +157,56 @@
   .statusUnActive{
     color: grey;
     font-weight: bold;
+  }
+
+  .modalOverplay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;  
+  }
+
+  .modalContent{
+    background: white;
+    padding: 50px;
+    border-radius: 10px;
+    width: 80%;   
+    max-width: 800px;  
+    overflow: hidden;
+  }
+
+  .closeButton{
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin:auto;
+  }
+
+  .startCamera{
+    padding: 10px 20px;
+    background-color: rgb(43, 43, 234);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin:auto;
+  }
+
+  .faceRecoginiCamera{
+    padding: 10px 20px;
+    background-color: greenyellow;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin:auto;
   }

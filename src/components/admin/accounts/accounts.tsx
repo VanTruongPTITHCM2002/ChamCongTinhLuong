@@ -168,25 +168,17 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
           });
        
     }
-    const currentData = accountData.slice(
+    const currentData =searchTerm === '' ?  accountData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
+      ):  accountData.filter(
+        (item) =>
+          item.username.includes(searchTerm) ||
+          item.status.includes(searchTerm)
+          || item.role.includes(searchTerm)
       );
 
-      const searchButton = ()=>{
-        if(searchTerm === ''){
-            setAccountData(accounts);
-           
-         }else{
-            const filterdata = accounts.filter(
-                (item) =>
-                  item.username.includes(searchTerm) ||
-                  item.status.includes(searchTerm)
-                  || item.role.includes(searchTerm)
-              );
-          setAccountData(filterdata);
-        }
-      }
+    
       const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
         const term = event.target.value;
         setSearchTerm(term);
@@ -207,9 +199,7 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
                               value={searchTerm}
                               onChange={handleSearch}
                         />
-                        <button onClick={searchButton}>
-                            <FontAwesomeIcon icon={faSearch} />
-                        </button>  
+                       
                 </>
             )
             }

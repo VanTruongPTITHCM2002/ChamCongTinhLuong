@@ -1,0 +1,207 @@
+.article {
+    color: #000;
+    background-color: #fff;
+    padding: 10px;
+   height: 85vh;
+   margin:10px 10px 0 10px;
+    overflow-x: auto; 
+    box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
+    
+}
+
+.article_button{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    background-color: #dae1f3;
+    padding: 5px 5px;
+}
+
+
+
+.article_button input{
+    margin-right: 5px;
+    width: 300px;
+    height: 30px;
+    background-color: #eee;
+    padding: 0 5px;
+    color: #000;
+    border-radius: 2px;
+    
+}
+
+
+
+.article_button button{
+    width: 50px;
+    height: 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    
+}
+
+.article_button button:hover{
+    background-color: #28952c;
+}
+
+.article table {
+    border-collapse: collapse;
+    height: 50px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+ /* Để bảng co giãn theo nội dung */
+}
+
+.article table th, 
+.article table td {
+    border: 1px solid #000; /* Đường viền cho các ô */
+    padding: 8px; /* Khoảng cách giữa nội dung và đường viền */
+    
+}
+
+.article table th{
+    background-color: #95A5A6;
+  }
+ 
+ .article table tr:nth-child(even) {            /* added all even rows a #eee color  */
+     background-color: #eee;     }
+  
+ .article table tr:nth-child(odd) {            /* added all odd rows a #fff color  */
+ background-color:#fff;      }
+
+ 
+.btnSave{
+    background-color:  #007BFF;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 35px;
+    height: 25px;
+}
+
+.btnSave:hover{
+    background-color:  #25609f;
+}
+
+.btnCancel{
+    background-color: crimson;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btnCancel:hover{
+    background-color: rgb(166, 23, 52);
+}
+
+ .button_update{
+    background-color:  #007BFF;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  
+ }
+
+ .button_update:hover{
+    background-color:  #25609f;
+ }
+ .button_update_delete button{
+    height: 25px;
+    width: 35px;
+ }
+
+ .button_delete{
+    background-color: #F44336;
+ }
+
+
+
+ .form_add_salary{
+    display: grid;
+    gap: 20px;
+  }
+
+.form_title{
+    text-align: center;
+}
+ 
+ .form_add_salary input{
+     background-color: #f1f1f1;  
+     color: #000;
+     width: 100%;  
+     height: 10px;
+     padding: 16px 16px;  
+     border: none;  
+     border-radius: 4px; 
+ }
+ 
+ .form_add_salary select { 
+     width: 100%;  
+     padding: 16px 16px;  
+     border: none;  
+     border-radius: 4px; 
+      background-color: #f1f1f1;
+      color:#000;
+    }
+ 
+  .form_add_salary_button{
+    display: flex;
+    justify-content: center;
+  }
+ 
+  .form_add_salary_button button{
+    margin:10px;
+    height: 30px;
+    width: 50px;
+  }
+
+  .timecontract{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .statusActive {
+    color: rgb(30, 194, 30);
+    font-weight: bold;
+  }
+  
+  .statusInactive {
+    color: red;
+    font-weight: bold;
+  }
+
+  .pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pagination .active {
+    background-color: #0056b3;
+    font-weight: bold;
+  }

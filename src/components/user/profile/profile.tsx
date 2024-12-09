@@ -4,21 +4,11 @@ import classes from './profile.module.css'
 import axios from 'axios';
 import { successSwal } from '@/custom/sweetalert';
 import { useRouter } from 'next/navigation';
-interface Employee {
-    idemployee: string;
-    firstname: string;
-    lastname: string;
-    gender: string;
-    birthdate: string;
-    cmnd: string;
-    email: string;
-    phonenumber: string;
-    address: string;
-    degree: number | string;
-    status: number | string;
-}
+import Cookies from 'js-cookie'
+import { Employee } from '@/pages/api/admin/apiEmployee';
+
 export default function UserProfile() {
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const [personal, setPersonal] = useState<Employee>();
     const [isShowUpdate, setIsShowUpdate] = useState(false);
     const username = localStorage.getItem('username');
@@ -61,19 +51,19 @@ export default function UserProfile() {
         }
         const form = new FormData(formElement);
         const employee: Employee = {
-            idemployee: form.get('idemployee') as string,
-            firstname: form.get('firstname') as string,
-            lastname: form.get('lastname') as string,
+            idEmployee: form.get('idemployee') as string,
+            firstName: form.get('firstname') as string,
+            lastName: form.get('lastname') as string,
             gender: form.get('gender') as string,
-            birthdate: form.get('birthdate') as string,
-            cmnd: form.get('cmnd') as string,
+            birthDate: form.get('birthdate') as string,
+            idCard: form.get('cmnd') as string,
             email: form.get('email') as string,
-            phonenumber: form.get('phonenumber') as string,
+            phoneNumber: form.get('phonenumber') as string,
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
         };
-        const id = employee.idemployee;
+        const id = employee.idEmployee;
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${id}`, employee
                 , {
@@ -107,15 +97,15 @@ export default function UserProfile() {
                     <div className={classes.formRow}>
                         <div className={classes.formGroup}>
                             <label htmlFor="employee-id">Mã nhân viên:</label>
-                            <input type="text" id="employee-id" name="idemployee" defaultValue={personal?.idemployee} readOnly />
+                            <input type="text" id="employee-id" name="idemployee" defaultValue={personal?.idEmployee} readOnly />
                         </div>
                         <div className={classes.formGroup}>
                             <label htmlFor="last-name">Họ:</label>
-                            <input type="text" id="last-name" name="firstname" defaultValue={personal?.firstname}  readOnly={!isShowUpdate}/>
+                            <input type="text" id="last-name" name="firstname" defaultValue={personal?.firstName}  readOnly={!isShowUpdate}/>
                         </div>
                         <div className={classes.formGroup}>
                             <label htmlFor="first-name">Tên:</label>
-                            <input type="text" id="first-name" name="lastname" defaultValue={personal?.lastname}  readOnly={!isShowUpdate}/>
+                            <input type="text" id="first-name" name="lastname" defaultValue={personal?.lastName}  readOnly={!isShowUpdate}/>
                         </div>
                     </div>
 
@@ -134,11 +124,11 @@ export default function UserProfile() {
                         </div>
                         <div className={classes.formGroup}>
                             <label htmlFor="dob">Ngày sinh:</label>
-                            <input type="date" id="dob" name="birthdate" defaultValue={personal?.birthdate} readOnly={!isShowUpdate}/>
+                            <input type="date" id="dob" name="birthdate" defaultValue={personal?.birthDate} readOnly={!isShowUpdate}/>
                         </div>
                         <div className={classes.formGroup}>
                             <label htmlFor="id-card">CMND:</label>
-                            <input type="text" id="id-card" name="cmnd" defaultValue={personal?.cmnd} readOnly={!isShowUpdate}/>
+                            <input type="text" id="id-card" name="cmnd" defaultValue={personal?.idCard} readOnly={!isShowUpdate}/>
                         </div>
                     </div>
 
@@ -149,7 +139,7 @@ export default function UserProfile() {
                         </div>
                         <div className={classes.formGroup}>
                             <label htmlFor="phone">Số điện thoại:</label>
-                            <input type="text" id="phone" name="phonenumber" defaultValue={personal?.phonenumber} readOnly={!isShowUpdate}/>
+                            <input type="text" id="phone" name="phonenumber" defaultValue={personal?.phoneNumber} readOnly={!isShowUpdate}/>
                         </div>
                         <div className={classes.formGroup}>
                             <label htmlFor="address">Địa chỉ:</label>
