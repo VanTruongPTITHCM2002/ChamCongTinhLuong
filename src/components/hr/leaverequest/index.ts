@@ -1,1 +1,1 @@
-export {default} from '../leaveRequest/leaveRequest'
+export {default} from './leaveRequest'
