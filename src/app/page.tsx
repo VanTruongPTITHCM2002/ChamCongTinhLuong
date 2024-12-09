@@ -15,7 +15,7 @@ function convertToMinutes(time: string): number {
   return hours * 60 + minutes;
 }
 
-export function calculateWorkHours(startTime: string, endTime: string): number {
+function calculateWorkHours(startTime: string, endTime: string): number {
   const startMinutes = convertToMinutes(startTime);
   const endMinutes = convertToMinutes(endTime);
  
