@@ -61,7 +61,8 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
         { value: 'Nghỉ bù', label: 'Nghỉ bù' },
         { value: 'Làm thêm giờ', label: 'Làm thêm giờ' },
         { value: 'Công tác', label: 'Công tác' },
-        {value:'Đi trễ về sớm',label: 'Đi trễ về sớm'}
+        {value:'Đi trễ về sớm',label: 'Đi trễ về sớm'},
+        {value:'Không đi làm',label:'Không đi làm'},
       ];
       const fetchPayroll = async () => {
         try {

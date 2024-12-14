@@ -60,7 +60,7 @@ export default function Navbar({ currentPath } : any){
                         </li>
                     </ul>
                 </li>
-                <li className={`${classes.listOptionMenu} ${currentPath === "/admin/employees" ? classes.active : ""}`}>
+                {/* <li className={`${classes.listOptionMenu} ${currentPath === "/admin/employees" ? classes.active : ""}`}>
                     <Link href="/admin/employees">Quản lý nhân viên</Link>
                 </li>
                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/workschedule" ? classes.active : ""}`}>
@@ -99,6 +99,28 @@ export default function Navbar({ currentPath } : any){
                 </li>
                 <li className={`${classes.listOptionMenu} ${currentPath === "/admin/notification" ? classes.active : ""}`}>
                     <Link href="/admin/notification">Quản lý thông báo</Link>
+                </li> */}
+                {/* <li className={`${classes.subMenu} ${classes.listOptionMenu}`} onClick={toggleMenuAttendance}>
+                    <a className={classes.subDrop}>
+                        <span>Báo cáo thống kê</span>
+                        <span className={classes.arrowList}>
+                            {isOpenAttendance ? <FontAwesomeIcon icon={faCircleChevronDown} /> : <FontAwesomeIcon icon={faCircleChevronRight} />}
+                        </span>
+                    </a>
+                    <ul className={`${classes.subMenuItem} ${isOpenAttendance ? classes.open : ''}`}>
+                        <li className={`${currentPath === "/admin/attendance" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/admin/attendance">Báo cáo tổng quan tài khoản</Link>
+                        </li>
+                        <li className={`${currentPath === "/admin/workrecord" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/admin/workrecord">Báo cáo tổng quan nhân sự</Link>
+                        </li>
+                        <li className={`${currentPath === "/admin/attendance-explain" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/admin/attendance-explain">Danh sách giải trình chấm công</Link>
+                        </li>
+                    </ul>
+                </li> */}
+                <li className={`${classes.listOptionMenu} ${currentPath === "/admin/audit-log" ? classes.active : ""}`}>
+                <Link href="/admin/audit-log">Nhật ký hoạt động hệ thống</Link>
                 </li>
             </ul>
         </div>

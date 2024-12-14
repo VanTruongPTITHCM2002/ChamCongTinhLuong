@@ -9,6 +9,7 @@ import Cookies from 'js-cookie'
 export default function HR_Navbar({ currentPath } : any){
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenAttendance,setIsOpenAttendance] = useState(false);
+    const [isOpenEmployee,setIsOpenEmployee] = useState(false);
     useEffect(() => {
         const savedState = Cookies.get("menuState");
         const savedStateAttendance = Cookies.get('OpenAttendance')
@@ -31,6 +32,10 @@ export default function HR_Navbar({ currentPath } : any){
         e.stopPropagation(); 
         
     };
+
+    const toggleMenuEmployee = ()=>{
+        setIsOpenEmployee((prev)=>!prev);
+    }
     return (
         <div className={classes.navbar}>
             <div className={classes.navbar_image}>
@@ -40,10 +45,28 @@ export default function HR_Navbar({ currentPath } : any){
                 <li className={`${classes.listOptionMenu} ${currentPath === "/hr/dashboard" ? classes.active : ""}`}>
                     <Link href="/hr/dashboard">Trang chủ</Link>
                 </li>
-              
-                <li className={`${classes.listOptionMenu} ${currentPath === "/hr/employees" ? classes.active : ""}`}>
-                    <Link href="/hr/employees">Quản lý nhân viên</Link>
+                <li className={`${classes.subMenu} ${classes.listOptionMenu}`} onClick={toggleMenuEmployee}>
+                    <a className={classes.subDrop}>
+                        <span>Quản lý nhân viên</span>
+                        <span className={classes.arrowList}>
+                            {isOpenEmployee ? <FontAwesomeIcon icon={faCircleChevronDown} /> : <FontAwesomeIcon icon={faCircleChevronRight} />}
+                        </span>
+                    </a>
+                    <ul className={`${classes.subMenuItem} ${isOpenEmployee ? classes.open : ''}`}>
+                        <li className={`${currentPath === "/hr/employees" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/hr/employees">Nhân viên</Link>
+                        </li>
+                        <li className={`${currentPath === "/hr/degree" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/hr/degree">Bằng cấp</Link>
+                        </li>
+                        <li className={`${currentPath === "/hr/department" ? classes.active: ""}`} onClick={handleSubItemClick}>
+                            <Link href="/hr/department">Phòng ban</Link>
+                        </li>
+                    </ul>
                 </li>
+                {/* <li className={`${classes.listOptionMenu} ${currentPath === "/hr/employees" ? classes.active : ""}`}>
+                    <Link href="/hr/employees">Quản lý nhân viên</Link>
+                </li> */}
                 <li className={`${classes.listOptionMenu} ${currentPath === "/hr/workschedule" ? classes.active : ""}`}>
                     <Link href="/hr/workschedule">Quản lý lịch làm việc</Link>
                 </li>

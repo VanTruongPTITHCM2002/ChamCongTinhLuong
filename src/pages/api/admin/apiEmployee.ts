@@ -57,3 +57,19 @@ export async function getServerSideEmployeesActive(token : RequestCookie){
         return [];
     }
 }
+
+export const getEmpIdemployee = async (username:string,token:string) => {
+    try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/employee/${username}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+              }
+        });
+        if (response.status === 200) {
+            // successSwal("Thành công",`${response.data.message}`);
+           return response.data.data
+        }
+    } catch (error) {
+
+    }
+}

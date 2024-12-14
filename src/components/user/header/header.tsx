@@ -3,13 +3,16 @@
 import { useRouter } from "next/navigation";
 import classes from "./header.module.css";
 import Image from 'next/image'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import jwt from 'jsonwebtoken'
 import Modal from "@/components/modal";
+import { getEmpIdemployee } from "@/pages/api/admin/apiEmployee";
 
 export default function UserHeader(){
     const [isMenuVisible, setIsMenuVisible] = useState(false);
+    const [nameEmployee,setNameEmployee] = useState('');
    
+ 
     
     const toggleMenu = () => {
       if(isMenuVisible){
@@ -21,8 +24,11 @@ export default function UserHeader(){
 
   
     // Lấy email từ payload
-    const email = localStorage.getItem('username');
-    console.log(email);
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+
+    }
     const router = useRouter();
     const handleLogout = ()=>{
         localStorage.removeItem('token');
@@ -31,7 +37,7 @@ export default function UserHeader(){
     }
 
     const handleChangePassword = ()=>{
-      router.push(`/${email}/changepassword`);
+      router.push(`/${username}/changepassword`);
     }
     return (
         <div className={classes.header}>
@@ -39,7 +45,7 @@ export default function UserHeader(){
              <h3>Ứng dụng chấm công và tính lương dành cho nhân viên</h3>
           </div>
            <div className={classes.option_title}>
-           <h5>Xin chào, {email}</h5>
+           <h5>Xin chào, {username}</h5>
             {/* <img src="/images/download.jpg" alt="Avatar" className={classes.avatar}></img> */}
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"
             onClick={toggleMenu}

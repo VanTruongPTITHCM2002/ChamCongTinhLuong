@@ -2,7 +2,7 @@
 import { Employee } from '@/pages/api/admin/apiEmployee';
 import styles from  './employees.module.css'
 import { DepartmentsDTO } from '@/pages/api/admin/apiDepartments';
-
+import * as XLSX from 'xlsx';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie'
 import axios from 'axios';
@@ -13,6 +13,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faPen, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Modal from '@/components/modal';
 import Image from 'next/image';
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 
 
 function formatDateString(dateString: string): string {
@@ -26,7 +28,7 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
     const [employeeData, setemployeeData] = useState<Employee[]>([]);
     const username = localStorage.getItem('username');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(8);
+    const [itemsPerPage] = useState(7);
     const [searchTerm, setSearchTerm] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
     const [image, setImage] = useState<string | null>(null);
@@ -34,7 +36,7 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
 
     
  
-    const totalPages = Math.ceil(employeeData.length / itemsPerPage);
+    const totalPages = Math.ceil(employee.length / itemsPerPage);
     
     const handlePageChange = (pageNumber:number) => {
       setCurrentPage(pageNumber);
@@ -144,7 +146,12 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
                         text: `${response.data.message}`,
                         icon: "success"
                       });
-              
+                      await addAuditLogServer({
+                        username:username!,
+                        action:"Thêm nhân viên",
+                        description:username  + " thêm thành công nhân viên",
+                        createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                    })
                      const formImage = new FormData();
                      formImage.append("image", file!); // 'file' phải khớp với tên parameter ở backend
                      formImage.append("idEmployee",response.data.data)
@@ -218,6 +225,12 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
                 //     });
                 //     return updatedemployee;
                 // });
+                await addAuditLogServer({
+                    username:username!,
+                    action:"Cập nhật nhân viên",
+                    description:username  + " cập nhật thành công nhân viên " + id,
+                    createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                })
                 const formImage = new FormData();
                 formImage.append("image", file!); // 'file' phải khớp với tên parameter ở backend
                 formImage.append("idEmployee",id)
@@ -369,7 +382,13 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
                             const updatedemployee = prevemployee.filter(emp => emp.idEmployee !== employee.idEmployee);
                             return updatedemployee;
                         });
-                        return;
+                        await addAuditLogServer({
+                            username:username!,
+                            action:"Xóa nhân viên",
+                            description:username  + "Xóa thành công nhân viên " + employee.idEmployee,
+                            createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                        })
+                        router.refresh();
                     }
         
                     if(response.data.status === 400){
@@ -384,7 +403,7 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
           });
        
     }
-    const currentData = searchTerm !== "" ? 
+    const currentData = searchTerm ? 
     employee.filter(
         (item) =>
           item.idEmployee!.includes(searchTerm) ||
@@ -395,7 +414,8 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
           || item.birthDate.includes(searchTerm)
           || item.status.toString().includes(searchTerm)
         
-      )
+      ).slice((currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage) 
     :
     employee.slice(
         (currentPage - 1) * itemsPerPage,
@@ -576,6 +596,43 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
           reader.readAsDataURL(File); // Đọc file và chuyển thành base64
         }
       };
+      const downloadExcel = ()=>{
+        const processedData = employee.map(item => ({
+            'Mã nhân viên': item.idEmployee,
+            'Họ': item.firstName,
+            "Tên": item.lastName,
+            'Giới tính': item.gender,
+            'Ngày sinh': item.birthDate, 
+            'Địa chỉ':item.address,
+            'Số điện thoai': item.phoneNumber,
+            'CMND': item.idCard,
+            'Bằng cấp': item.degree,
+            'Vị trí': item.position ,
+            'Phòng ban':item.department,
+            'Trạng thái': item.status
+          }));
+      
+          // Chuyển đổi dữ liệu thành worksheet
+          const worksheet = XLSX.utils.json_to_sheet(processedData);
+      
+          // Tạo workbook chứa worksheet
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      
+          // Xuất file Excel
+          const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      
+          // Tạo liên kết tải xuống
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'employee_report.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+      };
     return (
         <div className={styles.article}>
              
@@ -587,9 +644,12 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
                               value={searchTerm}
                               onChange={handleSearch}
                         />
-                        {/* <button onClick={searchButton}>
-                            <FontAwesomeIcon icon={faSearch} />
-                        </button>  */}
+                        <button style={{height: "30px",width:"100px",backgroundColor:"green",border:"none"
+
+                            ,cursor:"pointer"
+                        }} onClick={downloadExcel}> 
+                            Xuất file Excel
+                        </button> 
                  <button className={styles.btnAddRole} title='Thêm nhân viên' onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
                 width: "12px",
                 height: "12px",

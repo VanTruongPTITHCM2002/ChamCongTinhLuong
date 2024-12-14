@@ -74,7 +74,10 @@ const options: ChartOptions<'line'> = {
 
 export default function UserDashboard (){
   
-  const username = localStorage.getItem('username');
+  let username = '';
+  if (typeof window !== 'undefined'){
+   username = localStorage.getItem('username')!;
+  }
   const token = Cookies.get('token');
   const currentYear = new Date().getFullYear();
   const [totalMonth,setTotalMonth] = useState<number[]>([]);
@@ -84,7 +87,7 @@ export default function UserDashboard (){
     datasets: [
       {
         label: 'Tiền lương',
-        data: totalMonth ,
+        data: [0,...totalMonth],
         fill: false,
         borderColor: 'rgba(75,192,192,1)',
       },

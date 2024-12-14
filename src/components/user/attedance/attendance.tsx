@@ -77,7 +77,10 @@ export default function UserAttendance(){
   };
 
 
-    const username = localStorage.getItem('username');
+  let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
     const token = Cookies.get('token');
     const [isExplain, setIsExplain] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -87,7 +90,7 @@ export default function UserAttendance(){
     const [error, setError] = useState<string | null>(null);
     const [selectedRowIndex, setSelectedRowIndex] = useState(null);
     const [isReasonTableVisible, setIsReasonTableVisible] = useState(false);
-
+    const [searchTerm, setSearchTerm] = useState('');
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [modelsLoaded, setModelsLoaded] = useState(false);
     const streamRef = useRef<MediaStream | null>(null); // Kiểu cho streamRef là MediaStream
@@ -146,9 +149,27 @@ export default function UserAttendance(){
       loadModels();
     },[])
     
-    const itemsPerPage = 5;
+    const itemsPerPage = 10;
     const totalPages = Math.ceil(attendance.length / itemsPerPage);
-  
+    const currentData = searchTerm ? 
+    attendance.filter(
+        (item) =>
+          item.idemployee!.includes(searchTerm) ||
+          item.dateattendance.includes(searchTerm)
+          || item.checkintime.includes(searchTerm) ||
+          item.checkouttime.includes(searchTerm) ||
+          item.numberwork.toString().includes(searchTerm)
+          || item.attendanceStatusName?.includes(searchTerm)||
+          item.status.includes(searchTerm)
+         
+        
+      ).slice((currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage) 
+    :
+    attendance.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
     const handleCheckIn = () => {
  
       setModelsLoaded(true);
@@ -618,7 +639,7 @@ export default function UserAttendance(){
               </tr>
             </thead>
             <tbody>
-              {attendance.map((item, index) => (
+              {currentData.map((item, index) => (
                 <tr key={index}>
                   {isExplain && (
                     <td>

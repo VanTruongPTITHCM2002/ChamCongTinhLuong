@@ -7,17 +7,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faEye, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie'
 interface ListSalary{
-    idemployee:string;
-    name:string;
+
+    idEmployee:string;
     month:number;
     year:number;
+    basicSalary:number;
+    day_work:Float32Array;
     reward:number;
     punish:number;
-    basicsalary:number
-    day_work:Float32Array;
-    datecreated:string;
-    totalpayment:Float32Array;
+    createDate:string;
+    totalPayment:Float32Array;
     status:string;
+
 }
  function formatDate(dateString:string) {
      const date = new Date(dateString);
@@ -26,8 +27,8 @@ interface ListSalary{
      const year = date.getFullYear();
      return `${day}-${month}-${year}`;
    }
-   const formattedAmount = (num:Float32Array | number)=>{
-    return  num.toLocaleString('vi-VN', {
+   const formattedAmount = (num:Float32Array | number | undefined)=>{
+    return  num!.toLocaleString('vi-VN', {
      style: 'currency',
      currency: 'VND',
    });
@@ -82,11 +83,10 @@ export default function UserSalary (){
          }else{
             const filterdata = filterSalary.filter(
                 (item) =>
-                  item.idemployee.includes(searchTerm) ||
-                  item.name.includes(searchTerm)
+                  item.idEmployee.includes(searchTerm) 
                   || item.month.toString().includes(searchTerm) ||
                   item.year.toString().includes(searchTerm)
-                  || item.totalpayment.toString().includes(searchTerm)
+                  || item.totalPayment.toString().includes(searchTerm)
               );
           setListSalary(filterdata);
         }
@@ -134,7 +134,7 @@ export default function UserSalary (){
         <thead>
           <tr>
             <th>Mã nhân viên</th>
-            <th>Họ và tên</th>
+            {/* <th>Họ và tên</th> */}
             <th>Tháng</th>
             <th>Năm</th>
             {isShowDetail && 
@@ -155,26 +155,26 @@ export default function UserSalary (){
         <tbody>
             {num !== -1 ? (
                 <tr>
-                    <td>{listSalary[num].idemployee}</td>
-                    <td>{listSalary[num].name}</td>
+                    <td>{listSalary[num].idEmployee}</td>
+                    {/* <td>{listSalary[num].name}</td> */}
                     <td>{listSalary[num].month}</td>
                     <td>{listSalary[num].year}</td>
                     <td>{formattedAmount(listSalary[num].reward)}</td>
                     <td>{formattedAmount(listSalary[num].punish)}</td>
-                    <td>{formattedAmount(listSalary[num].basicsalary)}</td>
+                    <td>{formattedAmount(listSalary[num].basicSalary)}</td>
                     <td>{listSalary[num].day_work}</td>
-                    <td>{formatDate(listSalary[num].datecreated)}</td>
-                    <td>{formattedAmount(listSalary[num].totalpayment)}</td>
+                    <td>{formatDate(listSalary[num].createDate)}</td>
+                    <td>{formattedAmount(listSalary[num].totalPayment)}</td>
                     <td className={listSalary[num].status === 'Đã thanh toán' ? classes.statusActive : classes.statusInactive}>{listSalary[num].status}</td>
                 </tr>
             ):(
                 listSalary.map((item,index) => (
                     <tr key={index}>
-                      <td>{item.idemployee}</td>
-                      <td>{item.name}</td>
+                      <td>{item.idEmployee}</td>
+                      {/* <td>{item.name}</td> */}
                       <td>{item.month}</td>
                       <td>{item.year}</td>
-                      <td>{formattedAmount(item.totalpayment)}</td>
+                      <td>{formattedAmount(item.totalPayment)}</td>
                       
                       <td>
                             <button className={classes.btnDetail} onClick={()=>showDetails(index)}><FontAwesomeIcon icon={faEye} /></button>

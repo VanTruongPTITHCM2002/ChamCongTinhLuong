@@ -5,13 +5,12 @@ import axios from "axios";
 import { errorSwal } from '@/custom/sweetalert';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
+import Cookies from 'js-cookie'
 interface WorkScheduleDetail{
-    idemployee:string;
-    name:string;
+    idEmployee:string;
     workdate:string;
-    startime:string;
-    endtime:string;
+    startTime:string;
+    endTime:string;
 }
  function formatDate(dateString:string) {
      const date = new Date(dateString);
@@ -21,11 +20,21 @@ interface WorkScheduleDetail{
      return `${day}-${month}-${year}`;
    }
 export default function UserTimeSheet(){
-   const username = localStorage.getItem('username');
-   const token = localStorage.getItem('token')
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
+   const token = Cookies.get('token')
    const [showWorkScheduleDetail,setShowWorkScheduleDetail] = useState<WorkScheduleDetail[]>([]);
    const [workscheduledetail,setWorkscheduledetail] = useState<WorkScheduleDetail[]>([]);
    const [searchTerm, setSearchTerm] = useState('');
+   const [currentPage, setCurrentPage] = useState(1);
+   const [itemsPerPage] = useState(7);
+   const totalPages = Math.ceil(workscheduledetail.length / itemsPerPage);
+    
+   const handlePageChange = (pageNumber:number) => {
+     setCurrentPage(pageNumber);
+   };
    const getWorkScheduleDetailById = async()=>{
         try{
             const res = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/workscheduledetail/${username}`,{
@@ -51,23 +60,23 @@ export default function UserTimeSheet(){
     setSearchTerm(term);
   };
 
-  const searchTimeSheet = ()=>{
-   
-     if(searchTerm === ''){
-        setShowWorkScheduleDetail(workscheduledetail);
+
+  const currentData = searchTerm ? 
+  workscheduledetail.filter(
+      (item) =>
+        item.idEmployee!.includes(searchTerm) ||
+        item.workdate.includes(searchTerm)
+        || item.endTime.includes(searchTerm) ||
+        item.startTime.includes(searchTerm) 
        
-     }else{
-        const filterdata = workscheduledetail.filter(
-            (item) =>
-              item.idemployee.includes(searchTerm) ||
-              item.name.includes(searchTerm)
-              || item.endtime.toString().includes(searchTerm) ||
-              item.startime.toString().includes(searchTerm)
-              || item.workdate.toString().includes(searchTerm)
-          );
-      setShowWorkScheduleDetail(filterdata);
-    }
-  }
+      
+    ).slice((currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage) 
+  :
+  workscheduledetail.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
     return (
         <div className={classes.main_container}>
             <div className={classes.timeSheetTitle}>
@@ -81,40 +90,52 @@ export default function UserTimeSheet(){
                         type="text"
                         placeholder="Tìm kiếm..."
                         value={searchTerm}
-                        onChange={handleSearch}
+                        onChange={e=>(setSearchTerm(e.target.value))}
                         style={{ marginBottom: '10px' }}
                     />
-
+{/* 
                     <button className={classes.btnSearch} onClick={searchTimeSheet}>
                         <FontAwesomeIcon icon={faSearch} style={
                             { marginRight: "5px" }
                         } />
-                   </button>
+                   </button> */}
             </div>
 
             <table className={classes.work_schedule}>
             <thead>
                     <tr>
                        <th>Mã nhân viên</th>
-                       <th>Họ tên nhân viên</th>
+                       {/* <th>Họ tên nhân viên</th> */}
                        <th>Ngày làm việc</th>
                        <th>Giờ bắt đầu</th>
                        <th>Giờ kết thúc</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {showWorkScheduleDetail.map((s,index)=>(
+                    {currentData.map((s,index)=>(
                             <tr key={index}>
-                                <td>{s.idemployee}</td>
-                                <td>{s.name}</td>
+                                <td>{s.idEmployee}</td>
+                                {/* <td>{s.name}</td> */}
                                 <td>{formatDate(s.workdate)}</td>
-                                <td>{s.startime}</td>
-                                <td>{s.endtime}</td>
+                                <td>{s.startTime}</td>
+                                <td>{s.endTime}</td>
                             </tr>
                     ))}
                    
                 </tbody>
             </table>
+
+            <div className={classes.pagination}>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={currentPage === index + 1 ? classes.active : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
         </div>
     )
 }

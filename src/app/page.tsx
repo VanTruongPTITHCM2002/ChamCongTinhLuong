@@ -8,6 +8,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { errorSwal, successSwal } from "@/custom/sweetalert";
 import axios from "axios";
+import { addAuditLogServer } from "@/pages/api/admin/apiAuditLog";
+import { format } from "date-fns";
+import Script from "next/script";
+import React from "react";
 
 
 function convertToMinutes(time: string): number {
@@ -186,15 +190,20 @@ const checkInWork = async (name:string)=>{
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/attendance`,newEntry);
       if(response.status === 201){
           
-        // setCurrentCheckIn(newEntry);
-        // setAttendance([newEntry,...attendance]);
-        // setError(null);
+        await addAuditLogServer({
+          username:name!,
+          action:"Chấm công vào",
+          description:"Nhân viên " + name + " đã thực hiện chấm công vào",
+          createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+      })
             successSwal('Thành công',`${response.data.message}`);
+          
       }
       // if(response.data.status === 404){
       //   errorSwal('Thất bại',response.data.message);
       //   return;
       // }
+     
   }catch(error:any){
       errorSwal('Thất bại',`${error.response.data.message}`);
   }
@@ -258,11 +267,18 @@ const checkOutWork = async (name:string)=>{
             //   setCurrentCheckIn(null);
             //   setError(null);
               successSwal('Thành công',`${response.data.message}`);
+            
         }
-        if(response.data.status === 404){
-          errorSwal('Thất bại',response.data.message);
-          return;
-        }
+        await addAuditLogServer({
+          username:name!,
+          action:"Chấm công ra",
+          description:"Nhân viên " + name + " đã thực hiện chấm công ra",
+          createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+      })
+        // if(response.data.status === 404){
+        //   errorSwal('Thất bại',response.data.message);
+        //   return;
+        // }
     }catch(error:any){
         errorSwal('Thất bại',`${error.response.data.message}`);
     }
@@ -281,7 +297,18 @@ const checkOutWork = async (name:string)=>{
     <div className={styles.mainContainer}>
 
       <div>
-        {/* <button className={styles.btnLogin} onClick={handleLogin}>Đăng nhập</button> */}
+      {/* <Script
+        src="https://cdn.chatsimple.ai/ai-loader.js"
+        strategy="lazyOnload"
+      />
+
+      {React.createElement('co-pilot', {
+        'platform-id': 'afdfe2e5-b223-4fe5-a259-1f6dcf4e4098',
+        'user-id': '2419129618417949',
+        'chatbot-id': '0627f562-a386-479a-b22d-3a38748c44fb',
+        'is-local': 'false',
+      })} */}
+
       </div>
      
 
@@ -331,7 +358,7 @@ const checkOutWork = async (name:string)=>{
                           </div>
                         </>
                       )}
-
+     
     </div>
   );
 

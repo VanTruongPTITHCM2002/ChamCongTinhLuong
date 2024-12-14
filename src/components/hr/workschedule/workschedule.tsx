@@ -336,7 +336,7 @@ const HR_WorkSchedule: React.FC<{ employee: Employee[], workschedule:WorkSchedul
                 text: `${response.data.message}`,
                 icon: "success"
             });
-            window.location.reload();
+           router.refresh();
         } catch (error: any) {
             if (error.response) {
                 // Server đã trả về lỗi với mã lỗi và dữ liệu lỗi

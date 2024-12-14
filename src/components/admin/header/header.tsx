@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { Employee } from "@/pages/api/admin/apiEmployee";
+import { addAuditLogServer } from "@/pages/api/admin/apiAuditLog";
+import { format } from "date-fns";
 
 export default function Header(){
     const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -25,10 +27,16 @@ export default function Header(){
     const roleDescription = localStorage.getItem('roleDescription');
 
     const router = useRouter();
-    const handleLogout = ()=>{
+    const handleLogout = async ()=>{
         Cookies.remove('token');
         localStorage.removeItem('username');
         localStorage.removeItem('roleDescription');
+        await addAuditLogServer({
+          username:email!,
+          action:"Đăng xuất",
+          description:(email === 'admin' ? email: "Nhân viên " + email ) + " đã đăng xuất hệ thống",
+          createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+      })
         router.push('/login');
     }
 

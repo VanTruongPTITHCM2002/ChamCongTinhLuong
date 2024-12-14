@@ -9,6 +9,8 @@ import { faCheck, faInfoCircle, faPen, faRotateLeft, faSave, faSearch, faTimes }
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { AdminPageRoleProps } from '@/pages/api/admin/apiRole';
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 interface Account{
     username:string,
     role:string,
@@ -30,7 +32,7 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
     const [tempRole,setTempRole] = useState('');
     const [originRole,setOriginRole] = useState('');
     const token = Cookies.get('token');
-
+    const username = localStorage.getItem('username');
     
 
 
@@ -91,7 +93,7 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
             
             setIsUpdate(false);
             setIsNumber(-1);
-            
+    
             return;
         }
         try {
@@ -108,6 +110,13 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
                     icon: "success"
                   });
             }
+           
+            await addAuditLogServer({
+                username:username!,
+                action:"Cập nhật tài khoản",
+                description:"Thay đổi trạng thái hoặc quyền của tài khoản " + account.username,
+                createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+            })
           } catch (error) {
             console.error("Xảy ra lỗi", error);
           }

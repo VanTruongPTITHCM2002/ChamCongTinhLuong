@@ -3,7 +3,10 @@ import Image from 'next/image'
 import classes from './navbar.module.css'
 import Link from 'next/link'
 export default function UserNavbar({ currentPath } : any){
-    const username = localStorage.getItem('username');
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
     return (
         <div className={classes.navbar}>
             <div className={classes.navbar_image}>  

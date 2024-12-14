@@ -8,3 +8,74 @@
     box-shadow: 0 26px 42px rgba(56, 13, 123, 0.1);
     
 }
+
+.main{
+    display: flex;
+    flex-wrap: nowrap; /* Ensure that items do not wrap to the next line */
+}
+
+.main h5{
+    text-align: center;
+    font-size: 12px;
+}
+
+.main h2{
+    text-align: center;
+    margin-top: 10px;
+}
+
+.red_box,
+.orange_box,
+.yellow_box,
+.green_box {
+    height: 100px;
+    margin: 10px;
+    flex: 1 0 calc(20% - 20px); /* Adjust width and margin to fit in one line */
+    border-radius: 4px;
+}
+
+.red_box {
+    background-color: #ff6f61; /* Soft Red */
+    box-shadow: 0 4px 8px rgba(255, 111, 97, 0.2); /* Red shadow */
+    padding: 10px;
+    height: 100px;
+    margin: 10px;
+}
+
+.orange_box {
+    background-color: #ffa726; /* Soft Orange */
+    box-shadow: 0 4px 8px rgba(255, 167, 38, 0.2); /* Orange shadow */
+    padding: 10px;
+    height: 100px;
+    margin: 10px;
+}
+
+.yellow_box {
+    background-color: #ffeb3b; /* Soft Yellow */
+    box-shadow: 0 4px 8px rgba(255, 235, 59, 0.2); /* Yellow shadow */
+    padding: 10px;
+    height: 100px;
+    margin: 10px;
+}
+
+.green_box {
+    background-color: #81c784; /* Soft Green */
+    box-shadow: 0 4px 8px rgba(129, 199, 132, 0.2); /* Green shadow */
+    padding: 10px;
+    height: 100px;
+    margin: 10px;
+}
+
+.chartContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.chart {
+    flex: 1;
+    max-width: 48%; /* Adjust this value based on spacing needs */
+    height: 300px; /* Adjust height as needed */
+    margin: 10px;
+    box-sizing: border-box;
+}

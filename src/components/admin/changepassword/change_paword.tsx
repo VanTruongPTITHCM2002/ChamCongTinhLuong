@@ -42,7 +42,7 @@ export default function AdminChangePassword(){
         return;
         }
         try{
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account/change_password`,data,
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/public/account/change_password`,data,
               {
                 headers: {
                         Authorization: `Bearer ${token}`

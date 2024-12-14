@@ -5,6 +5,8 @@ import classes from './login.module.css'
 import  { FetchAccount } from "@/pages/api/login/apiLogin"
 import { errorAlert, errorSwal } from "@/custom/sweetalert"
 import Cookies from 'js-cookie';
+import { addAuditLogServer } from "@/pages/api/admin/apiAuditLog"
+import { format } from "date-fns"
 interface ErrorForm{
   username:string;
   password:string;
@@ -55,7 +57,12 @@ const handleSubmit = async (e: React.FormEvent) => {
           router.push('/login');
           return;
         }
-
+        await addAuditLogServer({
+          username:data.username!,
+          action:"Đăng nhập",
+          description:(data.username === 'admin' ? data.username: "Nhân viên " + data.username) + " đã đăng nhập hệ thống",
+          createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+      })
         switch (response.data.data.role){
           case "ADMIN":
             Cookies.set('token',response.data.data.token);

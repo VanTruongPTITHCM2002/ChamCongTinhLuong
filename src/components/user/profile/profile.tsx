@@ -11,7 +11,11 @@ export default function UserProfile() {
     const token = Cookies.get('token');
     const [personal, setPersonal] = useState<Employee>();
     const [isShowUpdate, setIsShowUpdate] = useState(false);
-    const username = localStorage.getItem('username');
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+
+    }
     const router = useRouter();
     const getEmployeeById = async () => {
         try {
@@ -62,6 +66,8 @@ export default function UserProfile() {
             address: form.get('address') as string,
             degree: form.get('degree') as string, // Parsing as number
             status: form.get('status') as string,
+            department:form.get('department') as string,
+            position:form.get('position') as string,
         };
         const id = employee.idEmployee;
         try {
@@ -147,16 +153,24 @@ export default function UserProfile() {
                         </div>
                     </div>
 
-                    <div className={classes.formRow}>
+                   
                         <div className={classes.formGroup}>
                             <label htmlFor="degree">Bằng cấp:</label>
                             <input type ="text" name="degree" defaultValue={personal?.degree} readOnly/>
                         </div>
                         <div className={classes.formGroup}>
+                            <label htmlFor="department">Phòng ban:</label>
+                            <input type ="text" name="department" defaultValue={personal?.department} readOnly/>
+                        </div>
+                        <div className={classes.formGroup}>
+                            <label htmlFor="position">Chức vụ:</label>
+                            <input type ="text" name="position" defaultValue={personal?.position} readOnly/>
+                        </div>
+                        <div className={classes.formGroup}>
                             <label htmlFor="status">Trạng thái:</label>
                             <input type ="text" name="status" defaultValue={personal?.status} readOnly/>
                         </div>
-                    </div>
+                   
                     <div className={classes.buttonRow}>
                         {!isShowUpdate ? (
                             <button onClick={showUpdate} className={classes.updateButton}>Cập nhật</button>

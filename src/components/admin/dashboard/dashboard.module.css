@@ -67,14 +67,14 @@
 }
 
 .chartContainer {
-    display: flex;
-    justify-content: space-between;
+    /* display: flex;
+    justify-content: space-between; */
     width: 100%;
 }
 
 .chart {
     flex: 1;
-    max-width: 48%; /* Adjust this value based on spacing needs */
+    /* max-width: 48%; Adjust this value based on spacing needs */
     height: 300px; /* Adjust height as needed */
     margin: 10px;
     box-sizing: border-box;

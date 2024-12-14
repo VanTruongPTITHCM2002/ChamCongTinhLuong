@@ -45,7 +45,7 @@ interface AdminPayrollPageProps {
     showPay: Payroll[];
 }
 
-const formattedAmount = (num:Float32Array | number | undefined)=>{
+export const formattedAmount = (num:Float32Array | number | undefined)=>{
    return  num!.toLocaleString('vi-VN', {
     style: 'currency',
     currency: 'VND',
