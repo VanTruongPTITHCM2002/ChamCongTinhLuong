@@ -57,12 +57,14 @@ const handleSubmit = async (e: React.FormEvent) => {
           router.push('/login');
           return;
         }
+        if(data.username !== 'admin'){
         await addAuditLogServer({
           username:data.username!,
           action:"Đăng nhập",
-          description:(data.username === 'admin' ? data.username: "Nhân viên " + data.username) + " đã đăng nhập hệ thống",
+          description:"Nhân viên " + data.username + " đã đăng nhập hệ thống",
           createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
       })
+    }
         switch (response.data.data.role){
           case "ADMIN":
             Cookies.set('token',response.data.data.token);

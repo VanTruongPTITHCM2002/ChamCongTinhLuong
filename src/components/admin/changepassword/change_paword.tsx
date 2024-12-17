@@ -15,7 +15,10 @@ export default function AdminChangePassword(){
     const [renewpassword,setReNewPassword] = useState('');
     // Lấy email từ payload
 
-    const username = localStorage.getItem('username');
+  let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
  
   
     const token = Cookies.get('token')

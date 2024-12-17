@@ -12,7 +12,8 @@ export function middleware(req: NextRequest) {
 
 export const config = {
     matcher: [
-        '/admin/:path*',  // Áp dụng cho tất cả các route bắt đầu với `/admin`
+        '/admin/:path*', 
+        'hr/:path*', // Áp dụng cho tất cả các route bắt đầu với `/admin`
         // Thêm các route khác nếu cần bảo vệ
     ],
 };

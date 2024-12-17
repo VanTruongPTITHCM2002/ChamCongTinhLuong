@@ -45,6 +45,9 @@ export default function HR_Navbar({ currentPath } : any){
                 <li className={`${classes.listOptionMenu} ${currentPath === "/hr/dashboard" ? classes.active : ""}`}>
                     <Link href="/hr/dashboard">Trang chủ</Link>
                 </li>
+                <li className={`${classes.listOptionMenu} ${currentPath === "/hr/profile" ? classes.active : ""}`}>
+                    <Link href="/hr/profile">Thông tin cá nhân</Link>
+                </li>
                 <li className={`${classes.subMenu} ${classes.listOptionMenu}`} onClick={toggleMenuEmployee}>
                     <a className={classes.subDrop}>
                         <span>Quản lý nhân viên</span>

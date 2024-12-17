@@ -34,7 +34,10 @@ interface ListSalary{
    });
  }
 export default function UserSalary (){
-    const username = localStorage.getItem('username');
+  let username = '';
+  if (typeof window !== 'undefined'){
+   username = localStorage.getItem('username')!;
+  }
     const token = Cookies.get('token');
     const [listSalary, setListSalary] = useState<ListSalary[]>([]);
     const [filterSalary, setFilterSalary] = useState<ListSalary[]>([]);

@@ -22,9 +22,16 @@ export default function Header(){
 
   
     // Lấy email từ payload
-    const email = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
-    const roleDescription = localStorage.getItem('roleDescription');
+     let email = '';
+    if (typeof window !== 'undefined'){
+     email = localStorage.getItem('username')!;
+    }
+
+    let roleDescription = '';
+    if(typeof window !== 'undefined'){
+      roleDescription = localStorage.getItem('roleDescription')!;
+    }
+    
 
     const router = useRouter();
     const handleLogout = async ()=>{

@@ -15,7 +15,10 @@ const AdminNotificationPage:React.FC<{notification:Notification[],employee:Emplo
     const [modalDelete,setModalDelete] = useState(false);
     const router = useRouter();
     const token = Cookies.get('token');
-    const username = localStorage.getItem('username');
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [selectNotification,setSelectNotification] = useState<Notification>();
 

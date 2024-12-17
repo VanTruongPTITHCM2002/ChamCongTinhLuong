@@ -178,10 +178,7 @@ const countRewardPunish = async()=>{
         countRewardPunish();
    },[]);
 
-    if(!localStorage.getItem('username')){
-        router.push('/login');
-        return null;
-    }
+ 
     return (
         <div className={styles.article}>
             <div className={styles.main}>

@@ -20,7 +20,7 @@
 
 .article_button{
     margin-bottom: 5px;
-    float: right;
+    float: left;
 }
 
 .article_button input{
@@ -78,7 +78,23 @@
     cursor: pointer;
 }
  
+.groupOption{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #dae1f3;
+ }
 
+.groupOption input{
+    color:#000;
+    padding: 0 5px;
+    height: 30px;
+    width: 250px;
+    background-color: #eee;
+    margin: 5px 0 5px 5px;
+    border-radius: 2px;
+}
 
 
 .form_add_emp h2{

@@ -30,7 +30,10 @@ const HR_LeaveRequestPage:React.FC<{leaveRequest:LeaveRequest_Response[]}> = ({l
     const [isModalDelete,setIsModalDelete] = useState(false);
     const [selectedLeaveRequest,setSelectLeaveRequest] = useState<LeaveRequest_Response>();
     const [searchTerm,setSearchTerm] = useState('');
-
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
     const filteredList = searchTerm
     ? leaveRequest.filter(item => {
         // Kiểm tra các điều kiện tìm kiếm cho tất cả các trường
@@ -93,7 +96,7 @@ const HR_LeaveRequestPage:React.FC<{leaveRequest:LeaveRequest_Response[]}> = ({l
             createAt:form.get('createAt') as string,
             status:form.get('status') as string,
             approveAt: "",
-            approveBy: localStorage.getItem('username') as string
+            approveBy: username
         }
 
         console.log(leaveRequest.createAt);

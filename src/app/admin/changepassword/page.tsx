@@ -5,7 +5,7 @@ import AdminChangePassword from "@/components/admin/changepassword/change_paword
 
 
 
-export default async  function AdminPayrollpage(){
+export default function AdminPayrollpage(){
 
     return(
         <div>

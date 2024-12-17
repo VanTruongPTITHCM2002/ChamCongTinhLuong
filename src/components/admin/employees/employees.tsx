@@ -91,10 +91,7 @@ function formatDateString(dateString: string): string {
     };
 
     
-    if(!localStorage.getItem('username') && !localStorage.getItem('token')){
-        router.push('/login');
-        return null;
-    }
+
 
     const handleAddEmployee = async (event:FormEvent) =>{
         event.preventDefault();

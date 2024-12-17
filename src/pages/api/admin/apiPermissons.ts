@@ -14,7 +14,12 @@ export async function getServerSidePermissons() {
   
     try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/permissons`);
-        return response.data.data;
+        if (response.data && response.data.data) {
+            return response.data.data;
+        } else {
+            console.error("Data không tồn tại trong phản hồi.");
+            return [];
+        }
     } catch (error : any) {
         errorSwal("Thất bại", error.response.data.message)
         return [];

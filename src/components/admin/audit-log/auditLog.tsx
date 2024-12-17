@@ -11,8 +11,6 @@ import * as XLSX from 'xlsx';
 const AdminAuditLogPage:React.FC<{audit:AuditLog[]}> = ({audit})=>{
     const [searchTerm,setSearchTerm] = useState('');
     const router = useRouter();
-    const token = Cookies.get('token');
-    const username = localStorage.getItem('username');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(8);
     const totalPages = Math.ceil(audit.length / itemsPerPage);

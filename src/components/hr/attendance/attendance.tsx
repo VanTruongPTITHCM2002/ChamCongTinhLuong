@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBorderNone, faCircle, faCirclePlus, faDeleteLeft, faInfoCircle, faPen, faSearch, faTableList } from '@fortawesome/free-solid-svg-icons';
 import { errorSwal, successSwal } from '@/custom/sweetalert';
-
+import * as XLSX from 'xlsx';
 import { calculateWorkHours } from '@/components/user/attedance/attendance';
 import Cookies from 'js-cookie';
 import { Payroll } from '@/pages/api/admin/apiPayroll';
@@ -347,7 +347,155 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
         }
       };
 
-
+      const downloadExcel =()=> {
+          
+        const daysInMonth = Array.from({ length: 31 }, (_, index) => String(index + 1).padStart(2, '0')); // Tạo mảng từ "01" đến "31"
+        const filteredData = attendance.filter((record) => {
+          const date = new Date(record.dateattendance);
+          return date.getMonth() === new Date().getMonth(); // Lọc tháng 12 (tháng 11 trong JavaScript vì tháng bắt đầu từ 0)
+        });
+        // Xử lý dữ liệu để phù hợp với bảng Excel
+        const processedData = filteredData.reduce((acc: any[], record) => {
+          // Kiểm tra nếu nhân viên chưa có trong bảng dữ liệu, tạo mới
+          let employeeRow = acc.find((item) => item['Mã nhân viên'] === record.idemployee);
+          if (!employeeRow) {
+            employeeRow = {
+              'Mã nhân viên': record.idemployee,
+            };
+            acc.push(employeeRow);
+          }
+      
+          // Lấy ngày từ dateattendance và tạo cột cho ngày trong tháng
+          const day = new Date(record.dateattendance).getDate(); // Lấy ngày từ `dateattendance`
+          const dayColumn = `${String(day).padStart(2, '0')}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`;
+      
+          // Lưu thông tin chấm công vào cột tương ứng
+          employeeRow[dayColumn] = record.checkintime && record.checkouttime 
+            ? `${record.checkintime}-${record.checkouttime}` 
+            : 'Chưa chấm công ra';
+      
+          return acc;
+        }, []);
+      
+        // Đảm bảo rằng bảng Excel có đầy đủ cột cho tất cả các ngày từ 1 đến 31
+        // Tạo các cột ngày từ "01/12/2024" đến "31/12/2024"
+        const headers = ['Mã nhân viên', ...daysInMonth.map(day => `${day}/12/2024`)];
+      
+        // Tạo sheet với dữ liệu đã xử lý
+        const worksheetData = processedData.map((row) => {
+          const rowData = {
+            'Mã nhân viên': row['Mã nhân viên'],
+            ...daysInMonth.reduce((dayData: any, day) => {
+              dayData[`${day}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`] = 
+              row[`${day}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`] || 'x';
+              return dayData;
+            }, {}),
+          };
+          return rowData;
+        });
+      
+        // Chuyển đổi dữ liệu thành worksheet
+        const worksheet = XLSX.utils.json_to_sheet(worksheetData, { header: headers });
+        const columnWidths = headers.map(header => ({
+          wch: header.length + 5, // Thêm một chút chiều rộng cho các cột (5)
+        }));
+      
+        // Áp dụng chiều rộng cho worksheet
+        worksheet['!cols'] = columnWidths;
+        // Tạo workbook chứa worksheet
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, `Chấm Công Tháng ${new Date().getMonth() + 1}`);
+      
+        // Xuất file Excel
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      
+        // Tạo liên kết tải xuống
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `chamcong_${new Date().getMonth() + 1}_${new Date().getFullYear()}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        };
+        
+      
+        const downloadExcelNum =()=> {
+          
+          const daysInMonth = Array.from({ length: 31 }, (_, index) => String(index + 1).padStart(2, '0')); // Tạo mảng từ "01" đến "31"
+          const filteredData = attendance.filter((record) => {
+            const date = new Date(record.dateattendance);
+            return date.getMonth() === new Date().getMonth(); // Lọc tháng 12 (tháng 11 trong JavaScript vì tháng bắt đầu từ 0)
+          });
+          // Xử lý dữ liệu để phù hợp với bảng Excel
+          const processedData = filteredData.reduce((acc: any[], record) => {
+            // Kiểm tra nếu nhân viên chưa có trong bảng dữ liệu, tạo mới
+            let employeeRow = acc.find((item) => item['Mã nhân viên'] === record.idemployee);
+            if (!employeeRow) {
+              employeeRow = {
+                'Mã nhân viên': record.idemployee,
+              };
+              acc.push(employeeRow);
+            }
+        
+            // Lấy ngày từ dateattendance và tạo cột cho ngày trong tháng
+            const day = new Date(record.dateattendance).getDate(); // Lấy ngày từ `dateattendance`
+            const dayColumn = `${String(day).padStart(2, '0')}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`;
+        
+            // Lưu thông tin chấm công vào cột tương ứng
+            employeeRow[dayColumn] = record.numberwork
+             
+        
+            return acc;
+          }, []);
+        
+          // Đảm bảo rằng bảng Excel có đầy đủ cột cho tất cả các ngày từ 1 đến 31
+          // Tạo các cột ngày từ "01/12/2024" đến "31/12/2024"
+          const headers = ['Mã nhân viên', ...daysInMonth.map(day => `${day}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`)];
+        
+          // Tạo sheet với dữ liệu đã xử lý
+          const worksheetData = processedData.map((row) => {
+            const rowData = {
+              'Mã nhân viên': row['Mã nhân viên'],
+              ...daysInMonth.reduce((dayData: any, day) => {
+                dayData[`${day}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`] = 
+                row[`${day}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`] >= 0 ?
+                row[`${day}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`]
+                : 'x';
+                return dayData;
+              }, {}),
+            };
+            return rowData;
+          });
+        
+          // Chuyển đổi dữ liệu thành worksheet
+          const worksheet = XLSX.utils.json_to_sheet(worksheetData, { header: headers });
+          const columnWidths = headers.map(header => ({
+            wch: header.length + 5, // Thêm một chút chiều rộng cho các cột (5)
+          }));
+        
+          // Áp dụng chiều rộng cho worksheet
+          worksheet['!cols'] = columnWidths;
+          // Tạo workbook chứa worksheet
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, `Chấm Công Tháng ${new Date().getMonth() + 1}`);
+        
+          // Xuất file Excel
+          const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        
+          // Tạo liên kết tải xuống
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `socong_${new Date().getMonth() + 1}_${new Date().getFullYear()}.xlsx`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          };
     return (
         <div className={classes.article}>
          <h2>Quản lý chấm công</h2> 
@@ -358,6 +506,22 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
                     value={searchTerm}
                     onChange={handleSearch}
                 />
+
+          <button style={{
+            height: "30px", width: "150px", backgroundColor: "green", border: "none"
+
+            , cursor: "pointer",marginTop:"5px"
+          }} onClick={downloadExcel}>
+            Excel giờ vào giờ ra
+          </button> 
+
+          <button style={{
+            height: "30px", width: "150px", backgroundColor: "green", border: "none"
+
+            , cursor: "pointer",marginTop:"5px"
+          }} onClick={downloadExcelNum}>
+            Excel số công
+          </button> 
 
                 <button className={classes.btnAddAttendance} onClick={addAttendance} title='Thêm chấm công giùm'>
                     <FontAwesomeIcon icon={faCirclePlus} />

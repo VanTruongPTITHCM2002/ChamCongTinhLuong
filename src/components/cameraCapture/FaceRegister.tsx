@@ -10,8 +10,12 @@ interface FaceRegisterProps {
 
 const FaceRegister = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [modelsLoaded, setModelsLoaded] = useState<boolean>(false);
-  const employeeId = localStorage.getItem('username');
+  let employeeId = '';
+  if (typeof window !== 'undefined'){
+   employeeId = localStorage.getItem('username')!;
+  }
   const [faceDescriptors, setFaceDescriptors] = useState<Float32Array[]>([]);
   const streamRef = useRef<MediaStream | null>(null); // Kiểu cho streamRef là MediaStream
 
@@ -22,6 +26,7 @@ const FaceRegister = () => {
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
         setModelsLoaded(true);
       } catch (error) {
         console.error("Error loading models:", error);
@@ -53,6 +58,7 @@ const FaceRegister = () => {
       console.error("Video element not found.");
       return;
     }
+    const canvas = canvasRef.current;
 
     try {
       const detections = await faceapi
@@ -65,13 +71,35 @@ const FaceRegister = () => {
         console.log(Array.from(descriptor));
         // setFaceDescriptors((prev) => [...prev, descriptor]);
         // const faceData = faceDescriptors[faceDescriptors.length - 1]; // Lấy descriptor cuối cùng
+       
+          const displaySize = {
+            width: videoRef.current.videoWidth,
+            height: videoRef.current.videoHeight,
+          };
   
+          faceapi.matchDimensions(canvas!, displaySize);
+  
+          const resizedDetections = faceapi.resizeResults(detections, displaySize);
+  
+          const ctx = canvas!.getContext("2d");
+          if (ctx) {
+            ctx.clearRect(0, 0, canvas!.width, canvas!.height);
+            faceapi.draw.drawDetections(canvas!, resizedDetections);
+            faceapi.draw.drawFaceLandmarks(canvas!, resizedDetections);
+          }
+        
         try{
             const response = await axios.post("http://localhost:8091/api/v1/face",{
               employeeId: employeeId,
               faceDescriptor: Array.from(descriptor)
             })
             successSwal('Thành công',response.data.message);
+            setTimeout(() => {
+              if (canvasRef.current) {
+                const ctx = canvasRef.current.getContext("2d");
+                if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+              }
+            }, 4000);
         }catch(error:any){
 
         }
@@ -107,8 +135,17 @@ const FaceRegister = () => {
                 autoPlay
                 playsInline
                 muted
-                width={720} height={500}
+                width={700} height={500}
               />
+                <canvas
+                                ref={canvasRef}
+                                style={{
+                                  position: "absolute",
+                                  top: 0,
+                                  left: 0,
+                                  
+                                }}
+                              />
             </div>
             <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
             <button onClick={stopCamera} style={styles.closeButton}>

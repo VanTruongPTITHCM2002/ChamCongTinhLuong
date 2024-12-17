@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 import { AdminPageRoleProps } from '@/pages/api/admin/apiRole';
 import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
 import { format } from 'date-fns';
+import { errorSwal } from '@/custom/sweetalert';
 interface Account{
     username:string,
     role:string,
@@ -32,7 +33,10 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
     const [tempRole,setTempRole] = useState('');
     const [originRole,setOriginRole] = useState('');
     const token = Cookies.get('token');
-    const username = localStorage.getItem('username');
+    let username = '';
+    if (typeof window !== 'undefined') {
+        username = localStorage.getItem('username')!;
+    }
     
 
 
@@ -96,6 +100,7 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
     
             return;
         }
+        
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/account/${account.username}`,account,{
                  headers: {
@@ -111,14 +116,15 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
                   });
             }
            
-            await addAuditLogServer({
-                username:username!,
-                action:"Cập nhật tài khoản",
-                description:"Thay đổi trạng thái hoặc quyền của tài khoản " + account.username,
-                createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
-            })
-          } catch (error) {
-            console.error("Xảy ra lỗi", error);
+            // await addAuditLogServer({
+            //     username:username!,
+            //     action:"Cập nhật tài khoản",
+            //     description:"Thay đổi trạng thái hoặc quyền của tài khoản " + account.username,
+            //     createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+            // })
+          } catch (error:any) {
+            errorSwal('Thất bại',error.response.data.message);
+            window.location.reload();
           }
         setIsUpdate(false);
         setIsNumber(-1);
@@ -200,20 +206,23 @@ const AdminAccountsPage:React.FC<AdminPageRoleProps> =({role}) =>{
     return (
         <div className={classes.article}>
         <h2>Bảng danh sách tài khoản của nhân viên</h2>
-        <div className={classes.article_button}>
+    
             {!isUpdate &&
             (
-                <>
-                        <input type="text" placeholder='Tìm kiếm...' 
-                              value={searchTerm}
-                              onChange={handleSearch}
-                        />
-                       
-                </>
+                <div className={classes.groupOption}> 
+                <input type="text" placeholder='Tìm kiếm...' 
+                value={searchTerm}
+                 onChange={(e) => setSearchTerm(e.target.value)}
+                />
+
+                {/* <button className={classes.btnAddRole} onClick={handleClickAddButton}>
+                    <FontAwesomeIcon icon={faPlus}/>
+                </button> */}
+            </div>
             )
             }
              
-        </div>
+
        
         <table>
             <thead>

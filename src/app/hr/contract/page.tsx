@@ -1,4 +1,3 @@
-
 import Header from "@/components/admin/header/header";
 import Navbar from "@/components/admin/navbar/navbar";
 import classes from "./style.module.css";
@@ -18,7 +17,7 @@ export default async function Page(){
     const employee: Employee[] = await getServerSideEmployees(token!);
     return(
         <div>
-            <HR_Navbar  currentPath="/admin/contract"/>
+            <HR_Navbar  currentPath="/hr/contract"/>
             <div className={classes.maincontainer}>
             <HR_Header/>
             <Suspense fallback={<div>Loading...</div>}>

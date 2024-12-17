@@ -12,9 +12,11 @@ const nextConfig = {
             path: false,
             localStorage: false,
           };
+          
         }
         return config;
       },
+      
 };
 
 

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie'
 interface RewardPenalty{
     idemployee:string;
     type:string;
@@ -27,8 +28,11 @@ function formatDate(dateString:string) {
   });
 }
 export default function UserRewardPenalty(){
-    const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
+    const token = Cookies.get('token');
     const [rewardpenalty,setRewardPenalty] = useState<RewardPenalty[]>([]);
     const [rewpen,setRewpen] = useState<RewardPenalty[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -64,22 +68,20 @@ export default function UserRewardPenalty(){
       setSearchTerm(term);
     };
 
-    const searchParams = ()=>{
-        if(searchTerm === ''){
-            setRewardPenalty(rewpen);
-           
-         }else{
-            const filterdata = rewpen.filter(
+    
+         const filterdata = searchTerm  ? rewpen.filter(
                 (item) =>
                   item.idemployee.includes(searchTerm) ||
                   item.type.includes(searchTerm) ||
                   item.cash.toString().includes(searchTerm)
                   || item.reason.includes(searchTerm)
                   || item.setupdate.includes(searchTerm)
-              );
-          setRewardPenalty(filterdata);
-        }
-    }
+              ).slice((currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage) :   rewardpenalty.slice(
+                (currentPage - 1) * itemsPerPage,
+                currentPage * itemsPerPage
+              )
+    
   
     return (
         <div className={classes.main_container}>
@@ -88,9 +90,7 @@ export default function UserRewardPenalty(){
              value={searchTerm}
              onChange={handleSearch}
             />
-            <button onClick={searchParams} className={classes.btnSearch}>
-                <FontAwesomeIcon icon={faSearch} />
-               </button>
+          
 
                     <table className = {classes.rewardpenaltyTable}>
                         <thead>
@@ -104,7 +104,7 @@ export default function UserRewardPenalty(){
                         </thead>
 
                         <tbody>
-                            {rewardpenalty.map((r,index)=>(
+                            {filterdata.map((r,index)=>(
                                 <tr key={index}>
                                     <td>{r.idemployee}</td>
                                     <td className={r.type === 'Phạt'? classes.statusInactive:classes.statusActive}>{r.type}</td>

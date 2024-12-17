@@ -1,13 +1,13 @@
 'use client'
-import { useRouter } from 'next/navigation';
+
 import classes from './permissons.module.css'
 import { AdminPageProps, PermissonsResponse } from '@/pages/api/admin/apiPermissons';
-const  AdminPermissonsPageReact:React.FC<AdminPageProps> = ({permissons})=>{
-   const router = useRouter();
+const  AdminPermissonsPage:React.FC<{permissons:PermissonsResponse[]}> = ({permissons})=>{
+
  
     return (
         <div className={classes.article}>
-            <table>
+            {/* <table>
                 <thead>
                     <th>Tên quyền</th>
                     <th>Mô tả</th>
@@ -20,9 +20,9 @@ const  AdminPermissonsPageReact:React.FC<AdminPageProps> = ({permissons})=>{
                             </tr>
                         ))}
                 </tbody>
-            </table>
+            </table> */}
         </div>
     )
 }
 
-export default AdminPermissonsPageReact
+export default AdminPermissonsPage

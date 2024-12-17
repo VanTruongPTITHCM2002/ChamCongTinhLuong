@@ -15,7 +15,8 @@ import Modal from '@/components/modal';
 import Image from 'next/image';
 import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
 import { format } from 'date-fns';
-
+import jsPDF from 'jspdf'; 
+import autoTable from  'jspdf-autotable'
 
 function formatDateString(dateString: string): string {
     const [year, month, day] = dateString.split('-');
@@ -26,7 +27,10 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
     const router = useRouter();
     const token = Cookies.get('token');
     const [employeeData, setemployeeData] = useState<Employee[]>([]);
-    const username = localStorage.getItem('username');
+    let username = '';
+    if (typeof window !== 'undefined'){
+     username = localStorage.getItem('username')!;
+    }
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(7);
     const [searchTerm, setSearchTerm] = useState('');
@@ -76,13 +80,7 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
     const [employeeId, setEmployeeId] = useState<string>('');
 
 
-   
 
-    
-    if(!localStorage.getItem('username') && !localStorage.getItem('token')){
-        router.push('/login');
-        return null;
-    }
 
     const handleAddEmployee = async (event:FormEvent) =>{
         event.preventDefault();
@@ -633,6 +631,59 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
       };
+
+      const downloadPDF = ()=>{
+    
+        const doc = new jsPDF();
+     
+        
+        // Tiêu đề PDF
+        doc.setFontSize(12);
+        doc.text("Danh sách nhân viên", 14, 20);
+      
+        const columns: { header: string; dataKey: keyof Employee }[] = [
+            { header: "Mã nhân viên", dataKey: "idEmployee" },
+            { header: "Họ", dataKey: "firstName" },
+            {header: "Tên", dataKey: "lastName"},
+            { header: "Giới tính", dataKey: "gender" },
+            { header: "Ngày sinh", dataKey: "birthDate" },
+            { header: "Địa chỉ", dataKey: "address" },
+            { header: "Số điện thoại", dataKey: "phoneNumber" },
+            { header: "CMND", dataKey: "idCard" },
+            { header: "Bằng cấp", dataKey: "degree" },
+            { header: "Vị trí", dataKey: "position" },
+            { header: "Phòng ban", dataKey: "department" },
+            { header: "Trạng thái", dataKey: "status" },
+          ];
+      
+        // Thêm bảng dữ liệu vào PDF
+        autoTable(doc, {
+            head: [columns.map((col) => col.header)], // Tiêu đề bảng
+            body: employee.map((item) =>
+              columns.map((col) => item[col.dataKey]!) // Dữ liệu từng dòng
+            ),
+          startY: 30,
+          theme: "grid", // Giao diện bảng
+          headStyles: {
+            font: 'times',
+            fontStyle: "bold",
+            fontSize: 8,
+          },
+          bodyStyles: {
+            font: 'times',
+            fontStyle: "normal",
+            fontSize: 6,
+            cellWidth:'wrap',
+          },
+          alternateRowStyles: { fillColor: [240, 240, 240] },
+  
+        });
+      
+        // Lưu file PDF
+        doc.save("DanhSachNhanVien.pdf");
+}
+
+      
     return (
         <div className={styles.article}>
              
@@ -650,6 +701,14 @@ const HR_employee:React.FC<{employee:Employee[],department:DepartmentsDTO[]}>= (
                         }} onClick={downloadExcel}> 
                             Xuất file Excel
                         </button> 
+
+                    <button style={{
+                        height: "30px", width: "100px", backgroundColor: "red", border: "none"
+
+                        , cursor: "pointer"
+                    }} onClick={downloadPDF}
+                    > Xuất file PDF</button>
+
                  <button className={styles.btnAddRole} title='Thêm nhân viên' onClick={handleClickAdd}><FontAwesomeIcon icon={faPlus} style={{ display: "inline-block", /* Đảm bảo thẻ <i> có thể nhận kích thước */
                 width: "12px",
                 height: "12px",
