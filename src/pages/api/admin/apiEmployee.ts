@@ -70,6 +70,6 @@ export const getEmpIdemployee = async (username:string,token:string) => {
            return response.data.data
         }
     } catch (error) {
-
+        return null;
     }
 }

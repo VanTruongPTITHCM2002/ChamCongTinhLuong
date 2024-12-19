@@ -11,6 +11,8 @@ import * as XLSX from 'xlsx';
 import { calculateWorkHours } from '@/components/user/attedance/attendance';
 import Cookies from 'js-cookie';
 import { Payroll } from '@/pages/api/admin/apiPayroll';
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 
 
 interface IFEmployee{
@@ -49,6 +51,10 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
         width: '50%', // Tùy chỉnh độ rộng của modal
         height: '50%', // Tùy chỉnh chiều cao của modal
     };
+    let username = '';
+    if(typeof window !== 'undefined'){
+      username = localStorage.getItem('username')!;
+    }
     const [showPayroll,setShowPayroll] = useState<Payroll[]>([]);
     const statusOptions = [
         { value: 'Đi trễ', label: 'Đi trễ' },
@@ -187,6 +193,12 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
                 //     return newAttendance;
                 //   });
                   setNum(-1);
+                  await addAuditLogServer({
+                    username:username!,
+                    action:"Sửa chấm công",
+                    description:"Nhân viên " + username + " đã chỉnh sửa chấm công của" + updatedAttendance.idemployee,
+                    createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                })
                 window.location.reload();
             }
         }catch(error:any){
@@ -330,15 +342,21 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
             
             if (response.status === 201) {
               Swal.fire('Thành công', response.data.message, 'success');
+                 await addAuditLogServer({
+                        username:username!,
+                        action:"Chấm công giùm",
+                        description:"Nhân viên " + username + " đã thực hiện chấm công giùm " + attendanceData.idemployee,
+                        createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                    })
             }
-            if(response.data.status === 404){
-                errorSwal('Thất bại',response.data.message)
-                return;
-            }
-            if(response.data.status === 400){
-                errorSwal('Thất bại',response.data.message)
-                return;
-            }
+            // if(response.data.status === 404){
+            //     errorSwal('Thất bại',response.data.message)
+            //     return;
+            // }
+            // if(response.data.status === 400){
+            //     errorSwal('Thất bại',response.data.message)
+            //     return;
+            // }
           } catch (error: any) {
             Swal.fire('Thất bại', error.response?.data?.message || 'Đã có lỗi xảy ra', 'error');
           }

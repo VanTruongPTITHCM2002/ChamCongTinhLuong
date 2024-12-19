@@ -96,8 +96,11 @@ export default function UserAttendance(){
     const streamRef = useRef<MediaStream | null>(null); // Kiểu cho streamRef là MediaStream
     const [isOut, setIsOut] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    const employeeId = localStorage.getItem('username');
+    let employeeId = '';
+    if(typeof window !== 'undefined'){
+      employeeId = localStorage.getItem('username')!;
+    }
+  
 
     const getAllAttendance = async()=>{
         try{

@@ -121,7 +121,7 @@ const identifyUser = async (descriptor: Float32Array) => {
       await checkInWork(response.data.data);
     }
 
-  //successSwal('Thành công',response.data.data);
+  // successSwal('Thành công',response.data.data);
 
   } catch (error:any) {
     errorSwal("Lỗi", error.response.data.message);
@@ -152,6 +152,12 @@ const detectFaceLoop = async () => {
     if (descriptor) {
       console.log("Khuôn mặt đã được nhận diện!");
       await identifyUser(descriptor);
+      setTimeout(() => {
+        if (canvasRef.current) {
+          const ctx = canvasRef.current.getContext("2d");
+          if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        }
+      }, 4000);
       return; // Gửi descriptor để nhận diện
     } else {
       console.log("Không phát hiện khuôn mặt.");
@@ -296,21 +302,6 @@ const checkOutWork = async (name:string)=>{
   return (
     <div className={styles.mainContainer}>
 
-      <div>
-      {/* <Script
-        src="https://cdn.chatsimple.ai/ai-loader.js"
-        strategy="lazyOnload"
-      />
-
-      {React.createElement('co-pilot', {
-        'platform-id': 'afdfe2e5-b223-4fe5-a259-1f6dcf4e4098',
-        'user-id': '2419129618417949',
-        'chatbot-id': '0627f562-a386-479a-b22d-3a38748c44fb',
-        'is-local': 'false',
-      })} */}
-
-      </div>
-     
 
       <div className={styles.groupButton}>
         <button className={styles.check_in_button}
