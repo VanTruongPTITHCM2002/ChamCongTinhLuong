@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { updateServerSideAttedanceExplain } from '@/pages/api/admin/apiAttendance_Explain';
 import { errorSwal, successSwal } from '@/custom/sweetalert';
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 
 const HR_AttendanceExplainPage:React.FC<{attendanceExplain:AttendanceExplain[]}> = ({attendanceExplain})=>{
     const router = useRouter();
@@ -12,7 +14,10 @@ const HR_AttendanceExplainPage:React.FC<{attendanceExplain:AttendanceExplain[]}>
     const [searchTerm,setSearchTerm] = useState('');
     const [modalUpdate,setModalUpdate] = useState(false);
     const [selectedAttendanceExplain,setSelectedAttendanceExplain]= useState<AttendanceExplain>();
-
+    let username = '';
+    if(typeof window !== 'undefined'){
+        username = localStorage.getItem('username')!;
+    }
 
     const EnableModalAdd = (attendexp: AttendanceExplain)=>{
         setModalUpdate(true);
@@ -43,6 +48,12 @@ const HR_AttendanceExplainPage:React.FC<{attendanceExplain:AttendanceExplain[]}>
         if(response.status === 200){
             successSwal('Thành công',response.message);
             setModalUpdate(false);
+                await addAuditLogServer({
+                      username:username!,
+                      action:"Xác nhận giải trình chấm công",
+                      description:"Nhân viên " + username + " đã thực hiện thay đổi trạng thái giải trình chấm công",
+                      createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                  })
             router.refresh();
           }else{
             errorSwal('Thất bại',response.message);

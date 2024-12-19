@@ -10,6 +10,8 @@ import Swal from 'sweetalert2';
 import { Payroll } from '../payroll/payroll';
 import { errorSwal } from '@/custom/sweetalert';
 import Cookies from 'js-cookie'
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 interface RewardPunish{
     idemployee:string;
     type:string;
@@ -32,6 +34,10 @@ const formattedAmount = (num:Float32Array | number)=>{
     return `${day}-${month}-${year}`;
   }
 export default function HR_RewardPunishPage(){
+    let username = '';
+    if(typeof window !== 'undefined'){
+        username = localStorage.getItem('username')!;
+    }
     const token = Cookies.get('token');
     const[showRewardPunish,setShowRewardPunish] = useState<RewardPunish[]>([]);
     const[rewardPunish,setRewardPunish] = useState<RewardPunish[]>([]);
@@ -157,6 +163,12 @@ export default function HR_RewardPunishPage(){
                     text:"Thêm thưởng phạt thành công",
                     icon:"success"
                })
+                 await addAuditLogServer({
+                             username: username!,
+                             action: "Thêm thưởng phạt",
+                             description: "Nhân viên " + username + " đã thực hiện thêm thưởng phạt nhân viên " + rewardPunish.idemployee,
+                             createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                         })
                setShowRewardPunish(prevRewardPunish => [...prevRewardPunish, rewardPunish]);
                setModal(false);
             }

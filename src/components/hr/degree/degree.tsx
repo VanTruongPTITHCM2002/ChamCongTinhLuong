@@ -9,6 +9,8 @@ import { errorSwal, successSwal } from '@/custom/sweetalert';
 import { useRouter } from 'next/navigation';
 import { addDegreeInServer, Degree, DeleteDegreeInServer, updateDegreeInServer } from '@/pages/api/hr/apiDegree';
 import { formattedAmount } from '../payroll/payroll';
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 
 
 
@@ -21,7 +23,10 @@ const  DegreePage:React.FC<{degree:Degree[]}> =({degree}) =>{
     const [prevDegreeName,setPrevDegreeName] = useState("");
     const [searchTerm, setSearchTerm] = useState('');
     const token = Cookies.get('token');
-
+    let username = '';
+    if(typeof window !== 'undefined'){
+        username = localStorage.getItem('username')!;
+    }
     const handleClickAddButton = ()=>setModalAdd(true);
 
     const handleClickUpdateButton = (DegreeResponse: Degree)=>{
@@ -57,6 +62,12 @@ const  DegreePage:React.FC<{degree:Degree[]}> =({degree}) =>{
       const response =  await addDegreeInServer(degreeValue,token!);
       if(response.status === 201){
         successSwal('Thành công',response.message);
+          await addAuditLogServer({
+              username: username!,
+              action: "Thêm bằng cấp",
+              description: "Nhân viên " + username + " đã thực hiện thêm bằng cấp",
+              createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+          })
         setModalAdd(false);
         router.refresh();
       }else{
@@ -81,6 +92,12 @@ const  DegreePage:React.FC<{degree:Degree[]}> =({degree}) =>{
         const response = await updateDegreeInServer(prevDegreeName,degreeValue,token!);
         if(response.status === 200){
             successSwal('Thành công',response.message);
+            await addAuditLogServer({
+                username: username!,
+                action: "Sửa bằng cấp",
+                description: "Nhân viên " + username + " đã thực hiện sửa bằng cấp",
+                createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+            })
             setModalUpdate(false);
             router.refresh();
           }else{
@@ -94,6 +111,12 @@ const  DegreePage:React.FC<{degree:Degree[]}> =({degree}) =>{
         const response = await DeleteDegreeInServer(prevDegreeName,token!);
         if(response.status === 200){
             successSwal('Thành công',response.message);
+            await addAuditLogServer({
+                username: username!,
+                action: "Xóa bằng cấp",
+                description: "Nhân viên " + username + " đã thực hiện xóa bằng cấp",
+                createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+            })
             setModalDelete(false);
             router.refresh();
           }else{

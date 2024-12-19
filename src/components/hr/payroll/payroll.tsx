@@ -9,6 +9,8 @@ import Swal from 'sweetalert2'
 import * as XLSX from 'xlsx';
 import { errorSwal, successSwal } from '@/custom/sweetalert'
 import Cookies from 'js-cookie'
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog'
+import { format } from 'date-fns'
 
 const payrollCustom = {
     width: '50%', // Tùy chỉnh độ rộng của modal
@@ -74,6 +76,12 @@ const HR_PayrollPage = () =>{
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const today = new Date();
+
+    let username = '';
+    if (typeof window !== 'undefined' ){
+        username = localStorage.getItem('username')!;
+    }
+
 
     useEffect(() => {
         const fetchPayroll = async () => {
@@ -182,6 +190,12 @@ const HR_PayrollPage = () =>{
                 }
             )
 
+              await addAuditLogServer({
+                          username: username!,
+                          action: "Tính lương",
+                          description: "Nhân viên " + username + " đã thực hiện tính lương tháng " + payrollRes.month + '/' + payrollRes.year,
+                          createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                      })
 
           //  setShowPayroll([response.data.data,...showPayroll]);
            window.location.reload();
@@ -266,7 +280,12 @@ const HR_PayrollPage = () =>{
                     //         icon:"success"
                     //     }
                     // )
-                
+                    await addAuditLogServer({
+                        username: username!,
+                        action: "Thanh toán lương",
+                        description: "Nhân viên " + username + " đã thực hiện thanh toán lương cho nhân viên " + salary.idEmployee,
+                        createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                    })
                     setShowDetail(false);
                 }
                 

@@ -11,6 +11,8 @@ import { errorSwal } from '@/custom/sweetalert';
 import Cookies from 'js-cookie'
 import { Contract } from '@/pages/api/admin/apiContract';
 import { Employee } from '@/pages/api/admin/apiEmployee';
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 
 
 
@@ -32,6 +34,10 @@ const HR_Contract:React.FC<{contract:Contract[],employee: Employee[]}> =({contra
     const [idEmployee,setIdEmployee] = useState<string[]>([]);
     const [selectedIdEmployee, setSelectedIdEmployee] = useState<string>('');
     const [searchId, setSearchId] = useState<string>('');
+    let username = '';
+    if(typeof window !=='undefined' ){
+        username = localStorage.getItem('username')!;
+    }
     const [formData, setFormData] = useState({
         idemployee: '',
         basicsalary: 0,
@@ -123,6 +129,12 @@ const HR_Contract:React.FC<{contract:Contract[],employee: Employee[]}> =({contra
                     text:`${response.data.message}`,
                     icon:"success"
                })
+                   await addAuditLogServer({
+                         username:username!,
+                         action:"Tạo hợp đồng lao đồng",
+                         description:"Nhân viên " + username + " đã thực hiện tạo hợp đồng lao động cho nhân viên " + contract.idemployee,
+                         createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                     })
             //    setShowContract(prevContract => [...prevContract, contract]);
                setModal(false);
                router.refresh();
@@ -201,18 +213,14 @@ const HR_Contract:React.FC<{contract:Contract[],employee: Employee[]}> =({contra
                         text: "Sửa hợp đồng thành công",
                         icon: "success",
                     });
-                    // setShowContract(prevContract => {
-                    //     const updateContract = prevContract.map(contract => {
-                    //         if ((contract.idemployee === data.newContractRequest.idemployee)
-                    //         && (contract.startdate === data.newContractRequest.startdate)
-                    //     && (contract.endate === data.newContractRequest.endate)) {
-                    //             return { ...contract, ...data.newContractRequest };
-                    //         }
-                    //         return contract;
-                    //     });
-                    //     return updateContract;
-                    // });
-                    // Reset form hoặc thực hiện các thao tác khác
+
+                    await addAuditLogServer({
+                        username:username!,
+                        action:"Sửa hợp đồng lao đồng",
+                        description:"Nhân viên " + username + " đã thực hiện sửa hợp đồng lao động của nhân viên " + contract.idemployee,
+                        createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+                    })
+             
                 }
                 setModal(false);
                 setIsUpdate(false);
@@ -222,25 +230,7 @@ const HR_Contract:React.FC<{contract:Contract[],employee: Employee[]}> =({contra
             }
       
     }
-    const searchContractByid = async ()=>{
-        try {
-            let response:AxiosResponse<any, any>
-            if(searchId.trim() === ''){
-              response = await axios.get("http://localhost:8087/api/v1/contract");
-            }else{
-             response = await axios.get(`http://localhost:8087/api/v1/contract/${searchId}`);
-            }
-            if(response.status === 200){
-            
-                // setShowContract(response.data.data);
-             }
-        
-        } catch (error) {
-            console.error('Error fetching id employee:', error);
-           
-        }
-       
-    }
+    
     const totalPages = Math.ceil(contract.length / itemsPerPage);
     
     const handlePageChange = (pageNumber:number) => {

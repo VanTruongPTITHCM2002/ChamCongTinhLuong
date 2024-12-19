@@ -8,6 +8,8 @@ import { faCircle, faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-ic
 import { errorSwal, successSwal } from '@/custom/sweetalert';
 import { useRouter } from 'next/navigation';
 import { addDepartmentInServer, DeleteDepartmentInServer, Department, updateDepartmentInServer } from '@/pages/api/hr/apiDepartment';
+import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog';
+import { format } from 'date-fns';
 
 
 
@@ -20,7 +22,10 @@ const  DepartmentPage:React.FC<{department:Department[]}> =({department}) =>{
     const [prevRoleName,setPrevRoleName] = useState("");
     const [searchTerm, setSearchTerm] = useState('');
     const token = Cookies.get('token');
-
+    let username = '';
+    if(typeof window !== 'undefined' ){
+        username = localStorage.getItem('username')!;
+    }
     const handleClickAddButton = ()=>setModalAdd(true);
 
     const handleClickUpdateButton = (roleResponse: Department)=>{
@@ -57,6 +62,12 @@ const  DepartmentPage:React.FC<{department:Department[]}> =({department}) =>{
       const response =  await addDepartmentInServer(role,token!);
       if(response.status === 201){
         successSwal('Thành công',response.message);
+          await addAuditLogServer({
+              username: username!,
+              action: "Thêm phòng ban",
+              description: "Nhân viên " + username + " đã thực hiện thêm phòng ban",
+              createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+          })
         setModalAdd(false);
         router.refresh();
       }else{
@@ -82,6 +93,12 @@ const  DepartmentPage:React.FC<{department:Department[]}> =({department}) =>{
         const response = await updateDepartmentInServer(prevRoleName,role,token!);
         if(response.status === 200){
             successSwal('Thành công',response.message);
+            await addAuditLogServer({
+                username: username!,
+                action: "Sửa phòng ban",
+                description: "Nhân viên " + username + " đã thực hiện sửa phòng ban",
+                createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+            })
             setModalUpdate(false);
             router.refresh();
           }else{
@@ -95,6 +112,12 @@ const  DepartmentPage:React.FC<{department:Department[]}> =({department}) =>{
         const response = await DeleteDepartmentInServer(prevRoleName,token!);
         if(response.status === 200){
             successSwal('Thành công',response.message);
+            await addAuditLogServer({
+                username: username!,
+                action: "Xóa phòng ban",
+                description: "Nhân viên " + username + " đã thực hiện xóa phòng ban",
+                createtime: format(new Date(), 'dd/MM/yyyy HH:mm:ss')
+            })
             setModalDelete(false);
             router.refresh();
           }else{
