@@ -12,7 +12,7 @@ const AdminAuditLogPage:React.FC<{audit:AuditLog[]}> = ({audit})=>{
     const [searchTerm,setSearchTerm] = useState('');
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(8);
+    const [itemsPerPage] = useState(10);
     const totalPages = Math.ceil(audit.length / itemsPerPage);
   
     // const toggleSelectAll = () =>

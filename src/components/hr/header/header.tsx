@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import FaceRegister from "@/components/cameraCapture/FaceRegister";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 export default function HR_Header(){
     const [isMenuVisible, setIsMenuVisible] = useState(false);
     const [employee,setEmployee] = useState<Employee>();
@@ -65,6 +67,9 @@ export default function HR_Header(){
       {isCameraVisible && <FaceRegister/>}
             </div>
             <div className={classes.option_title} >
+                <button style={{marginRight:"5px", height:"30px",width:"50px",cursor:"pointer",backgroundColor:"purple",border:"none"}}>
+                              <FontAwesomeIcon icon={faBell}/>
+                            </button>
             <h5>Xin chào, {email}</h5>
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"
         onClick={toggleMenu}

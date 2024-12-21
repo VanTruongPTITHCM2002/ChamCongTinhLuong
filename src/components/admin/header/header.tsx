@@ -7,6 +7,8 @@ import Cookies from "js-cookie";
 import { Employee } from "@/pages/api/admin/apiEmployee";
 import { addAuditLogServer } from "@/pages/api/admin/apiAuditLog";
 import { format } from "date-fns";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header(){
     const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -38,12 +40,7 @@ export default function Header(){
         Cookies.remove('token');
         localStorage.removeItem('username');
         localStorage.removeItem('roleDescription');
-        await addAuditLogServer({
-          username:email!,
-          action:"Đăng xuất",
-          description:(email === 'admin' ? email: "Nhân viên " + email ) + " đã đăng xuất hệ thống",
-          createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
-      })
+     
         router.push('/login');
     }
 
@@ -61,6 +58,10 @@ export default function Header(){
          
             </div>
             <div className={classes.option_title}>
+              <button>
+                <FontAwesomeIcon icon={faBell}/>
+              </button>
+              
             <h5>Xin chào, {email}</h5>
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"
             onClick={toggleMenu}

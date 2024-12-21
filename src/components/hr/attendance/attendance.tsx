@@ -144,27 +144,27 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
     }
 
 
-    const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    // const handleSelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     
-        const selectedId = event.target.value;
-        setSelectedEmployee(selectedId);
-    };
-    const handleButtonClick = async ()=>{
-        const filter:Filter ={
-            idemployee:selectedEmployee
-        } 
-        try {
-          const response = await axios.post('http://localhost:8083/api/v1/attendance/filter', filter
-          );
+    //     const selectedId = event.target.value;
+    //     setSelectedEmployee(selectedId);
+    // };
+    // const handleButtonClick = async ()=>{
+    //     const filter:Filter ={
+    //         idemployee:selectedEmployee
+    //     } 
+    //     try {
+    //       const response = await axios.post('http://localhost:8083/api/v1/attendance/filter', filter
+    //       );
         
-        //   setAttendance(response.data.data);
+    //     //   setAttendance(response.data.data);
          
         
-        } catch (error) {
-          console.error('There was an error fetching the data!', error);
-        }
+    //     } catch (error) {
+    //       console.error('There was an error fetching the data!', error);
+    //     }
         
-    }
+    // }
 
     const handleClickUpdate = (a:number)=>{
         setIsUpdate(true);
@@ -348,15 +348,8 @@ const HR_AttendancePage:React.FC<{attendance:Attendance[]}> =({attendance})=>{
                         description:"Nhân viên " + username + " đã thực hiện chấm công giùm " + attendanceData.idemployee,
                         createtime:format(new Date(), 'dd/MM/yyyy HH:mm:ss')
                     })
+                  window.location.reload();
             }
-            // if(response.data.status === 404){
-            //     errorSwal('Thất bại',response.data.message)
-            //     return;
-            // }
-            // if(response.data.status === 400){
-            //     errorSwal('Thất bại',response.data.message)
-            //     return;
-            // }
           } catch (error: any) {
             Swal.fire('Thất bại', error.response?.data?.message || 'Đã có lỗi xảy ra', 'error');
           }

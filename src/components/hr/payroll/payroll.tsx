@@ -11,6 +11,8 @@ import { errorSwal, successSwal } from '@/custom/sweetalert'
 import Cookies from 'js-cookie'
 import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog'
 import { format } from 'date-fns'
+import { groupPayrollByMonth, Salary } from '@/pages/api/admin/apiPayroll'
+import { tr } from 'date-fns/locale'
 
 const payrollCustom = {
     width: '50%', // Tùy chỉnh độ rộng của modal
@@ -76,7 +78,7 @@ const HR_PayrollPage = () =>{
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const today = new Date();
-
+    const [salary,setSalary] = useState<Salary[]>([]);
     let username = '';
     if (typeof window !== 'undefined' ){
         username = localStorage.getItem('username')!;
@@ -93,6 +95,7 @@ const HR_PayrollPage = () =>{
                 });
                 setShowPayroll(response.data.data);
                 setShowPay(response.data.data);
+                setSalary(groupPayrollByMonth(response.data.data))
             } catch (error) {
                 console.error('Error fetching payroll data:', error);
             }
@@ -104,7 +107,11 @@ const HR_PayrollPage = () =>{
    // setShowPayroll(showPay);
     // Định dạng ngày thành YYYY-MM-DD
 
-    
+    // showPay.forEach(item => {
+    //     // Dùng .reduce để lấy tổng số thực từ mảng Float32Array
+    //     const totalPaymentSum = item.totalPayment.reduce((sum, value) => sum + value, 0);
+    //     console.log(`Mã nhân viên: ${item.idEmployee}, Tổng thanh toán: ${totalPaymentSum}`);
+    // });
     const formattedDate = today.toISOString().split('T')[0];
     const showModalAddSalary = ()=>{
         getIDemployee();
@@ -170,7 +177,7 @@ const HR_PayrollPage = () =>{
               });
             return;
         }
-        console.log(idEmployee.map(employee => employee.idemployee))
+       
         try {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/many`,
              payrollRes
@@ -404,6 +411,9 @@ const HR_PayrollPage = () =>{
         <div className={classes.article}>
              <h2 style={{textAlign:"center"}}>Quản lý tính lương</h2>
             <div className={classes.article_option}>
+
+           
+
             {num !== -1 ? (
                 <>
                    <div className={classes.article_option_search}>
@@ -464,6 +474,27 @@ const HR_PayrollPage = () =>{
                 
                     
             </div>
+
+            {/* <table>
+                <thead>
+                        <th>Bảng lương</th>
+                        <th>Tháng</th>
+                        <th>Năm</th>
+                        <th>Số lượng nhân viên</th>
+                </thead>
+
+                <tbody>
+                        {salary.map((s,index)=>(
+                            <tr key={index}>
+                                <td>{s.nameSalary}</td>
+                                <td>{s.month}</td>
+                                <td>{s.year}</td>
+                                <td>{s.countEmployee}</td>
+                            </tr>
+                        ))}
+                </tbody>
+            </table> */}
+
             <table>
                 <thead>
                     <tr>
