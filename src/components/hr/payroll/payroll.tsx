@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import classes from './payroll.module.css'
 import { faCalculator, faDeleteLeft, faEye, faFileExcel, faMagnifyingGlass, faMoneyBill, faPen } from '@fortawesome/free-solid-svg-icons'
-import { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import Modal from '@/components/modal'
 import axios, { AxiosResponse } from 'axios'
 import Swal from 'sweetalert2'
@@ -11,7 +11,7 @@ import { errorSwal, successSwal } from '@/custom/sweetalert'
 import Cookies from 'js-cookie'
 import { addAuditLogServer } from '@/pages/api/admin/apiAuditLog'
 import { format } from 'date-fns'
-import { groupPayrollByMonth, Salary } from '@/pages/api/admin/apiPayroll'
+import {  Salary } from '@/pages/api/admin/apiPayroll'
 import { tr } from 'date-fns/locale'
 
 const payrollCustom = {
@@ -45,10 +45,6 @@ export interface Payroll{
     status:string;
 }
 
-interface AdminPayrollPageProps {
-    showPay: Payroll[];
-}
-
 export const formattedAmount = (num:Float32Array | number | undefined)=>{
    return  num!.toLocaleString('vi-VN', {
     style: 'currency',
@@ -64,46 +60,47 @@ function formatDate(dateString:string) {
     return `${day}-${month}-${year}`;
   }
 
-const HR_PayrollPage = () =>{
+const HR_PayrollPage:React.FC<{salary:Salary[]}> = ({salary}) =>{
     const token = Cookies.get('token');
     const [modal,setModal] = useState(false);
     const [showDetail,setShowDetail] = useState(false);
     const [num,setNum] = useState<number>(-1);
+    const [selectSalary,setSelectedSalary] = useState(false);
     const [selectedIdEmployee, setSelectedIdEmployee] = useState<string>('');
     const [searchId, setSearchId] = useState<string>('');
     const [idEmployee,setIdEmployee] = useState<IFEmployee[]>([]);
     const [showPayroll,setShowPayroll] = useState<Payroll[]>([]);
-    const [showPay,setShowPay] = useState<Payroll[]>([]);
+    
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const today = new Date();
-    const [salary,setSalary] = useState<Salary[]>([]);
+
     let username = '';
     if (typeof window !== 'undefined' ){
         username = localStorage.getItem('username')!;
     }
 
 
-    useEffect(() => {
-        const fetchPayroll = async () => {
-            try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,{
-                    headers: {
-                        Authorization: `Bearer ${token}`  
-                      }
-                });
-                setShowPayroll(response.data.data);
-                setShowPay(response.data.data);
-                setSalary(groupPayrollByMonth(response.data.data))
-            } catch (error) {
-                console.error('Error fetching payroll data:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchPayroll = async () => {
+    //         try {
+    //             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll`,{
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`  
+    //                   }
+    //             });
+    //             setShowPayroll(response.data.data);
+            
+                
+    //         } catch (error) {
+    //             console.error('Error fetching payroll data:', error);
+    //         }
+    //     };
         
-        fetchPayroll();
+    //     fetchPayroll();
       
-    }, []);
+    // }, []);
    // setShowPayroll(showPay);
     // Định dạng ngày thành YYYY-MM-DD
 
@@ -243,6 +240,10 @@ const HR_PayrollPage = () =>{
         setNum(-1);
         localStorage.removeItem('index');
     }
+
+    const closeDetailSalary = ()=>{
+        setSelectedSalary(false);
+    }
   
     const updateStatus = async (index:number)=>{
         if(showPayroll[index].status === 'Đã thanh toán'){
@@ -349,21 +350,21 @@ const HR_PayrollPage = () =>{
         currentPage * itemsPerPage
       );
       const searchButton = ()=>{
-        if(searchTerm === ''){
-            setShowPayroll(showPay);
+        // if(searchTerm === ''){
+        //     setShowPayroll(showPay);
            
-         }else{
-            const filterdata = showPay.filter(
-                (item) =>
-                  item.idEmployee.includes(searchTerm) ||
-                  item.month === Number(searchTerm)
-                  || item.year === Number(searchTerm) 
+        //  }else{
+        //     const filterdata = showPay.filter(
+        //         (item) =>
+        //           item.idEmployee.includes(searchTerm) ||
+        //           item.month === Number(searchTerm)
+        //           || item.year === Number(searchTerm) 
                  
                 
                 
-              );
-          setShowPayroll(filterdata);
-        }
+        //       );
+        //   setShowPayroll(filterdata);
+        // }
       }
       const handleSearch = (event:React.ChangeEvent<HTMLInputElement>) => {
         const term = event.target.value;
@@ -407,6 +408,28 @@ const HR_PayrollPage = () =>{
       };
 
   
+      const showDetailEmployeeSalary = async (month:number,year:number)=>{
+        setSelectedSalary(true);
+        try {
+                        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/list/detail`,{
+                            params:{
+                                month:month,
+                                year:year
+                            },
+                            headers: {
+                                Authorization: `Bearer ${token}`  
+                              }
+                        });
+                        setShowPayroll(response.data.data);
+                    
+                        
+                    } catch (error) {
+                        setShowPayroll([]);
+                    }
+                };
+        
+      
+
     return (
         <div className={classes.article}>
              <h2 style={{textAlign:"center"}}>Quản lý tính lương</h2>
@@ -437,7 +460,7 @@ const HR_PayrollPage = () =>{
                 </>
                  
             )
-            :(
+            :!selectSalary ? (
                 <>
                     <div className={classes.article_option_search}>
                         <input type="text" 
@@ -470,113 +493,139 @@ const HR_PayrollPage = () =>{
                     /></button>
                 </div>
                 </>
-            )}
+            ): <div className={classes.article_option_button}>
+            <button className={classes.article_option_button_back}
+                onClick={closeDetailSalary}
+            ><FontAwesomeIcon icon={faDeleteLeft} 
+             style={{width:"12px",
+                        height:"12px",
+                     marginRight:"10px"}}
+            />Quay lại</button>
+        </div>
+ }
                 
                     
             </div>
 
-            {/* <table>
-                <thead>
-                        <th>Bảng lương</th>
-                        <th>Tháng</th>
-                        <th>Năm</th>
-                        <th>Số lượng nhân viên</th>
-                </thead>
-
-                <tbody>
-                        {salary.map((s,index)=>(
-                            <tr key={index}>
-                                <td>{s.nameSalary}</td>
-                                <td>{s.month}</td>
-                                <td>{s.year}</td>
-                                <td>{s.countEmployee}</td>
-                            </tr>
-                        ))}
-                </tbody>
-            </table> */}
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mã nhân viên</th>
-                        <th>Tháng</th>
-                        <th>Năm</th>
-                        {num !== -1 ? (
-                <>
-                    <th>Thưởng</th>
-                    <th>Phạt</th>
-                    <th>Lương cơ bản</th>
-                    <th>Số ngày công</th>
-                    <th>Ngày tạo</th>
-                    <th>Tổng lương</th>
-                    <th>Trạng thái</th>
-                </>
-            ) : (
-                <>
-                <th>Tổng lương</th>
-                <th>Thao tác</th>
-                </>
-                
-            )}
-                        
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                {num !== -1 && showPayroll[num] ? (
-            <tr key={showPayroll[num].idEmployee}>
-                <td>{showPayroll[num].idEmployee}</td>
-                <td>{showPayroll[num].month}</td>
-                <td>{showPayroll[num].year}</td>
-               <td>{formattedAmount (showPayroll[num].reward)}</td>
-               <td>{formattedAmount(showPayroll[num].punish)}</td>
-               <td>{formattedAmount(showPayroll[num].basicSalary)}</td>
-               <td>{showPayroll[num].day_work}</td>
-               <td>{formatDate(showPayroll[num].createDate)}</td>
-               
-                <td>{formattedAmount(showPayroll[num].totalPayment)}</td>
-                {/* <td style={{cursor:"pointer"}}>{showPayroll[num].status}</td> */}
-                <td className={showPayroll[num].status === "Đã thanh toán"?classes.statusActive:classes.statusInactive} >
-             {showPayroll[num].status}
-            </td>
-                {/* <td>
-                    <button 
-                        className={classes.article_button_detail}
-                        onClick={() => showDetailSalary(num)}
-                    >
-                        <FontAwesomeIcon 
-                            icon={faEye}  
-                            style={{width: "15px", height: "15px"}}
-                        />
-                    </button>
-                </td> */}
-            </tr>
-        ):(
-            currentData.map((p,index)=>(
-                <tr key={index}>
-                    <td>{p.idEmployee}</td>
-                    <td>{p.month}</td>
-                    <td>{p.year}</td>
-                    <td>{ formattedAmount(typeof p.totalPayment === 'undefined' ? 0.00 : p.totalPayment)}</td>
-                    <td>
-                        
-                        <button className={classes.article_button_detail} title='Xem chi tiết'
-                    onClick={()=>showDetailSalary(index)}
-                    ><FontAwesomeIcon icon={faEye}  style={{width:"15px",
-                        height:"15px"
-                }}/></button></td> 
-                </tr>
-            ))
-           
-        )
+            {!selectSalary ?  
+            
+                (
+                    <table>
+                    <thead>
+                            <th>Tên</th>
+                            <th>Số lượng nhân viên</th>
+                            <th>Tổng tiền</th>
+                            <th>Thao tác</th>
+                    </thead>
     
-    }
+                    <tbody>
+                            {salary.map((s,index)=>(
+                                <tr key={index}>
+                                   <td>{`Bảng lương tháng ${s.monthSalary} / ${s.yearSalary}`}</td>
+                                    <td>{s.amountEmployee}</td>
+                                    <td>{formattedAmount(s.total)}</td>
+                                    <td>
+                            
+                            <button className={classes.article_button_detail} title='Xem chi tiết'
+                            onClick={()=>showDetailEmployeeSalary(s.monthSalary,s.yearSalary)}
+                        ><FontAwesomeIcon icon={faEye}  style={{width:"15px",
+                            height:"15px"
+                    }}/></button></td> 
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+                )
+                :
+                (
+                    <table>
+                    <thead>
+                        <tr>
+                            <th>Mã nhân viên</th>
+                            <th>Tháng</th>
+                            <th>Năm</th>
+                            {num !== -1 ? (
+                    <>
+                        <th>Thưởng</th>
+                        <th>Phạt</th>
+                        <th>Lương cơ bản</th>
+                        <th>Số ngày công</th>
+                        <th>Ngày tạo</th>
+                        <th>Tổng lương</th>
+                        <th>Trạng thái</th>
+                    </>
+                ) : (
+                    <>
+                    <th>Tổng lương</th>
+                    <th>Thao tác</th>
+                    </>
+                    
+                )}
+                            
+                        </tr>
+                    </thead>
+    
+                    <tbody>
+    
+                    {num !== -1 && showPayroll[num] ? (
+                <tr key={showPayroll[num].idEmployee}>
+                    <td>{showPayroll[num].idEmployee}</td>
+                    <td>{showPayroll[num].month}</td>
+                    <td>{showPayroll[num].year}</td>
+                   <td>{formattedAmount (showPayroll[num].reward)}</td>
+                   <td>{formattedAmount(showPayroll[num].punish)}</td>
+                   <td>{formattedAmount(showPayroll[num].basicSalary)}</td>
+                   <td>{showPayroll[num].day_work}</td>
+                   <td>{formatDate(showPayroll[num].createDate)}</td>
+                   
+                    <td>{formattedAmount(showPayroll[num].totalPayment)}</td>
+                    {/* <td style={{cursor:"pointer"}}>{showPayroll[num].status}</td> */}
+                    <td className={showPayroll[num].status === "Đã thanh toán"?classes.statusActive:classes.statusInactive} >
+                 {showPayroll[num].status}
+                </td>
+                    {/* <td>
+                        <button 
+                            className={classes.article_button_detail}
+                            onClick={() => showDetailSalary(num)}
+                        >
+                            <FontAwesomeIcon 
+                                icon={faEye}  
+                                style={{width: "15px", height: "15px"}}
+                            />
+                        </button>
+                    </td> */}
+                </tr>
+            ):(
+                currentData.map((p,index)=>(
+                    <tr key={index}>
+                        <td>{p.idEmployee}</td>
+                        <td>{p.month}</td>
+                        <td>{p.year}</td>
+                        <td>{ formattedAmount(typeof p.totalPayment === 'undefined' ? 0.00 : p.totalPayment)}</td>
+                        <td>
+                            
+                            <button className={classes.article_button_detail} title='Xem chi tiết'
+                        onClick={()=>showDetailSalary(index)}
+                        ><FontAwesomeIcon icon={faEye}  style={{width:"15px",
+                            height:"15px"
+                    }}/></button></td> 
+                    </tr>
+                ))
+               
+            )
+        
+        }
+    
+                      
+                    </tbody>
+                </table>
+               
+                )
+            }
 
-                  
-                </tbody>
-            </table>
-           
+          
+
+          
         <div className={classes.pagination}>
         {Array.from({ length: totalPages }, (_, index) => (
           <button

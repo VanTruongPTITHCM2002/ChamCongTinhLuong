@@ -1,3 +1,7 @@
+import { errorSwal } from "@/custom/sweetalert";
+import axios from "axios";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+
 export interface Payroll{
     idEmployee:string;
     month:number;
@@ -12,29 +16,26 @@ export interface Payroll{
 }
 
 export interface Salary{
-    nameSalary: string,
-    month:number,
-    year:number,
-    countEmployee:number,
+    monthSalary: number,
+    yearSalary:number,
+    amountEmployee:number,
+    total:Float32Array
 }
 
-export function groupPayrollByMonth(payroll: Payroll[]): Salary[] {
-    const groupedPayroll = payroll.reduce((result, item) => {
-        const key = `${item.month}-${item.year}`;
-        if (!result[key]) {
-            result[key] = {
-                nameSalary: `Bảng lương tháng ${item.month}/${item.year}`,
-                month: item.month,
-                year: item.year,
-                countEmployee: 0,
-                
-            };
-        }
-        result[key].countEmployee += 1;
+export async function getListSalaryServerSide(token:RequestCookie){
+    try {
        
-        return result;
-    }, {} as Record<string, Salary>);
-
-    // Chuyển kết quả từ object sang array
-    return Object.values(groupedPayroll);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/api/v1/payroll/list`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token.value}`
+                  }
+            }
+        );
+       
+        return response.data.data;
+    } catch (error : any) {
+        errorSwal("Thất bại", error.response.data.message)
+        return [];
+    }
 }

@@ -248,7 +248,7 @@ const checkOutWork = async (name:string)=>{
   //   }
   
 
-    let checkoutt = "16:00";
+    // let checkoutt = "16:49";
 
     const updatedEntry: Attendance = {
       idemployee:name!,

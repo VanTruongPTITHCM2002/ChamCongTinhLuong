@@ -98,9 +98,9 @@ export default function HR_Navbar({ currentPath } : any){
                 <li className={`${classes.listOptionMenu} ${currentPath === "/hr/rewardpunish" ? classes.active : ""}`}>
                     <Link href="/hr/rewardpunish">Quản lý thưởng phạt</Link>
                 </li>
-                 <li className={`${classes.listOptionMenu} ${currentPath === "/hr/leaverequest" ? classes.active : ""}`}>
+                 {/* <li className={`${classes.listOptionMenu} ${currentPath === "/hr/leaverequest" ? classes.active : ""}`}>
                     <Link href="/hr/leaverequest">Quản lý nghỉ phép</Link>
-                </li> 
+                </li>  */}
                 <li className={`${classes.listOptionMenu} ${currentPath === "/hr/contract" ? classes.active : ""}`}>
                     <Link href="/hr/contract">Quản lý hợp đồng lao động</Link>
                 </li>
