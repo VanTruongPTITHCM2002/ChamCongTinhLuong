@@ -58,9 +58,9 @@ export default function Header(){
          
             </div>
             <div className={classes.option_title}>
-              <button>
+              {/* <button>
                 <FontAwesomeIcon icon={faBell}/>
-              </button>
+              </button> */}
               
             <h5>Xin chào, {email}</h5>
             <Image src="/images/download.jpg" alt="Example"  className={classes.avatar} width="50" height= "50"

@@ -151,6 +151,7 @@ const detectFaceLoop = async () => {
     const descriptor = detections.descriptor;
     if (descriptor) {
       console.log("Khuôn mặt đã được nhận diện!");
+      console.log(descriptor);
       await identifyUser(descriptor);
       setTimeout(() => {
         if (canvasRef.current) {
